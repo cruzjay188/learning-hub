@@ -8,6 +8,7 @@ import Toast from './components/Toast.jsx'
 import TopBar from './components/TopBar.jsx'
 import { HubContext } from './hooks/useHub.js'
 import { useAuth } from './hooks/useAuth.js'
+import { takeAuthNote } from './lib/auth.js'
 import { useHubData } from './hooks/useHubData.js'
 import { useShortcuts } from './hooks/useShortcuts.js'
 import { useStore } from './hooks/useStore.js'
@@ -100,7 +101,10 @@ function Hub({ data, fromCache, progressStore, auth }) {
     hub.firstRoute()
     if (!started.current) {
       started.current = true
+      const arrived = takeAuthNote(['registered', 'loggedIn']) // just logged in or signed up
+      if (arrived) { const t = document.getElementById('v-title'); if (t) { t.setAttribute('tabindex', '-1'); t.focus({ preventScroll: true }) } }
       if (fromCache) hub.toast('Showing your last saved copy of the course data.')
+      else if (arrived === 'registered') hub.toast('Account created. Your progress now saves to it.')
     }
 
     const onHash = () => hub.navRender()

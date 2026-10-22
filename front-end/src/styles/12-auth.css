@@ -1,16 +1,77 @@
-/* ---------- accounts: Log in / Create an account, and the account button in the top bar ---------- */
-/* Built only from design-system tokens (01-base.css). New pattern: add an "Auth form" card to the design system. */
-.auth { min-height: 100dvh; display: grid; place-content: center; gap: 20px; padding: 32px 16px; }
-.auth__brand { display: flex; align-items: center; justify-content: center; gap: 10px; font: 600 18px var(--font-display); color: var(--ink); }
-.auth__card { width: min(400px, calc(100vw - 32px)); display: grid; gap: 14px; padding: 28px 24px; background: var(--surface-raised); border-radius: var(--r-panel); box-shadow: var(--shadow-raise); }
-.auth__card .display { font-size: 28px; }
-.auth__lede { color: var(--ink-2); font-size: 14px; }
-.auth__field { display: grid; gap: 6px; font-size: 13px; font-weight: 500; color: var(--ink-2); }
-.auth__field input { height: 44px; padding: 0 12px; border: 1px solid var(--control); border-radius: var(--r-ctl); background: var(--surface); font-size: 15px; color: var(--ink); }
-.auth__field input:focus-visible { outline: 2px solid var(--teal); outline-offset: 1px; border-color: var(--teal); }
-.auth__error { color: var(--now-ink); font-size: 14px; }
-.auth__notice { padding: 10px 12px; border-radius: var(--r-ctl); background: var(--teal-soft); color: var(--ink); font-size: 14px; }
-.auth__submit { width: 100%; justify-content: center; }
-.auth__switch { font-size: 14px; color: var(--ink-2); text-align: center; }
-.account-btn { white-space: nowrap; }
-@media (max-width: 899px) { .account-btn .account-btn__name { display: none; } }
+/* ---------- accounts: Log in / Create an account / Check your email, and the account menu ---------- */
+/* Spec: design/design-brief-auth.md. Only design-system tokens; spacing steps noted as space-N. */
+.auth { min-height: 100dvh; display: grid; justify-items: center; align-content: start; gap: 24px; /* space-6 */
+  padding: clamp(40px, 12vh, 112px) 16px 48px; }
+.auth__brand { display: flex; align-items: center; gap: 8px; font: 600 17px/22px var(--font-display); color: var(--ink); }
+.auth__card { width: min(400px, 100%); display: grid; padding: 32px; /* space-8 */
+  background: var(--surface-raised); border-radius: var(--r-panel); box-shadow: var(--shadow-raise); view-transition-name: auth-card; }
+.auth__form { display: grid; }
+.auth__head { display: grid; gap: 8px; margin-bottom: 24px; }
+.auth__title { font-size: 26px; line-height: 30px; } /* display-sm */
+.auth__title:focus:not(:focus-visible) { outline: none; }
+.auth__lede { font: 400 15px/24px var(--font-body); color: var(--ink-2); max-width: 34ch; }
+.auth__envelope { color: var(--teal); display: inline-flex; }
+.auth__fields { display: grid; gap: 16px; } /* space-4 */
+.auth__submit { width: 100%; margin-top: 24px; position: relative; }
+.auth__submit .spin { opacity: 0; animation: spin 700ms linear infinite, authSpinIn 120ms var(--ease-out) 150ms forwards; }
+.auth__submit[aria-busy="true"] > :not(.spin) { transition: opacity 120ms var(--ease-out) 150ms; }
+@keyframes authSpinIn { to { opacity: 1; } }
+.auth__small { margin-top: 12px; font: 400 13px/18px var(--font-body); color: var(--muted); }
+.auth__small .link-btn { font-size: 13px; padding: 0; }
+.auth__foot { margin-top: 24px; padding-top: 20px; box-shadow: inset 0 1px 0 var(--line-soft); display: flex; align-items: center;
+  justify-content: space-between; gap: 12px; flex-wrap: wrap; font: 400 14px/20px var(--font-body); color: var(--muted); }
+
+/* server banner (warn) and the logged-out note (teal) */
+.auth__alert, .auth__note { display: flex; gap: 8px; align-items: flex-start; padding: 12px 16px; border-radius: var(--r-ctl);
+  font: 400 14px/20px var(--font-body); color: var(--ink); animation: authAlertIn 220ms var(--ease-out) both; }
+.auth__alert { background: var(--warn-soft); }
+.auth__alert .field__ico { color: var(--warn-mark); }
+.auth__note { background: var(--teal-soft); }
+.auth__note .field__ico { color: var(--teal); }
+.auth__alert .link-btn { padding: 0; min-height: 20px; font-size: 14px; }
+@keyframes authAlertIn { from { opacity: 0; transform: translateY(4px); filter: blur(2px); } }
+
+/* switching Log in ⇄ Create account: the card glides to its new height, content cross-fades */
+html.vt-auth::view-transition-old(root), html.vt-auth::view-transition-new(root) { animation: none; }
+html.vt-auth::view-transition-group(auth-card) { animation-duration: 220ms; animation-timing-function: var(--ease-in-out); }
+html.vt-auth::view-transition-old(auth-card) { animation: 120ms var(--ease-out) both authOut; }
+html.vt-auth::view-transition-new(auth-card) { animation: 160ms var(--ease-out) both authIn; }
+@keyframes authOut { to { opacity: 0; transform: translateY(-4px); } }
+@keyframes authIn { from { opacity: 0; transform: translateY(4px); } }
+
+/* phones: the card goes flat on the page; 44px targets */
+@media (max-width: 599px) {
+  .auth { justify-items: stretch; gap: 24px; padding: 16px max(20px, env(safe-area-inset-right)) 40px max(20px, env(safe-area-inset-left)); }
+  .auth__brand { justify-content: flex-start; height: 48px; }
+  .auth__card { width: auto; padding: 0; background: none; box-shadow: none; border-radius: 0; }
+  .auth__foot .btn { height: 44px; padding: 0 16px; font-size: 15px; }
+  .auth__alert .link-btn, .auth__small .link-btn { min-height: 44px; }
+}
+@media (max-width: 379px) {
+  .auth__foot { flex-direction: column; align-items: stretch; }
+}
+@media (max-width: 899px) { .auth__submit { height: 48px; } }
+
+/* ---------- account menu (top bar) ---------- */
+.account-btn { display: inline-flex; align-items: center; gap: 8px; height: 32px; padding: 0 6px 0 4px; border: 0; border-radius: var(--r-pill);
+  background: none; color: var(--ink-2); font: 500 13px/1 var(--font-body); position: relative; isolation: isolate; white-space: nowrap; }
+.account-btn::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--surface-2); opacity: 0; transition: opacity 120ms var(--ease-out); z-index: -1; }
+@media (hover: hover) { .account-btn:hover::before { opacity: 1; } }
+.account-btn[aria-expanded="true"]::before { opacity: 1; }
+.account-btn__avatar { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; background: var(--teal-soft); color: var(--teal-strong); font: 600 12px/1 var(--font-body); }
+.account-btn__name { max-width: 14ch; overflow: hidden; text-overflow: ellipsis; }
+.account-menu { min-width: 240px; }
+.account-menu__who { display: grid; gap: 2px; padding: 8px 8px 10px; margin-bottom: 4px; box-shadow: inset 0 -1px 0 var(--line-soft); }
+.account-menu__who b { font: 600 14px/20px var(--font-body); color: var(--ink); }
+.account-menu__who span { font: 400 13px/18px var(--font-body); color: var(--muted); overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 899px) {
+  .account-btn { height: 44px; width: 44px; padding: 0; justify-content: center; }
+  .account-btn__name, .account-btn > svg { display: none; }
+  .account-btn__avatar { width: 28px; height: 28px; }
+  .account-menu button { height: 44px; }
+}
+
+/* the account screens fill the page themselves: no page padding (no extra scroll, no doubled phone margins) */
+main.page:has(> .auth) { padding: 0; }
+.auth__help { margin-top: 16px; font: 400 13px/18px var(--font-body); color: var(--muted); text-align: center; }
+@media (max-width: 599px) { .auth__help { text-align: left; } }

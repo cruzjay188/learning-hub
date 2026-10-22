@@ -100,3 +100,35 @@
 .st { width: 20px; height: 20px; flex: none; display: inline-grid; place-items: center; }
 .st svg { display: block; }
 
+
+/* ---------- field: a labelled text input (accounts today). Spec: design/design-brief-auth.md §5.2 ---------- */
+.field { display: grid; gap: 8px; } /* space-2 */
+.field__label { font: 600 13px/18px var(--font-body); color: var(--ink-2); }
+.field__control { position: relative; }
+.field input { width: 100%; height: 44px; padding: 0 12px; font: 400 15px/1 var(--font-body); color: var(--ink); background: var(--surface);
+  border: 1px solid var(--control); border-radius: var(--r-ctl); transition: border-color 120ms var(--ease-out); }
+@media (hover: hover) { .field input:hover { border-color: var(--muted); } }
+.field input[aria-invalid="true"] { border-color: var(--warn-mark); }
+.field input[readonly] { cursor: progress; }
+.field input:-webkit-autofill { -webkit-text-fill-color: var(--ink); -webkit-box-shadow: 0 0 0 40px var(--surface) inset; box-shadow: 0 0 0 40px var(--surface) inset; caret-color: var(--ink); }
+.field--password input { padding-right: 64px; }
+.field__msg { display: flex; gap: 8px; align-items: flex-start; font: 400 13px/18px var(--font-body); color: var(--muted); }
+.field__msg--err { color: var(--warn); font-weight: 500; animation: fieldMsgIn 160ms var(--ease-out) both; }
+.field__msg--err .field__ico { color: var(--warn-mark); }
+.field__ico { flex: none; margin-top: 1px; }
+@keyframes fieldMsgIn { from { opacity: 0; transform: translateY(-2px); } }
+.field__toggle { position: absolute; right: 4px; top: 4px; height: 36px; padding: 0 10px; border: 0; border-radius: var(--r-item); background: none;
+  font: 600 13px/1 var(--font-body); color: var(--teal-strong); isolation: isolate; }
+.field__toggle::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: var(--teal); opacity: 0; transition: opacity 120ms var(--ease-out); z-index: -1; }
+@media (hover: hover) { .field__toggle:hover::before { opacity: .09; } }
+.field__toggle:active::before { opacity: .15; }
+.field__caps { animation: fieldMsgIn 120ms var(--ease-out) both; }
+.field__rule[data-met="true"] { color: var(--ink-2); }
+.field__rule[data-met="true"] .rule-disc { transform-origin: center; animation: ruleDisc 200ms var(--spring-pop) both; }
+.field__rule[data-met="true"] .rule-check { stroke-dasharray: 1; animation: draw 160ms var(--ease-out) 60ms both; }
+@keyframes ruleDisc { from { transform: scale(.7); } }
+@media (max-width: 899px) {
+  .field input { height: 48px; font-size: 16px; } /* 16px stops iOS zooming in on focus */
+  .field__toggle { height: 40px; }
+  .field__toggle::after { content: ""; position: absolute; inset: -2px -4px; } /* 44px hit area */
+}

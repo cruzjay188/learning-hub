@@ -9,21 +9,45 @@ function unwrap({ data, error }) {
   return data
 }
 
+// One-time notes for the next screen ("You're logged out", "Account created"), kept for this tab only.
+const NOTE = 'hub:auth-note'
+export function setAuthNote(note) { try { sessionStorage.setItem(NOTE, note) } catch { /* storage blocked */ } }
+export function takeAuthNote(match) {
+  try {
+    const note = sessionStorage.getItem(NOTE)
+    if (!note || (match && !match.includes(note))) return null
+    sessionStorage.removeItem(NOTE)
+    return note
+  } catch { return null }
+}
+
 // The name goes into the account's metadata; the database trigger copies it into profiles.
 // Returns { needsConfirmation: true } when the project still has "Confirm email" on.
 export async function register(client, { name, email, password }) {
   const data = unwrap(await client.auth.signUp({ email: email.trim(), password, options: { data: { name: name.trim() } } }))
+  if (data.session) setAuthNote('registered')
   return { needsConfirmation: !data.session }
 }
 
 export async function logIn(client, { email, password }) {
   unwrap(await client.auth.signInWithPassword({ email: email.trim(), password }))
+  setAuthNote('loggedIn')
 }
 
-// Ends the session and removes this browser's copy of the student's progress.
+// Removes this computer's copy of the student's progress FIRST, so a shared lab computer is
+// clean even if the server can't be reached; then ends the session. If the server is down,
+// the session still ends on this computer (scope: 'local').
 export async function logOut(client, userId) {
-  unwrap(await client.auth.signOut())
   forgetLocalData(userId)
+  let reached = true
+  try {
+    const { error } = await client.auth.signOut()
+    if (error) throw error
+  } catch {
+    reached = false
+    await client.auth.signOut({ scope: 'local' }).catch(() => {})
+  }
+  setAuthNote(reached ? 'loggedOut' : 'loggedOutOffline')
 }
 
 // RLS only returns the logged-in student's own profile.

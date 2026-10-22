@@ -1,0 +1,20 @@
+<!-- @dsCard group="Inputs" height=300 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Field — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="ds-stack" style="max-width:360px">
+  <div class="field"><label class="field__label" for="ds-f1">Email</label><div class="field__control"><input id="ds-f1" type="email" value="jeffrey@example.com"></div></div>
+  <div class="field" data-invalid="true"><label class="field__label" for="ds-f2">Email</label><div class="field__control"><input id="ds-f2" type="email" value="jay@exmaple" aria-invalid="true" aria-describedby="ds-f2e"></div><p class="field__msg field__msg--err" id="ds-f2e"><svg class="field__ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/><path d="M8 4.75v3.75"/><circle cx="8" cy="11" r=".9" fill="currentColor" stroke="none"/></svg>Enter an email address like name@example.com.</p></div>
+  <div class="field field--password"><label class="field__label" for="ds-f3">Password</label><div class="field__control"><input id="ds-f3" type="password" value="secret12"><button type="button" class="field__toggle" aria-pressed="false">Show</button></div><p class="field__msg field__rule" data-met="true"><svg class="field__ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="var(--teal)"/><path d="M5 8.2l2 2 4-4.2" stroke="var(--on-teal)"/></svg>At least 6 characters</p></div>
+  <div class="field field--password"><label class="field__label" for="ds-f4">Password</label><div class="field__control"><input id="ds-f4" type="password" value="abc"><button type="button" class="field__toggle" aria-pressed="false">Show</button></div><p class="field__msg field__rule" data-met="false"><svg class="field__ico" width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="8" cy="8" r="6.25"/></svg>At least 6 characters</p></div>
+</div>
+</body>
+</html>
