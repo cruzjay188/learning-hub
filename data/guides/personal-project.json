@@ -1,0 +1,90 @@
+{
+  "id": "personal-project",
+  "code": "Project",
+  "title": "Personal Project (Assessment 5)",
+  "status": "outline",
+  "summary": "Assessment 5: build your own full-stack app. Kickoff is Fri Dec 4 (Judith's Workshop), the deadline is Tue Dec 22 and presentations are Wed Dec 23, with project work time on most afternoons in between. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Plan, build, document and present a complete full-stack app of your own.",
+  "required": [
+    "Build a full-stack app (syllabus: Assessment 5, Personal Project). Deadline Dec 22; presentations Dec 23.",
+    "React + Vite front end with multiple components and pages, client-side routing, forms for creating and updating data, and calls to your Django API (per a previous cohort's guidelines; confirm with instructors)",
+    "Django API back end: models, serializers, views, URLs, authentication and database-backed resources (per a previous cohort's guidelines; confirm with instructors)",
+    "A docker-compose.yml that runs the React front end, Django back end, database and Nginx, so someone can clone and run it (per a previous cohort's guidelines; confirm with instructors)",
+    "User authentication: register, log in, log out, and protected features only when logged in (per a previous cohort's guidelines; confirm with instructors)",
+    "At least 3 full CRUD resources, each with its own model and a real role in the app (per a previous cohort's guidelines; confirm with instructors)",
+    "At least 1 third-party API that fits the app's purpose (per a previous cohort's guidelines; confirm with instructors)",
+    "At least 1 LLM feature tied to the app's purpose (they recommended Gemini) (per a previous cohort's guidelines; confirm with instructors)",
+    "A polished, intentional front-end design: clear layout, navigation, consistent styling, helpful feedback (per a previous cohort's guidelines; confirm with instructors)",
+    "A detailed README.md: description, tech stack, features, install steps, environment variables, Docker, API info, the third-party API, the LLM feature, known issues and future improvements (per a previous cohort's guidelines; confirm with instructors)",
+    "Deployment is ideal but not required (per a previous cohort's guidelines; confirm with instructors)",
+    "A recorded video walkthrough submitted through a Launch Point form. This cohort has live presentations on Dec 23, so confirm which applies (per a previous cohort's guidelines; confirm with instructors)"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Pick your idea before kickoff",
+      "detail": "Choose something you'd actually use, so you'll stay motivated for three weeks. Check it naturally fits auth, 3 CRUD resources, a third-party API and an LLM feature. You don't have an \"own app\" yet, and the instructors put your own app first in homework priority, so starting it early helps everywhere.",
+      "doneWhen": "You have a one-paragraph pitch: what the app does, who it's for and what problem it solves."
+    },
+    {
+      "id": "s2",
+      "title": "Stress-test the plan with /grill-me",
+      "detail": "Let Claude question your idea until the vague parts are gone. Answer the questions yourself; that's where the learning is.",
+      "code": "/grill-me I'm planning my Code Platoon personal project (React + Vite, Django, Postgres, Docker Compose). Here's my pitch: <YOUR PITCH>. Grill me on scope, my 3 CRUD resources, the third-party API and the LLM feature until the plan is clear.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You've answered the grilling and written down your decisions (scope, the 3 resources, the API, the LLM feature)."
+    },
+    {
+      "id": "s3",
+      "title": "Write the planning files",
+      "detail": "Create app_outline/, user_stories.md and api_notes.md in the new project (Netflix is still missing these, so this is good practice). List each CRUD resource with its fields, the user stories, and the endpoints you'll need.",
+      "doneWhen": "All three planning files exist and name the 3 resources, the third-party API and the LLM feature."
+    },
+    {
+      "id": "s4",
+      "title": "Set up the repo and skeleton",
+      "detail": "Make a new repo under cruzjay188 using the curriculum's client/ + server/ + db/ layout. Add .env to .gitignore before the first commit. FS 1 (Dec 3) teaches the Compose setup you'll use here.",
+      "doneWhen": "`docker compose up` starts the database, Django and React on your Mac, and `git check-ignore .env` prints `.env`."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "MVP",
+      "meaning": "Minimum viable product: the smallest version that does the core job. Build it first, polish later."
+    },
+    {
+      "term": "User story",
+      "meaning": "A one-line need: \"As a <user>, I want <goal> so that <reason>.\""
+    },
+    {
+      "term": "CRUD resource",
+      "meaning": "One kind of data users can create, read, update and delete, like recipes."
+    },
+    {
+      "term": "LLM integration",
+      "meaning": "A feature that sends your app's data to an AI model and uses the answer."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Full-Stack project layout",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/0-project-layout/"
+    },
+    {
+      "label": "Previous cohort's Final Assessment guidelines",
+      "url": "https://code-platoon-assignments.github.io/SP-FSE-Final-Assessment-Guidelines/"
+    },
+    {
+      "label": "Docker docs: Compose quickstart",
+      "url": "https://docs.docker.com/compose/gettingstarted/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 240,
+  "sources": [
+    "schedule/syllabus.md (A5: Assessment 5 — Personal Project, Dec 4 kickoff, Dec 22 deadline, presentations Dec 23)",
+    "schedule/schedule.md (Dec 4 Judith's Workshop kickoff; work time Dec 8–22)",
+    "github.com/Code-Platoon-Assignments/SP-FSE-Final-Assessment-Guidelines (index.html; written for the SP-AI-FSE course, possibly an earlier cohort)",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/0-project-layout/"
+  ]
+}

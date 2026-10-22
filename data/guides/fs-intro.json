@@ -1,0 +1,144 @@
+{
+  "id": "fs-intro",
+  "code": "FS-1",
+  "title": "Intro to Full Stack Dev",
+  "status": "full",
+  "summary": "A concepts-only lesson on how a web app works end to end: the front-end, back-end, database and infrastructure layers, and how a request travels from the browser to a server and back (IP, TCP, DNS, HTTP, AJAX, JSON).",
+  "goal": "Trace a user action from the screen to the database and back, naming the HTTP method and status code at each step.",
+  "required": [
+    "Part I: Knowledge Check 1 – Intro to Full Stack (team quiz, FS-Knowledge-Check-1)",
+    "Part II: Knowledge Check 2 – Full Stack Development Breakdown (team quiz, fs-knowledge-check-2)"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read Full Stack Workflow",
+      "detail": "Read the lecture's four layers (front-end, back-end, database, infrastructure) and its \"You Open Instagram\" walkthrough. The point is a mental model, not code.",
+      "doneWhen": "You can say in one sentence what each of the four layers is responsible for."
+    },
+    {
+      "id": "s2",
+      "title": "Learn the web vocabulary",
+      "detail": "IP is WHERE a server is, TCP is HOW the bytes get there reliably, HTTP is WHAT the message says, and AJAX lets a page send requests without reloading. Knowledge Check 1 also covers DNS and JSON. Write one line on each in a topic note such as notes/topics/how-the-web-works.md.",
+      "doneWhen": "Your note explains IP, TCP, DNS, HTTP, AJAX and JSON in your own words."
+    },
+    {
+      "id": "s3",
+      "title": "Take Knowledge Check 1 with your team",
+      "detail": "Open assignments/week-01/FS-Knowledge-Check-1 in VS Code, right-click index.html → Open with Live Server. After each question, discuss why the answer is right or wrong. progress.md shows this done; retake it alone to see what stuck.",
+      "codeLabel": "Browser",
+      "doneWhen": "You finished the quiz and can explain the reasoning behind any answer you missed."
+    },
+    {
+      "id": "s4",
+      "title": "Read Full Stack Breakdown",
+      "detail": "This lecture covers the HTTP conversation, front-end components that depend on data, and the back-end's job of validating and serializing data. Keep its \"Rinse and Repeat\" cycle in mind: request, response, UI update.",
+      "doneWhen": "You can explain why HTTP is called stateless and what serialization means."
+    },
+    {
+      "id": "s5",
+      "title": "Map CRUD to HTTP methods and status codes",
+      "detail": "Make a small table in your topic note: each CRUD action, its HTTP method, and the status codes you'd expect. You'll use this exact mapping in AI-7, when you send requests to Supabase from Postman.",
+      "code": "Create → POST\nRead   → GET\nUpdate → PUT / PATCH\nDelete → DELETE",
+      "codeLabel": "File",
+      "doneWhen": "Your table lists all four actions plus what 2xx, 4xx and 5xx codes mean."
+    },
+    {
+      "id": "s6",
+      "title": "Take Knowledge Check 2 with your team",
+      "detail": "Same Live Server routine in assignments/week-01/fs-knowledge-check-2. It covers HTTP methods and status codes, CRUD, serialization, and front-end vs back-end jobs.",
+      "codeLabel": "Browser",
+      "doneWhen": "Quiz finished, and you discussed every answer you got wrong."
+    },
+    {
+      "id": "s7",
+      "title": "Diagram one request in your Netflix clone",
+      "detail": "The lesson's assignments are conceptual: you should be able to diagram a request flow. Pick one action in Myflix (assignments/week-02/netflix), such as adding a title to My List, and draw it through all the layers in TLDraw or a Mermaid diagram in your notes.",
+      "doneWhen": "Your diagram shows browser → request (method) → Supabase → table → response (status code) → UI update."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Full stack",
+      "meaning": "Understanding every layer of an app (UI, server logic, data and hosting) and how they talk to each other."
+    },
+    {
+      "term": "Front-end",
+      "meaning": "The part users see and click, running in the browser."
+    },
+    {
+      "term": "Back-end",
+      "meaning": "The server code that applies business rules, validates data and talks to the database."
+    },
+    {
+      "term": "IP / TCP",
+      "meaning": "IP finds where a server is; TCP delivers the data there reliably and in order."
+    },
+    {
+      "term": "DNS",
+      "meaning": "The internet's phone book: it turns a name like netflix.com into an IP address."
+    },
+    {
+      "term": "HTTP",
+      "meaning": "The format for web requests and responses; it's stateless, so every request stands on its own."
+    },
+    {
+      "term": "AJAX",
+      "meaning": "Sending a request from JavaScript in the background so the page updates without a full reload."
+    },
+    {
+      "term": "JSON",
+      "meaning": "A text format for data ({\"key\": \"value\"}) that front-ends and back-ends send to each other."
+    },
+    {
+      "term": "CRUD",
+      "meaning": "Create, Read, Update, Delete: the four things almost every app does with data."
+    },
+    {
+      "term": "Status code",
+      "meaning": "The number in a response that tells you what happened: 2xx worked, 4xx your request was wrong, 5xx the server broke."
+    },
+    {
+      "term": "Serialization",
+      "meaning": "Turning data into a format like JSON so it can travel over the network."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Intro to Full Stack Development",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/00-Intro-to-FS/"
+    },
+    {
+      "label": "Curriculum: Full Stack Workflow",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/00-Intro-to-FS/1-fs-workflow/"
+    },
+    {
+      "label": "Curriculum: Full Stack Breakdown",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/00-Intro-to-FS/2-fs-breakdown/"
+    },
+    {
+      "label": "Knowledge Check 1",
+      "url": "https://github.com/Code-Platoon-Assignments/FS-Knowledge-Check-1"
+    },
+    {
+      "label": "Knowledge Check 2",
+      "url": "https://github.com/Code-Platoon-Assignments/fs-knowledge-check-2"
+    },
+    {
+      "label": "TLDraw",
+      "url": "https://www.tldraw.com"
+    }
+  ],
+  "assignments": [
+    "FS-Knowledge-Check-1",
+    "fs-knowledge-check-2"
+  ],
+  "estMinutes": 150,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/00-Intro-to-FS/ (lesson goals, ELOs, conceptual assignments)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/00-Intro-to-FS/assignments/ (Part I KC1, Part II KC2)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/00-Intro-to-FS/1-fs-workflow/ and 2-fs-breakdown/",
+    "https://github.com/Code-Platoon-Assignments/FS-Knowledge-Check-1 and fs-knowledge-check-2 READMEs (topics, Live Server instructions)",
+    "~/Desktop/codeplatoon/progress.md (KC1 and KC2 status)"
+  ]
+}

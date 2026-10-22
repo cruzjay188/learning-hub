@@ -1,0 +1,80 @@
+{
+  "id": "ds-7",
+  "code": "DS 7",
+  "title": "Intro to Computer Memory: Linked Lists",
+  "status": "outline",
+  "summary": "Explains contiguous memory (arrays and Python lists, fast index lookups) versus dynamic memory (pieces anywhere, linked by pointers). A linked list is a chain of nodes, each holding a value and a pointer to the next node. The lesson builds Node and LinkedList classes with add, iterate and remove methods. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build a singly linked list in Python and explain when it beats a regular list.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the lesson",
+      "detail": "Read the Computer Memory and Linked Lists page. The assigned readings (How Computer Memory Works, and pages 44–47 of 'Computer Systems: A Programmer's Perspective') go deeper if you have time.",
+      "doneWhen": "You can explain contiguous vs dynamic memory with one tradeoff each."
+    },
+    {
+      "id": "s2",
+      "title": "Run the curriculum's linked list",
+      "detail": "Save and run this. Note: the lesson's usage example calls ll.addNode, but the method is named add_node, so use add_node.",
+      "code": "class Node:\n    def __init__(self, value):\n        self.value = value\n        self.next = None\n\nclass LinkedList:\n    def __init__(self, head=None):\n        self.head = head\n\n    def add_node(self, value):\n        new_node = Node(value)\n        if self.head is None:\n            self.head = new_node\n            return\n        current = self.head\n        while current.next:\n            current = current.next\n        current.next = new_node\n\n    def iterate(self):\n        current = self.head\n        while current is not None:\n            print(current.value)\n            current = current.next\n\nll = LinkedList()\nfor v in [0, 2, 3, 4]:\n    ll.add_node(v)\nll.iterate()",
+      "codeLabel": "File",
+      "doneWhen": "It prints 0, 2, 3, 4 on separate lines."
+    },
+    {
+      "id": "s3",
+      "title": "Add remove_node and draw it",
+      "detail": "Copy the lesson's remove_node method in, remove 3, and sketch boxes and arrows on paper showing which pointer changed.",
+      "doneWhen": "iterate() prints 0, 2, 4 and your sketch shows 2 now pointing to 4."
+    },
+    {
+      "id": "s4",
+      "title": "Talk through Reverse a Linked List",
+      "detail": "Reverse a Linked List is one of the assignments and a very common interview question. Before coding, say the plan (walk the list with prev, current and next, flipping each arrow) and its Big-O: time O(n), space O(1).",
+      "doneWhen": "You can explain the three-pointer approach out loud."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Contiguous memory",
+      "meaning": "Items stored side by side, so any index is one jump away."
+    },
+    {
+      "term": "Dynamic memory",
+      "meaning": "Items stored anywhere and connected by pointers, so the structure can grow easily."
+    },
+    {
+      "term": "Node",
+      "meaning": "One box in a linked list holding a value and a pointer to the next box."
+    },
+    {
+      "term": "Head",
+      "meaning": "The first node; the only way into the list."
+    },
+    {
+      "term": "Traversal",
+      "meaning": "Walking the list from the head, following next pointers until None."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Computer Memory and Linked Lists",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/07-memory-linked-list/"
+    },
+    {
+      "label": "Python docs: Objects, values and types",
+      "url": "https://docs.python.org/3/reference/datamodel.html#objects-values-and-types"
+    },
+    {
+      "label": "Curriculum: Technical Interviews (whiteboarding)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/07-memory-linked-list/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/07-memory-linked-list/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

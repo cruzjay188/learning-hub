@@ -1,0 +1,80 @@
+{
+  "id": "ds-2",
+  "code": "DS 2",
+  "title": "Understanding Big-O Notation",
+  "status": "outline",
+  "summary": "Big-O describes how an algorithm's work (time complexity) and extra memory (space complexity) grow as the input grows. The lesson walks through O(1), O(log n), O(n), O(n log n), O(n²), O(2ⁿ) and O(n!) and shows how to spot each one from code patterns like loops, nested loops, halving and recursion. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Look at a short function and state its time and space complexity with a one-line reason.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the lesson and its cheat sheet",
+      "detail": "Read the Big-O page through the 'Quick Identification Cheat Sheet'. Notice that time and space are judged separately.",
+      "doneWhen": "You can name the code pattern behind each of the seven complexities."
+    },
+    {
+      "id": "s2",
+      "title": "Feel the difference between O(n) and O(log n)",
+      "detail": "Run this in python3. It uses the curriculum's linear and binary search and counts loop steps on a million sorted numbers.",
+      "code": "def linear_steps(arr, target):\n    steps = 0\n    for item in arr:\n        steps += 1\n        if item == target:\n            break\n    return steps\n\ndef binary_steps(arr, target):\n    left, right, steps = 0, len(arr) - 1, 0\n    while left <= right:\n        steps += 1\n        mid = (left + right) // 2\n        if arr[mid] == target:\n            break\n        elif target < arr[mid]:\n            right = mid - 1\n        else:\n            left = mid + 1\n    return steps\n\nnums = list(range(1_000_000))\nprint(linear_steps(nums, 999_999), binary_steps(nums, 999_999))",
+      "codeLabel": "File",
+      "doneWhen": "Linear search takes about 1,000,000 steps; binary search takes about 20."
+    },
+    {
+      "id": "s3",
+      "title": "Label four functions before peeking",
+      "detail": "Cover the answers and label double_values, print_pairs, create_pairs and fibonacci from the lesson with time and space Big-O. Then check yourself against the page.",
+      "doneWhen": "You got at least 6 of the 8 labels (4 time, 4 space) right."
+    },
+    {
+      "id": "s4",
+      "title": "Practice saying it like an interview",
+      "detail": "In a technical interview you talk through the approach and its Big-O before coding. For each function above, say out loud: 'Time is O(...) because..., space is O(...) because...'. Skim the curriculum's Technical Interviews page for the full process.",
+      "doneWhen": "You can explain each answer out loud in under 30 seconds."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Big-O",
+      "meaning": "A way to describe how work or memory grows as the input gets bigger."
+    },
+    {
+      "term": "Time complexity",
+      "meaning": "How the number of steps grows with input size."
+    },
+    {
+      "term": "Space complexity",
+      "meaning": "How much extra memory the algorithm creates as input grows (not counting the input)."
+    },
+    {
+      "term": "O(log n)",
+      "meaning": "The problem is cut in half each step, so it grows very slowly, like binary search."
+    },
+    {
+      "term": "Call stack space",
+      "meaning": "Memory used by recursive calls waiting to finish; it counts toward space complexity."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Understanding Big-O",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/02-big-o/"
+    },
+    {
+      "label": "Python wiki: Time complexity of built-ins",
+      "url": "https://wiki.python.org/moin/TimeComplexity"
+    },
+    {
+      "label": "Curriculum: Technical Interviews (whiteboarding)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/02-big-o/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/02-big-o/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

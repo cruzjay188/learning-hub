@@ -1,0 +1,72 @@
+{
+  "id": "group-project",
+  "code": "Project",
+  "title": "Group Projects",
+  "status": "outline",
+  "summary": "A team full-stack app built with shared version control. Kickoff is Mon Jan 4, 2027 (Judith's Workshop), the deadline is Wed Jan 13 and presentations are Thu Jan 14, the day before graduation. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build and present a full-stack app as a team, sharing one codebase through branches and pull requests.",
+  "required": [
+    "Build a team full-stack app with version control (syllabus: Group Projects). Deadline Jan 13; presentations Jan 14."
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Practice the feature-branch workflow",
+      "detail": "Teams work on separate branches and merge through pull requests. Pair with a classmate on a throwaway repo: each of you makes a branch, opens a PR, and reviews and merges the other's.",
+      "code": "git switch -c feature/my-change\ngit add .\ngit commit -m \"Add my change\"\ngit push -u origin feature/my-change\ngh pr create --fill",
+      "codeLabel": "Terminal",
+      "doneWhen": "You've opened, reviewed and merged at least one PR on a shared practice repo."
+    },
+    {
+      "id": "s2",
+      "title": "Cause and fix a merge conflict on purpose",
+      "detail": "On the same practice repo, have both of you edit the same line on different branches, then merge. Fixing it calmly now saves a panic in week 15.",
+      "doneWhen": "You've resolved a conflict and `git status` shows a clean working tree."
+    },
+    {
+      "id": "s3",
+      "title": "Bring what you learned from your personal project",
+      "detail": "Write down what worked in your personal project (Compose setup, auth, planning files) and what you'd skip. Ask in #eagle_questions how teams and ideas are chosen, so you know whether to bring a pitch.",
+      "doneWhen": "Your notes have a short \"reuse / avoid\" list and you know how teams are picked."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Feature branch",
+      "meaning": "A branch for one change, kept off main until it's reviewed."
+    },
+    {
+      "term": "Pull request",
+      "meaning": "A GitHub request to merge a branch, where teammates review the code first."
+    },
+    {
+      "term": "Merge conflict",
+      "meaning": "Git can't combine two edits to the same lines, so a person picks the result."
+    },
+    {
+      "term": "Code review",
+      "meaning": "A teammate reads your changes before they merge, to catch bugs and share knowledge."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Full-Stack Applications",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/"
+    },
+    {
+      "label": "Pro Git: Branching workflows",
+      "url": "https://git-scm.com/book/en/v2/Git-Branching-Branching-Workflows"
+    },
+    {
+      "label": "GitHub docs: About pull requests",
+      "url": "https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/proposing-changes-to-your-work-with-pull-requests/about-pull-requests"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 120,
+  "sources": [
+    "schedule/syllabus.md (Group Projects: team full-stack app with version control; Jan 4 kickoff, Jan 13 deadline, presentations Jan 14)",
+    "schedule/schedule.md (Jan 4 Judith's Workshop kickoff; GROUP PROJECTS Jan 5–13)",
+    "No group-project guidelines repo found in Code-Platoon-Assignments (Team-Group-Project and Git-Group-Project are older Phase I git exercises)"
+  ]
+}

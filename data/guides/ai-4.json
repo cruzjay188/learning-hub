@@ -1,0 +1,182 @@
+{
+  "id": "ai-4",
+  "code": "AI-4",
+  "title": "Committing your Progress",
+  "status": "full",
+  "summary": "Give both Claude and your project a memory. You resume, rename and rewind Claude sessions, see your docs in Obsidian, and use Git and GitHub (with the GitHub MCP and /save-project and /grab-project skills) to save and restore your code.",
+  "goal": "Resume and rewind Claude sessions, and push and pull a project to GitHub with your own /save-project and /grab-project skills.",
+  "required": [
+    "Part I: Knowledge Check 7 – Committing Your Context (team quiz)",
+    "Part I: FreeCodeCamp Python Certification – complete 50 steps",
+    "Part I: Set Up Obsidian with Claude Code (obsidian-checklist)",
+    "Part II: Knowledge Check 8 – Committing Your Project (team quiz)",
+    "Part II: Anthropic – Intro to Skills",
+    "Part II: Hang-Man Exercise (agentic-hangman)",
+    "Part II: FreeCodeCamp JavaScript Certification – complete 100 steps"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Practice session memory commands",
+      "detail": "Claude Code saves a checkpoint after every prompt, covering both the conversation and your code. /rewind goes back to one, but it only moves backwards and can't be undone, so be careful.",
+      "code": "/resume\n/rename\nclaude -c\nclaude --name 'name'\n/rewind",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You've resumed an old session from the /resume menu and renamed one so you can find it later."
+    },
+    {
+      "id": "s2",
+      "title": "Finish the Obsidian checklist",
+      "detail": "Your workspace is already an Obsidian vault with the course plugins (per CLAUDE.md), so walk the checklist and confirm each box. Check that all four plugins (Reveal Hidden Files, Terminal, Claude IDE, Settings Profile) are enabled, that Claude runs in the integrated terminal, that /ide shows Obsidian, and that a profile named Default is saved.",
+      "code": "pwd\nclaude\n/ide",
+      "codeLabel": "Terminal",
+      "doneWhen": "Every Final Check box in obsidian-checklist is ticked."
+    },
+    {
+      "id": "s3",
+      "title": "Build the Number Guessing Game",
+      "detail": "Part 3 of the Obsidian checklist sets this up. In a vault, create .claude/agents (project-mapper, qa-agent), resources/ with a wireframe, and a CLAUDE.md you write yourself. Start a named session, check /context, /mcp and /ide, then send the lecture's prompt. It isn't a row in progress.md, so confirm in #eagle_questions whether you need your own copy. The instructor's version is in cohort-notes/phase-III/2-committing-your-progress/bluey-guessing-game.",
+      "code": "claude --name 'number-guessing-game'\n\nI would like to generate a web app that will run a single player number guessing game. All the context you should need is loaded within `CLAUDE.md`. Please make it themed after the children cartoon named \"Bluey\".\n\nDo you have any questions?",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "The game runs, the qa-agent has reviewed it, and you've played it yourself."
+    },
+    {
+      "id": "s4",
+      "title": "Commit context: docs plus a canvas",
+      "detail": "Run project-mapper to write docs, then /init (or ask Claude) to update CLAUDE.md. Then use the lecture's prompt to turn the docs into an Obsidian Canvas tree of files and responsibilities.",
+      "code": "Now lets launch the project-mapper agentand get documentation written for this application.\n\nUsing the documentation available I want you to generate a canvas in this Obisidian Vault for this applications features. I would like to have a visual representation of how this project works and which responsibilities fall undr each file. Something like a tree diagram would be extremely useful. \n\nDo you have any questions?",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "A .canvas file opens in Obsidian and shows which file handles which feature."
+    },
+    {
+      "id": "s5",
+      "title": "Create a GitHub token and add the GitHub MCP",
+      "detail": "Not set up yet. Make a fine-grained Personal Access Token at github.com/settings/personal-access-tokens/new, and give it a name and description that tie it to Claude Code. Treat it like a key card: never paste it into a repo, a note or Slack. Put your token where YOUR_GITHUB_PAT is, then check /mcp.",
+      "code": "claude mcp add-json github \\\n'{\"type\":\"http\",\"url\":\"https://api.githubcopilot.com/mcp\",\"headers\":{\"Authorization\":\"Bearer YOUR_GITHUB_PAT\"}}'",
+      "codeLabel": "Terminal",
+      "doneWhen": "/mcp inside Claude shows github as connected."
+    },
+    {
+      "id": "s6",
+      "title": "Make /save-project and /grab-project skills",
+      "detail": "Skills live in .claude/skills/<name>/SKILL.md, and /<name> runs them. Copy the lecture's two SKILL.md files from cohort-notes/phase-III/2-committing-your-progress/bluey-guessing-game/.claude/skills/. Your workspace already has its own /save-project (it uses the gh CLI, not the GitHub MCP) but has no /grab-project.",
+      "code": "mkdir -p .claude/skills/save-project .claude/skills/grab-project",
+      "codeLabel": "Terminal",
+      "doneWhen": "/skills lists save-project and grab-project (restart Claude if they don't show)."
+    },
+    {
+      "id": "s7",
+      "title": "Push, edit on GitHub, then pull",
+      "detail": "Make a small change and save it with the skill. Then edit a file on GitHub's website and commit it there with a clear title. Run /grab-project to pull that change down.",
+      "code": "/save-project message:Update Claude Code oriented docs to show connections\n/grab-project",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "Your commit shows on GitHub, and the edit you made on GitHub appears in your local files."
+    },
+    {
+      "id": "s8",
+      "title": "Take Knowledge Checks 7 and 8",
+      "detail": "Neither is forked yet. KC7 covers /resume, claude -c, /rename, checkpoints and /rewind, Obsidian vaults and canvas, and the Number Guessing Game. KC8 covers Git vs GitHub, commit, push and pull, PATs and the GitHub MCP, and the save-project and grab-project skills.",
+      "code": "/start-assignment Knowledge-Check-7-Committing-Your-Context\n/start-assignment Knowledge-Check-8-Committing-Your-Project",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "Both are cloned under assignments/week-02/ (this lecture was Tue Oct 13), and you've taken both with your team in Live Server."
+    },
+    {
+      "id": "s9",
+      "title": "Hangman, Intro to Skills, FreeCodeCamp",
+      "detail": "Hangman is done (cruzjay188/hangman). What's left: Anthropic's Intro to Skills, 50 Python steps (Part I) and 100 JavaScript steps (Part II).",
+      "doneWhen": "The Intro to Skills course is complete and FreeCodeCamp shows the new steps."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Checkpoint",
+      "meaning": "A save point Claude Code makes after each prompt, holding both the conversation and your code."
+    },
+    {
+      "term": "/rewind",
+      "meaning": "Go back to an earlier checkpoint. One way only: you can't undo a rewind."
+    },
+    {
+      "term": "Obsidian vault",
+      "meaning": "A folder Obsidian treats as its workspace of linked Markdown notes."
+    },
+    {
+      "term": "Canvas",
+      "meaning": "Obsidian's whiteboard file (.canvas) for drawing notes and files as a diagram."
+    },
+    {
+      "term": "Git vs GitHub",
+      "meaning": "Git saves snapshots (commits) on your machine; GitHub is the website that stores and shares them."
+    },
+    {
+      "term": "Push / pull",
+      "meaning": "Push uploads your commits to GitHub; pull downloads the latest commits from GitHub."
+    },
+    {
+      "term": "PAT (personal access token)",
+      "meaning": "A password-like key that lets a tool act on your GitHub account. Keep it secret."
+    },
+    {
+      "term": "Skill",
+      "meaning": "A folder with a SKILL.md of reusable instructions that you run as a /command."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Saving Your Progress",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/4-saving-your-progress/"
+    },
+    {
+      "label": "Lecture: Thinking about Memory",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/4-saving-your-progress/1-thinking-about-memory/"
+    },
+    {
+      "label": "Lecture: Git + GitHub w/ Claude Code",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/4-saving-your-progress/2-git-github-claude-code/"
+    },
+    {
+      "label": "Obsidian checklist",
+      "url": "https://github.com/Code-Platoon-Assignments/obsidian-checklist"
+    },
+    {
+      "label": "Instructor demo: bluey-guessing-game (skills + agents)",
+      "url": "https://github.com/Code-Platoon-Assignments/eagle_demos_and_notes/tree/main/phase-III/2-committing-your-progress/bluey-guessing-game"
+    },
+    {
+      "label": "GitHub MCP install guide for Claude",
+      "url": "https://github.com/github/github-mcp-server/blob/main/docs/installation-guides/install-claude.md"
+    },
+    {
+      "label": "Anthropic: Intro to Skills",
+      "url": "https://anthropic.skilljar.com/introduction-to-agent-skills"
+    },
+    {
+      "label": "Knowledge Check 7",
+      "url": "https://github.com/Code-Platoon-Assignments/Knowledge-Check-7-Committing-Your-Context"
+    },
+    {
+      "label": "Knowledge Check 8",
+      "url": "https://github.com/Code-Platoon-Assignments/Knowledge-Check-8-Committing-Your-Project"
+    },
+    {
+      "label": "Assignment: agentic-hangman",
+      "url": "https://github.com/Code-Platoon-Assignments/agentic-hangman"
+    }
+  ],
+  "assignments": [
+    "Knowledge-Check-7-Committing-Your-Context",
+    "Knowledge-Check-8-Committing-Your-Project",
+    "obsidian-checklist",
+    "agentic-hangman"
+  ],
+  "estMinutes": 300,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/4-saving-your-progress/ (goals, TLOs, ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/4-saving-your-progress/assignments/ (Part I and Part II list)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/4-saving-your-progress/1-thinking-about-memory/ (session commands, Obsidian, guessing game and canvas prompts)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/4-saving-your-progress/2-git-github-claude-code/ (PAT, GitHub MCP command, SKILL.md files, /save-project example)",
+    "https://github.com/Code-Platoon-Assignments/obsidian-checklist README",
+    "https://github.com/Code-Platoon-Assignments/Knowledge-Check-7 and Knowledge-Check-8 READMEs (topics)",
+    "~/Desktop/codeplatoon/cohort-notes/phase-III/2-committing-your-progress/bluey-guessing-game/.claude/",
+    "~/Desktop/codeplatoon/progress.md and hub/guides/README.md (KC7/KC8 not forked, hangman done, GitHub MCP not set up)"
+  ]
+}

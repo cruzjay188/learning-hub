@@ -1,0 +1,134 @@
+/* Eagle Learning Hub v3 — a ledger, not a dashboard; depth means something, show the change, keep the eye still.
+   Desktop: sticky top bar with tabs + ⌘K. Phone: slim top bar + bottom tab bar.
+   One orange-marked "Up next" action per view; everything else quiet rows on hairlines.
+   Teal = progress / done / focus. Orange = now / next only. */
+:root {
+  --bg: #f3f6f6;
+  --surface: #ffffff;
+  --surface-2: #e9efef;
+  --ink: #0f2427;
+  --ink-2: #2c4144;
+  --muted: #56696c;
+  --line: #d3dddd;
+  --control: #7a8e90;
+  --teal: #1b6b6d;
+  --teal-strong: #12575a;
+  --teal-soft: #d6eae9;
+  --on-teal: #ffffff;
+  --now: #e2560a;
+  --now-ink: #a8400a;
+  --now-soft: #fde6d6;
+  --warn: #7a5300;
+  --warn-mark: #b07d12;
+  --warn-soft: #f8edcc;
+  --code-bg: #0f2427;
+  --code-ink: #dcecea;
+  --code-meta: #8fb1ae;
+  --focus: #12575a;
+  /* v3 depth: rows sit flat on hairlines; things you act on sit one level up; floating layers two or three */
+  --surface-raised: #ffffff;
+  --ring: rgb(15 36 39 / .10);
+  --ring-strong: rgb(15 36 39 / .16);
+  --line-soft: rgb(15 36 39 / .07);
+  --highlight: rgb(255 255 255 / 0);
+  --track: color-mix(in srgb, var(--teal) 16%, transparent);
+  --row-hover: rgb(15 36 39 / .035);
+  --row-sel: color-mix(in srgb, var(--teal) 8%, transparent);
+  --toast-bg: #0f2427; --toast-ink: #f3f6f6; --toast-btn: rgb(255 255 255 / .12); --toast-ok: #8fe0c9;
+  --shadow-ring: 0 0 0 1px var(--ring);
+  --shadow-raise: 0 0 0 1px var(--ring), 0 1px 2px rgb(15 36 39 / .05), 0 2px 6px -2px rgb(15 36 39 / .06);
+  --shadow-raise-hover: 0 0 0 1px var(--ring-strong), 0 2px 4px rgb(15 36 39 / .06), 0 8px 16px -6px rgb(15 36 39 / .12);
+  --shadow-float: 0 0 0 1px var(--ring), 0 4px 8px -2px rgb(15 36 39 / .08), 0 12px 24px -6px rgb(15 36 39 / .16);
+  --shadow-pop: 0 0 0 1px var(--ring), 0 8px 16px -4px rgb(15 36 39 / .10), 0 24px 48px -12px rgb(15 36 39 / .24);
+  --backdrop: rgb(8 20 22 / .32);
+  --btn2-bg: var(--surface); --btn2-press: rgb(15 36 39 / .07);
+  --btn2-shadow: 0 0 0 1px var(--ring-strong), 0 1px 2px rgb(15 36 39 / .06), inset 0 -1px 0 rgb(15 36 39 / .05);
+  --btn2-lift: 0 0 0 1px var(--ring-strong), 0 2px 6px -1px rgb(15 36 39 / .10);
+  --btn1-state: rgb(0 0 0 / .08); --btn1-press: rgb(0 0 0 / .14); --btn1-lift: 0 4px 10px -2px rgb(18 87 90 / .35);
+  --btn1-shadow: inset 0 1px 0 rgb(255 255 255 / .14), inset 0 -1px 0 rgb(0 0 0 / .14), 0 0 0 1px var(--teal-strong), 0 1px 2px rgb(15 36 39 / .18);
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r-xs: 4px; --r-item: 6px; --r-ctl: 8px; --r-code: 10px; --r-panel: 12px; --r-dialog: 16px; --r-pill: 999px;
+  --row: 40px;
+  --bar-h: 56px;
+  /* motion: ease-out for things arriving or leaving, ease-in-out for things moving on screen,
+     spring (8% overshoot) only for small confirmations like a tick */
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out: cubic-bezier(.645, .045, .355, 1);
+  --ease-in: cubic-bezier(.32, 0, .67, 0);
+  --ease-drawer: cubic-bezier(.32, .72, 0, 1);
+  --ease-spring: linear(0, 0.073, 0.242, 0.445, 0.641, 0.806, 0.93, 1.013, 1.061, 1.081, 1.082, 1.072, 1.056, 1.039, 1.023, 1.011, 1.002, 0.997, 0.994, 0.993, 0.993, 0.995, 1);
+  --spring-pop: var(--ease-spring);
+  /* 4% overshoot: sliding thumbs, the next card coming forward */
+  --spring-soft: linear(0, 0.065, 0.211, 0.387, 0.559, 0.708, 0.827, 0.914, 0.974, 1.011, 1.03, 1.038, 1.038, 1.033, 1.027, 1.02, 1.014, 1.008, 1.005, 1.002, 1, 0.999, 0.999, 0.999, 1);
+  --dur-instant: 90ms; --dur-press: 120ms; --dur-micro: 160ms; --dur-ui: 220ms; --dur-move: 280ms; --dur-celebrate: 560ms;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1416; --surface: #111c1f; --surface-2: #172529; --ink: #e2ecec; --ink-2: #c3d2d3; --muted: #93a6a8;
+    --line: #22343a; --control: #5f7a7f; --teal: #5ab6b2; --teal-strong: #8ad3cf; --teal-soft: #173a3b; --on-teal: #04201f;
+    --now: #ff7a33; --now-ink: #ff9b62; --now-soft: #3a2316; --warn: #e9bd5b; --warn-mark: #e3b24a; --warn-soft: #34290f;
+    --code-bg: #071012; --code-ink: #d5e6e4; --code-meta: #84a8a5; --focus: #8ad3cf;
+    --surface-raised: #142226; --ring: rgb(255 255 255 / .08); --ring-strong: rgb(255 255 255 / .13); --line-soft: rgb(255 255 255 / .06);
+    --highlight: rgb(255 255 255 / .05); --track: color-mix(in srgb, var(--teal) 20%, transparent); --row-hover: rgb(255 255 255 / .035); --row-sel: color-mix(in srgb, var(--teal) 10%, transparent);
+    --toast-bg: #1d2c30; --toast-ink: #e2ecec; --toast-btn: rgb(255 255 255 / .08); --toast-ok: #8fe0c9;
+    --shadow-raise: 0 0 0 1px var(--ring), inset 0 1px 0 var(--highlight), 0 1px 2px rgb(0 0 0 / .4);
+    --shadow-raise-hover: 0 0 0 1px var(--ring-strong), inset 0 1px 0 var(--highlight), 0 6px 16px -4px rgb(0 0 0 / .55);
+    --shadow-float: 0 0 0 1px rgb(255 255 255 / .09), inset 0 1px 0 rgb(255 255 255 / .06), 0 8px 24px -4px rgb(0 0 0 / .6);
+    --shadow-pop: 0 0 0 1px rgb(255 255 255 / .10), inset 0 1px 0 rgb(255 255 255 / .07), 0 24px 64px -12px rgb(0 0 0 / .7);
+    --backdrop: rgb(0 0 0 / .55);
+    --btn2-bg: var(--surface-raised); --btn2-press: rgb(255 255 255 / .06);
+    --btn2-shadow: 0 0 0 1px var(--ring-strong), inset 0 1px 0 var(--highlight), 0 1px 2px rgb(0 0 0 / .4);
+    --btn2-lift: 0 0 0 1px var(--ring-strong), 0 4px 10px -2px rgb(0 0 0 / .5);
+    --btn1-state: rgb(255 255 255 / .10); --btn1-press: rgb(0 0 0 / .10); --btn1-lift: 0 4px 12px -2px rgb(90 182 178 / .28);
+    --btn1-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -1px 0 rgb(0 0 0 / .18), 0 0 0 1px rgb(0 0 0 / .4), 0 1px 2px rgb(0 0 0 / .5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1416; --surface: #111c1f; --surface-2: #172529; --ink: #e2ecec; --ink-2: #c3d2d3; --muted: #93a6a8;
+  --line: #22343a; --control: #5f7a7f; --teal: #5ab6b2; --teal-strong: #8ad3cf; --teal-soft: #173a3b; --on-teal: #04201f;
+  --now: #ff7a33; --now-ink: #ff9b62; --now-soft: #3a2316; --warn: #e9bd5b; --warn-mark: #e3b24a; --warn-soft: #34290f;
+  --code-bg: #071012; --code-ink: #d5e6e4; --code-meta: #84a8a5; --focus: #8ad3cf;
+  --surface-raised: #142226; --ring: rgb(255 255 255 / .08); --ring-strong: rgb(255 255 255 / .13); --line-soft: rgb(255 255 255 / .06);
+  --highlight: rgb(255 255 255 / .05); --track: color-mix(in srgb, var(--teal) 20%, transparent); --row-hover: rgb(255 255 255 / .035); --row-sel: color-mix(in srgb, var(--teal) 10%, transparent);
+  --toast-bg: #1d2c30; --toast-ink: #e2ecec; --toast-btn: rgb(255 255 255 / .08); --toast-ok: #8fe0c9;
+  --shadow-raise: 0 0 0 1px var(--ring), inset 0 1px 0 var(--highlight), 0 1px 2px rgb(0 0 0 / .4);
+  --shadow-raise-hover: 0 0 0 1px var(--ring-strong), inset 0 1px 0 var(--highlight), 0 6px 16px -4px rgb(0 0 0 / .55);
+  --shadow-float: 0 0 0 1px rgb(255 255 255 / .09), inset 0 1px 0 rgb(255 255 255 / .06), 0 8px 24px -4px rgb(0 0 0 / .6);
+  --shadow-pop: 0 0 0 1px rgb(255 255 255 / .10), inset 0 1px 0 rgb(255 255 255 / .07), 0 24px 64px -12px rgb(0 0 0 / .7);
+  --backdrop: rgb(0 0 0 / .55);
+    --btn2-bg: var(--surface-raised); --btn2-press: rgb(255 255 255 / .06);
+    --btn2-shadow: 0 0 0 1px var(--ring-strong), inset 0 1px 0 var(--highlight), 0 1px 2px rgb(0 0 0 / .4);
+    --btn2-lift: 0 0 0 1px var(--ring-strong), 0 4px 10px -2px rgb(0 0 0 / .5);
+    --btn1-state: rgb(255 255 255 / .10); --btn1-press: rgb(0 0 0 / .10); --btn1-lift: 0 4px 12px -2px rgb(90 182 178 / .28);
+    --btn1-shadow: inset 0 1px 0 rgb(255 255 255 / .28), inset 0 -1px 0 rgb(0 0 0 / .18), 0 0 0 1px rgb(0 0 0 / .4), 0 1px 2px rgb(0 0 0 / .5);
+  color-scheme: dark;
+}
+@media (max-width: 899px) { :root { --row: 52px; } }
+
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 15px/1.6 var(--font-body); -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 40; background: var(--surface); }
+h1, h2, h3, h4, p, ol, ul, dl, dd { margin: 0; }
+ul, ol { padding: 0; list-style: none; }
+h1, h2, h3 { font-family: var(--font-display); font-weight: 600; text-wrap: balance; letter-spacing: -0.005em; }
+p { text-wrap: pretty; }
+a { color: var(--teal-strong); text-underline-offset: 3px; text-decoration-thickness: 1px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+code, .mono { font-family: var(--font-mono); }
+.num, time { font-variant-numeric: tabular-nums; }
+.sr-only { position: absolute !important; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.muted { color: var(--muted); }
+.skip { position: absolute; left: 12px; top: -100px; z-index: 100; background: var(--surface); padding: 10px 14px; border-radius: var(--r-ctl); }
+.skip:focus { top: calc(8px + env(safe-area-inset-top, 0px)); box-shadow: var(--shadow-pop); }
+[hidden] { display: none !important; }
+

@@ -1,0 +1,26 @@
+<!-- @dsCard group="Time" height=140 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>DayTimeline — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="timeline" style="margin:24px 0 0;max-width:820px"><ol class="track" id="track">
+  <li class="block" data-state="past" data-kind="routine" style="--m:30" data-start="570" data-end="600"><div class="block__bar"></div><p class="block__time">9:30am</p><p class="block__label">Stand Up</p></li>
+  <li class="block" data-state="now" data-kind="lecture" style="--m:270" data-start="600" data-end="870" aria-current="time"><div class="block__bar"></div><p class="block__time">10am</p><p class="block__label"><a href="#">AI-8 Authentication</a></p></li>
+  <li class="block" data-state="next" data-kind="work" style="--m:180" data-start="870" data-end="1050"><div class="block__bar"></div><p class="block__time">2:30pm</p><p class="block__label">Work time</p></li>
+  <li class="block" data-state="next" data-kind="routine" style="--m:30" data-start="1050" data-end="1080"><div class="block__bar"></div><p class="block__time">5:30pm</p><p class="block__label">Team Meet</p></li>
+  <li class="block" data-state="next" data-kind="routine" style="--m:30" data-start="1080" data-end="1110"><div class="block__bar"></div><p class="block__time">6pm</p><p class="block__label">Stand Down</p></li>
+</ol></div>
+<script>
+var t = document.getElementById('track'), b = t.children[1], m = 675;
+var x = b.offsetLeft + ((m - 600) / 270) * b.offsetWidth, n = document.createElement('div');
+n.className = 'nowline'; n.style.left = (x - 1) + 'px'; n.innerHTML = '<span>11:15</span>'; t.appendChild(n);
+</script>
+</body>
+</html>

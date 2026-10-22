@@ -1,0 +1,63 @@
+/* ---------- dialogs, toast ---------- */
+dialog { border: 0; padding: 0; color: var(--ink); background: var(--surface-raised); border-radius: var(--r-dialog); box-shadow: var(--shadow-pop); max-width: calc(100vw - 32px); }
+dialog { opacity: 0; transform: scale(.98);
+  transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out), overlay 150ms allow-discrete, display 150ms allow-discrete; }
+dialog[open] { opacity: 1; transform: none; transition-duration: 220ms; }
+@starting-style { dialog[open] { opacity: 0; transform: translateY(8px) scale(.96); } }
+dialog::backdrop { background: var(--backdrop); opacity: 0; backdrop-filter: blur(2px); transition: opacity 150ms var(--ease-out), overlay 150ms allow-discrete, display 150ms allow-discrete; }
+dialog[open]::backdrop { opacity: 1; transition-duration: 220ms; }
+@starting-style { dialog[open]::backdrop { opacity: 0; } }
+/* ⌘K is opened many times a day, mostly from the keyboard: no animation (the Raycast rule). */
+.palette, .palette::backdrop { transition: none; }
+.palette { width: 640px; margin-top: 12vh; }
+.palette__input { display: flex; align-items: center; gap: 10px; padding: 0 16px; border-bottom: 1px solid var(--line-soft); }
+.palette__input input { flex: 1; height: 56px; border: 0; background: none; font-size: 16px; outline: none; }
+.palette__list { height: min(400px, 60dvh); overflow-y: auto; padding: 6px; scroll-padding: 6px; }
+.pal-group { padding: 10px 10px 4px; font-size: 12px; font-weight: 600; color: var(--muted); }
+.pal-item { position: relative; display: flex; align-items: center; gap: 12px; width: 100%; min-height: 40px; padding: 6px 10px; border: 0; background: none; border-radius: var(--r-ctl); text-align: left; }
+.pal-item[aria-selected="true"] { background: var(--surface-2); box-shadow: inset 2px 0 0 var(--teal); }
+.pal-item__tile { width: 24px; height: 24px; flex: none; display: grid; place-items: center; border-radius: var(--r-item); background: var(--surface-2); color: var(--muted); }
+.pal-item[aria-selected="true"] .pal-item__tile { background: var(--surface); }
+.pal-item__text { flex: 1; min-width: 0; display: flex; align-items: baseline; gap: 8px; }
+.pal-item__title { font-size: 14px; font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: none; max-width: 70%; }
+.pal-item__title mark { background: none; color: var(--teal-strong); font-weight: 600; }
+.pal-item__sub { font-size: 12.5px; color: var(--muted); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; }
+.pal-item__go { display: none; }
+.pal-item[aria-selected="true"] .pal-item__go { display: inline-grid; }
+.palette__foot { display: flex; gap: 14px; align-items: center; padding: 8px 14px; border-top: 1px solid var(--line-soft); font-size: 12px; color: var(--muted); flex-wrap: wrap; }
+.palette__foot .kbd { margin: 0 4px 0 0; }
+.palette__empty { padding: 24px 12px; color: var(--muted); font-size: 14px; }
+.sheet { width: 520px; }
+.sheet__grab { display: none; }
+.sheet__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 14px 12px 10px 20px; }
+.sheet__head h2 { font-size: 20px; }
+.sheet__body { padding: 16px 20px 20px; display: grid; gap: 14px; max-height: 70vh; overflow-y: auto; }
+.sheet__foot { padding: 12px 20px 16px; display: flex; gap: 8px; justify-content: flex-end; border-top: 1px solid var(--line-soft); }
+.cu-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 8px 12px; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.cu-opts { display: inline-flex; border: 1px solid var(--control); border-radius: var(--r-ctl); overflow: hidden; }
+.cu-opts button { height: 36px; padding: 0 12px; border: 0; background: var(--surface); font-size: 13px; font-weight: 500; color: var(--ink-2); }
+.cu-opts button + button { border-left: 1px solid var(--line); }
+.cu-opts button[aria-checked="true"] { background: var(--teal); color: var(--on-teal); }
+.rv-card { text-align: center; padding: 18px 8px; display: grid; gap: 14px; justify-items: center; }
+.rv-card__term { font: 600 26px/1.2 var(--font-display); }
+.rv-card__meaning { color: var(--ink-2); max-width: 46ch; }
+.kbd-list { display: grid; grid-template-columns: auto 1fr; gap: 8px 16px; align-items: center; font-size: 14px; }
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 70;
+  display: flex; align-items: center; gap: 12px; min-height: 44px; max-width: min(440px, calc(100vw - 32px)); padding: 6px 6px 6px 14px;
+  background: var(--toast-bg); color: var(--toast-ink); border-radius: var(--r-panel); font-size: 14px; box-shadow: var(--shadow-float);
+  opacity: 0; transform: translate(-50%, 6px) scale(.98); pointer-events: none;
+  transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out), filter 150ms var(--ease-out); }
+.toast.is-from { transform: translate(-50%, 12px) scale(.96); filter: blur(2px); transition: none; }
+.toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); filter: none; pointer-events: auto; transition-duration: 240ms; }
+.toast.is-swapping > span { animation: swapIn 160ms var(--ease-out) both; }
+.toast__ico { flex: none; display: grid; color: var(--toast-ok); }
+.toast__ico[data-kind="warn"] { color: var(--warn-mark); }
+.toast > span:not(.toast__ico) { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding-right: 8px; }
+.toast button { position: relative; isolation: isolate; flex: none; height: 32px; padding: 0 10px; border: 0; border-radius: var(--r-ctl); background: var(--toast-btn); color: inherit; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 8px; }
+.toast button::before { content: ""; position: absolute; inset: 0; border-radius: inherit; background: rgb(255 255 255 / .06); opacity: 0; transition: opacity 120ms var(--ease-out); z-index: -1; }
+.toast button:hover::before { opacity: 1; }
+.toast button kbd { font: 500 11px var(--font-mono); opacity: .6; }
+
+/* skeleton */
+.sk { background: var(--surface-2); border-radius: 8px; animation: pulse 1.6s var(--ease-in-out) infinite; }
+

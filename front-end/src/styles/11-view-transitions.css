@@ -1,0 +1,55 @@
+/* ---------- view transitions (Chrome 111+, Safari 18+, Firefox 144+; other browsers just switch) ---------- */
+html.vt .bar { view-transition-name: bar; }
+html.vt .tabbar { view-transition-name: tabbar; }
+html.vt .lecbar { view-transition-name: lecbar; }
+::view-transition-group(bar), ::view-transition-group(tabbar) { animation: none; }
+/* drilling into a lecture moves forward (content slides left); leaving it moves back */
+html.vt-fwd::view-transition-old(root) { animation: 130ms var(--ease-out) both vtFadeOut, 280ms var(--ease-in-out) both vtToLeft; }
+html.vt-fwd::view-transition-new(root) { animation: 170ms var(--ease-out) 110ms both vtFadeIn, 280ms var(--ease-in-out) both vtFromRight; }
+html.vt-back::view-transition-old(root) { animation: 90ms var(--ease-out) both vtFadeOut, 280ms var(--ease-in-out) both vtToRight; }
+html.vt-back::view-transition-new(root) { animation: 180ms var(--ease-out) 100ms both vtFadeIn, 280ms var(--ease-in-out) both vtFromLeft; }
+html.vt-tab-fwd::view-transition-old(root) { animation: 120ms var(--ease-out) both vtFadeOut, 120ms var(--ease-out) both vtTabToLeft; }
+html.vt-tab-fwd::view-transition-new(root) { animation: 220ms var(--ease-out) 40ms both vtFadeIn, 220ms var(--ease-out) 40ms both vtTabFromRight; }
+html.vt-tab-back::view-transition-old(root) { animation: 120ms var(--ease-out) both vtFadeOut, 120ms var(--ease-out) both vtTabToRight; }
+html.vt-tab-back::view-transition-new(root) { animation: 220ms var(--ease-out) 40ms both vtFadeIn, 220ms var(--ease-out) 40ms both vtTabFromLeft; }
+@keyframes vtTabToLeft { to { transform: translateX(-12px); } }
+@keyframes vtTabFromRight { from { transform: translateX(12px); } }
+@keyframes vtTabToRight { to { transform: translateX(12px); } }
+@keyframes vtTabFromLeft { from { transform: translateX(-12px); } }
+::view-transition-group(lec-ring) { animation-duration: 280ms; animation-timing-function: var(--ease-in-out); }
+@keyframes vtFadeOut { to { opacity: 0; } }
+@keyframes vtFadeIn { from { opacity: 0; } }
+@keyframes vtToLeft { to { transform: translateX(-24px); } }
+@keyframes vtFromRight { from { transform: translateX(24px); } }
+@keyframes vtToRight { to { transform: translateX(24px); } }
+@keyframes vtFromLeft { from { transform: translateX(-24px); } }
+/* the row you clicked becomes the lecture's title */
+::view-transition-group(lec-title) { animation-duration: 280ms; animation-timing-function: var(--ease-in-out); }
+::view-transition-image-pair(lec-title) { isolation: auto; }
+::view-transition-old(lec-title) { animation: vtFadeOut 140ms var(--ease-out) both; mix-blend-mode: normal; }
+::view-transition-new(lec-title) { animation: vtFadeIn 200ms var(--ease-out) 60ms both; mix-blend-mode: normal; }
+::view-transition-old(lec-title), ::view-transition-new(lec-title) { height: 100%; object-fit: contain; object-position: left center; }
+/* Up next: only the card's content moves (old step fades up and out, the next one rises in);
+   the rest of the page switches at once so nothing ghosts when the card changes height */
+html.vt-swap #upnext .upnext__body { view-transition-name: upnext-body; }
+::view-transition-old(upnext-body) { animation: vtSwapOut 140ms var(--ease-out) both; }
+::view-transition-new(upnext-body) { animation: vtSwapIn 240ms var(--spring-soft) 40ms both; }
+/* the card's height change and everything under it glide instead of jumping */
+html.vt-swap::view-transition-group(*) { animation-duration: 260ms; animation-timing-function: var(--ease-in-out); }
+html.vt-swap::view-transition-group(upnext-body) { overflow: clip; }
+html.vt-rows::view-transition-group(*) { animation-duration: 260ms; animation-timing-function: var(--ease-in-out); }
+html.vt-rows::view-transition-old(root), html.vt-rows::view-transition-new(root) { animation-duration: 180ms; }
+@keyframes vtSwapOut { to { opacity: 0; transform: translateY(-6px); filter: blur(2px); } }
+@keyframes vtSwapIn { from { opacity: 0; transform: translateY(6px) scale(.97); filter: blur(3px); } }
+html.vt-swap::view-transition-old(root) { animation: none; opacity: 0; }
+html.vt-swap::view-transition-new(root) { animation: none; }
+
+/* continuity: an element is held at its old value for one frame */
+.no-tr, .no-tr * { transition: none !important; }
+
+/* keyboard shortcuts act instantly */
+html.instant *, html.instant *::before, html.instant *::after { transition: none !important; animation: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

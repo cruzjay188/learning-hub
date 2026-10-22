@@ -1,0 +1,77 @@
+{
+  "id": "fe-6",
+  "code": "FE 6",
+  "title": "React Router DOM",
+  "status": "outline",
+  "summary": "Adds pages to a single-page app with react-router-dom: createBrowserRouter and RouterProvider set up routes, App becomes a layout that renders child pages through <Outlet />, Link moves between pages without a reload, and a Not Found / error page catches bad URLs. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Set up routes in a React + Vite app with a layout, navigation links and an error page.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read both lessons",
+      "detail": "Read 'Intro to React-Router-Dom' and 'Adding Navigation and Pages', especially 'Understanding the Mental Model'.",
+      "doneWhen": "You can explain what <Outlet /> does in App.jsx."
+    },
+    {
+      "id": "s2",
+      "title": "Build the curriculum's router in a scratch app",
+      "detail": "In a throwaway Vite app, npm install react-router-dom, create src/pages/HomePage.jsx, then add this src/router.jsx and render <RouterProvider router={router} /> in main.jsx.",
+      "code": "import { createBrowserRouter } from \"react-router-dom\";\nimport App from \"./App\";\nimport HomePage from \"./pages/HomePage\";\n\nconst router = createBrowserRouter([\n  {\n    path: \"/\",\n    element: <App />,\n    children: [\n      { index: true, element: <HomePage /> },\n    ],\n  },\n]);\n\nexport default router;",
+      "codeLabel": "File",
+      "doneWhen": "Visiting / shows App's layout with HomePage inside it."
+    },
+    {
+      "id": "s3",
+      "title": "Add an About page and a 404",
+      "detail": "Add an about route, a <Link to=\"/about\"> in App, and an errorElement on the root route. Then visit a made-up URL.",
+      "doneWhen": "Clicking the link switches pages without a full reload, and a bad URL shows your error page."
+    },
+    {
+      "id": "s4",
+      "title": "Imagine routes for Myflix",
+      "detail": "Myflix has one view (assignments/week-02/netflix/src/views/MyList.jsx) and no router. List the pages you'd want (for example /, /lists/:id, /title/:id). This sets up the next lecture on route parameters.",
+      "doneWhen": "You have a list of 3 or more Myflix routes."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Client-side routing",
+      "meaning": "Changing pages in the browser without asking the server for a new HTML page."
+    },
+    {
+      "term": "Router",
+      "meaning": "The config that maps each URL path to a component."
+    },
+    {
+      "term": "Outlet",
+      "meaning": "The spot in a layout where the current child page appears."
+    },
+    {
+      "term": "Index route",
+      "meaning": "The default child page shown at the parent's exact path."
+    },
+    {
+      "term": "Error element",
+      "meaning": "The component shown when a route fails or the URL doesn't match."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Intro to React Router",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-intro-to-react-router/"
+    },
+    {
+      "label": "React Router docs",
+      "url": "https://reactrouter.com/home"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 40,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-intro-to-react-router/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-intro-to-react-router/1-intro-react-router/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-intro-to-react-router/2-adding-router-pages/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/6-intro-to-react-router/assignments/"
+  ]
+}

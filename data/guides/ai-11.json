@@ -1,0 +1,150 @@
+{
+  "id": "ai-11",
+  "code": "AI-11",
+  "title": "Stripe",
+  "status": "full",
+  "summary": "How online payments work with Stripe (Payment Intent, client_secret, Stripe Elements, webhooks), then you direct three Claude Code agents (Supabase, UI, supervisor) to add a one-time donation to your app in test mode.",
+  "goal": "Add a one-time Stripe payment to Myflix (or another project) that works with the 4242 test card, records the result through a webhook, and never puts the secret key in the browser.",
+  "required": [
+    "Part I: Stripe Order of Operations Quiz (partner quiz)",
+    "Part II: Integrate Stripe: in a project (new or the same one you've been working on), implement Stripe functionality for a one-off payment"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Take the partner quiz",
+      "detail": "Part I. One partner reads each question and its four choices; the other answers; the reader reads the answer and the explanation. Swap after question 5. It's a good check of the payment order before you build it.",
+      "doneWhen": "All 10 questions done with a partner, and you can say the order: click → Edge Function → Payment Intent → client_secret → Stripe.js confirms → webhook → database."
+    },
+    {
+      "id": "s2",
+      "title": "Create a Stripe account in test mode",
+      "detail": "Sign up at stripe.com. It asks for business details even for one developer. Stay in test mode (top-left toggle). Find Developers → API keys: the publishable key (pk_test_…) is safe for the browser, the secret key (sk_test_…) is server-only. Never paste the secret key into Claude or front-end code.",
+      "doneWhen": "The dashboard shows Test mode and you can see both test keys."
+    },
+    {
+      "id": "s3",
+      "title": "Plan the donation for Myflix",
+      "detail": "The lesson's prompt is written for a task manager with an Axios instance and React Router. Differences for you: Myflix has no Axios. Ticked's handoff notes say to call Edge Functions with supabase.functions.invoke() in your service file (it sends the user's login token), or npm install axios first. Myflix also has no React Router yet, so decide where the Donate page lives, and only logged-in users should see it. Write the lecture's list down: front end = Donate UI, call to process-donation, Stripe.js confirmation, result states. Back end = process-donation, donations table, stripe-webhook, RLS.",
+      "doneWhen": "You can explain in two sentences what each of the three agents will build, and you've picked the page and the call method."
+    },
+    {
+      "id": "s4",
+      "title": "Do the before-you-submit checklist",
+      "detail": "From the lecture: add STRIPE_SECRET_KEY to Supabase secrets (dashboard: Edge Functions → Secrets, or the CLI). Install the two Stripe packages in front-end/. Make sure Playwright MCP works. Know your Supabase project URL. Ticked's notes add VITE_STRIPE_PUBLIC_KEY (your pk_test_ key) to the front end's env file. STRIPE_WEBHOOK_SECRET comes later (s7).",
+      "code": "cd front-end\nnpm install @stripe/stripe-js @stripe/react-stripe-js\necho 'VITE_STRIPE_PUBLIC_KEY=pk_test_YOUR_PUBLISHABLE_KEY' >> .env.local\ncd ..\nnpx supabase secrets set STRIPE_SECRET_KEY=sk_test_YOUR_SECRET_KEY",
+      "codeLabel": "Terminal",
+      "doneWhen": "npx supabase secrets list shows STRIPE_SECRET_KEY, both packages are in front-end/package.json, and git status doesn't list .env.local."
+    },
+    {
+      "id": "s5",
+      "title": "Paste the multi-agent prompt",
+      "detail": "In Claude in the repo root, /model → Opus, then paste the lecture's prompt word for word. Read it fully first. It runs Phase 1 (Supabase agent), then Phase 2 (UI agent with Playwright), then Phase 3 (a supervisor that writes its own pass criteria and checks that no sk_ key reached the front end). Answer its questions with s6.",
+      "code": "You are orchestrating a multi-agent implementation of a Stripe one-time donation feature \nfor an existing Vite + React / Supabase task manager application. The application already \nhas authentication, RLS policies on existing tables, a Playwright MCP setup, and an Axios \ninstance configured for API calls.\n\nExecute the following three phases in order. Do not begin a new phase until the current \nphase's completion criteria are met.\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nPHASE 1 — SUPABASE AGENT\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSpawn a sub-agent scoped exclusively to the Supabase layer. This agent must not touch \nany front-end files.\n\nThis agent is responsible for:\n\n1. Creating a new Supabase Edge Function named `process-donation` that:\n   - Accepts a POST request with body: { amount: number (in cents), user_id: string }\n   - Validates that the user is authenticated and the amount is a positive integer \n     greater than 0 and no greater than 1,000,000 (i.e. $10,000 max)\n   - Uses STRIPE_SECRET_KEY from Supabase secrets (never hardcoded) to create a \n     Stripe Payment Intent\n   - Returns: { client_secret: string }\n\n2. Creating a `donations` table in the Supabase database with this schema:\n   - id: uuid, primary key, default gen_random_uuid()\n   - user_id: uuid, foreign key referencing auth.users\n   - amount: integer (cents)\n   - stripe_payment_intent_id: text, unique\n   - status: text ('succeeded' or 'failed')\n   - created_at: timestamptz, default now()\n\n3. Creating a Row Level Security policy on `donations` such that:\n   - Users can only SELECT their own rows (user_id = auth.uid())\n   - No user can INSERT directly — inserts come only from the webhook handler\n   - Service role can INSERT and UPDATE\n\n4. Creating a new Supabase Edge Function named `stripe-webhook` that:\n   - Listens for POST requests from Stripe\n   - Validates the Stripe webhook signature using STRIPE_WEBHOOK_SECRET from \n     Supabase secrets\n   - Handles `payment_intent.succeeded`: checks if stripe_payment_intent_id already \n     exists in `donations` (idempotency), and if not, inserts a row with \n     status='succeeded'\n   - Handles `payment_intent.payment_failed`: same idempotency check, inserts with \n     status='failed'\n   - Returns 200 for all handled events, 400 for signature failures\n\nPhase 1 is complete when:\n- Both Edge Functions exist and are deployable without errors\n- The `donations` table exists with the correct schema\n- RLS policies are in place and correct\n- No Stripe secret key appears in any committed file\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nPHASE 2 — UI AGENT\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSpawn a sub-agent scoped exclusively to the React + Vite front end. This agent must \nnot touch any Supabase files, Edge Functions, or database migrations.\n\nThis agent is responsible for:\n\n1. Creating a new React page component at the route `/donate` that:\n   - Is registered in the existing React Router DOM setup\n   - Displays a heading and brief description of the donation feature\n   - Includes amount options (suggested: $5, $10, $25, $50) plus a custom amount \n     input\n   - Embeds a Stripe Elements card input (CardElement) using @stripe/react-stripe-js\n   - Has a \"Donate\" submit button\n\n2. Implementing the payment flow in the donate page:\n   - On submit, use the existing Axios instance to POST to the `process-donation` \n     Edge Function with: { amount: selectedAmountInCents, user_id: currentUser.id }\n   - The current user's id is available from the existing auth context\n   - On receiving { client_secret }, use Stripe.js (stripe.confirmCardPayment) — \n     NOT Axios — to confirm the Payment Intent directly with Stripe\n   - Do not use Axios for the payment confirmation step\n\n3. Rendering clear result states:\n   - On success: display a thank-you message that includes the donation amount\n   - On failure: display a user-friendly error message (no raw Stripe error codes \n     or stack traces visible to the user)\n   - On network error (Edge Function unreachable): display a generic \"something went \n     wrong\" message and a retry option\n\n4. Running Playwright verification after completing the UI. Use the existing \n   Playwright MCP setup to:\n   - Navigate to /donate and confirm the page renders with the expected heading\n   - Confirm the Stripe Elements iframe is present in the DOM\n   - Select the $10 amount option\n   - Complete the card input using Stripe test card: 4242 4242 4242 4242, \n     any future expiry, any CVC\n   - Submit and confirm the success state renders\n   - Reset and use decline card: 4000 0000 0000 0002\n   - Submit and confirm the error state renders with a human-readable message\n\nPhase 2 is complete when:\n- The /donate route renders without errors\n- The Stripe Elements card input is present and functional\n- The Axios call targets the correct Edge Function endpoint\n- Stripe.js (not Axios) is used for payment confirmation\n- All Playwright verification steps pass\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\nPHASE 3 — SUPERVISOR AGENT\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n\nSpawn a sub-agent with read access to all files produced by Phase 1 and Phase 2. \nThis agent must not write new feature code. It may only correct specific failures \nit identifies and document its findings.\n\nThis agent must first define its own passing requirements — before reviewing any \ncode — based on what a correct, secure, production-ready Stripe one-time payment \nintegration looks like. Document these requirements as a numbered list before \nproceeding.\n\nThen review the output of both agents against those requirements, with explicit \nfocus on:\n\n1. API contract alignment: does the UI's Axios call body match exactly what the \n   `process-donation` Edge Function expects? Does it correctly consume \n   { client_secret } from the response?\n\n2. Payment confirmation method: is stripe.confirmCardPayment (Stripe.js) being \n   used for the confirmation step — not a second Axios call?\n\n3. Webhook registration: is the `stripe-webhook` Edge Function URL the one that \n   should be registered in the Stripe dashboard? Document the exact URL.\n\n4. Idempotency: does the webhook handler check for an existing \n   stripe_payment_intent_id before inserting?\n\n5. RLS correctness: can a user read another user's donation rows? Verify the \n   policy logic.\n\n6. Security gate — CRITICAL: scan all front-end files for any occurrence of \n   STRIPE_SECRET_KEY or any string beginning with sk_. If found anywhere in \n   front-end code or committed environment files, this is a hard failure. \n   Report it immediately and halt.\n\nAfter all checks pass, run the full Playwright suite one final time as an \nend-to-end integration verification.\n\nPhase 3 output must include:\n- The supervisor's self-defined passing requirements (numbered list)\n- A pass/fail result for each check above\n- The webhook URL to register in the Stripe dashboard\n- The Playwright suite result (pass or specific failures)\n- If any check failed: which agent is responsible and the exact correction needed\n\nPhase 3 is complete when all checks pass and the final Playwright run succeeds.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "Phase 3 reports a pass/fail list, the webhook URL to register, and a Playwright result."
+    },
+    {
+      "id": "s6",
+      "title": "Answer Claude's questions well",
+      "detail": "From the instructors' handoff notes: it's a Netflix clone, not a task manager, so donations live next to your lists. Use supabase.functions.invoke() (or the Axios you installed) instead of \"the existing Axios instance\". process-donation should take the user from the request's login token, not a user_id in the body (same idea as default auth.uid()). Deploy stripe-webhook with --no-verify-jwt: Stripe has no Supabase login and would get a 401. donations.user_id can point to auth.users or profiles (same ids); follow your list_entries table.",
+      "doneWhen": "Claude's plan uses the JWT for the user, and deploys stripe-webhook with --no-verify-jwt."
+    },
+    {
+      "id": "s7",
+      "title": "Register the webhook, add its secret",
+      "detail": "Stripe → Developers → Webhooks → Add endpoint. URL: the one Phase 3 reported (https://YOUR_PROJECT_REF.supabase.co/functions/v1/stripe-webhook). Events: payment_intent.succeeded and payment_intent.payment_failed. Copy the signing secret (whsec_…) into Supabase secrets, then redeploy the webhook.",
+      "code": "npx supabase secrets set STRIPE_WEBHOOK_SECRET=whsec_YOUR_SIGNING_SECRET\nnpx supabase functions deploy stripe-webhook --no-verify-jwt",
+      "codeLabel": "Terminal",
+      "doneWhen": "The endpoint is listed in Stripe and npx supabase secrets list shows STRIPE_WEBHOOK_SECRET."
+    },
+    {
+      "id": "s8",
+      "title": "Test both cards yourself",
+      "detail": "Log in, open the Donate page, and pay $10 with 4242 4242 4242 4242 (any future date, any CVC). Then try the decline card 4000 0000 0000 0002: you should see a friendly error, not a code. The database should only change because of the webhook.",
+      "code": "cd front-end && npm run dev",
+      "codeLabel": "Terminal",
+      "doneWhen": "Table Editor → donations has a 'succeeded' row for your user, Stripe → Webhooks shows 200 responses, and the decline shows a readable message."
+    },
+    {
+      "id": "s9",
+      "title": "Security check, then commit",
+      "detail": "The supervisor checks for secret keys, and you check too. The search should find nothing. Then commit, push, and add a Stripe row to progress.md.",
+      "code": "grep -rn \"sk_\" front-end/src front-end/.env.local || echo \"no secret keys in the front end\"\ngit status\ngit add -A && git commit -m \"Add Stripe one-time donation\"\ngit push",
+      "codeLabel": "Terminal",
+      "doneWhen": "The grep prints \"no secret keys in the front end\", and the push succeeds with no .env file in it."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Stripe",
+      "meaning": "A payments company. Your app never handles card numbers; it asks Stripe to charge them."
+    },
+    {
+      "term": "Payment Intent",
+      "meaning": "Stripe's record of one attempt to collect a payment, with a status like succeeded or requires_action."
+    },
+    {
+      "term": "client_secret",
+      "meaning": "A one-payment key your Edge Function gets from Stripe and hands to the browser so Stripe.js can confirm that payment."
+    },
+    {
+      "term": "Stripe Elements",
+      "meaning": "Card input boxes hosted by Stripe inside your page (an iframe), so card data never touches your code."
+    },
+    {
+      "term": "Webhook",
+      "meaning": "Stripe calling your server to report what happened. It's the source of truth for your donations table."
+    },
+    {
+      "term": "Idempotent",
+      "meaning": "Safe to run twice: the webhook checks the payment id before inserting, so a repeat event makes no duplicate."
+    },
+    {
+      "term": "Test vs live keys",
+      "meaning": "sk_test_/pk_test_ use fake cards and no real money; sk_live_/pk_live_ charge real cards."
+    },
+    {
+      "term": "Supervisor agent",
+      "meaning": "A reviewer sub-agent that writes its own pass criteria, checks the other agents' work, and blocks if a secret leaked."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Understanding Stripe",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/2-stripe/1-understanding-stripe/"
+    },
+    {
+      "label": "Curriculum: Multi-Agent Architecture (the prompt)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/2-stripe/2-multi-agent-arch/"
+    },
+    {
+      "label": "Curriculum: Stripe assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/2-stripe/assignments/"
+    },
+    {
+      "label": "Stripe Order of Operations Quiz",
+      "url": "https://github.com/Code-Platoon-Assignments/stripe-order-of-operations-quiz"
+    },
+    {
+      "label": "Stripe docs: test cards",
+      "url": "https://docs.stripe.com/testing"
+    },
+    {
+      "label": "Stripe dashboard",
+      "url": "https://dashboard.stripe.com/"
+    }
+  ],
+  "assignments": [
+    "stripe-order-of-operations-quiz"
+  ],
+  "estMinutes": 240,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/2-stripe/assignments/ (Part I quiz, Part II one-off payment)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/2-stripe/1-understanding-stripe/ (account setup, test mode, keys, webhooks)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/2-stripe/2-multi-agent-arch/ (the prompt, quoted, and the Before You Submit checklist)",
+    "Code-Platoon-Assignments/stripe-order-of-operations-quiz README",
+    "github.com/kabeier/Claude-and-auth: demo-kit/backup-ticked-auth/README.md (\"What every student project should look like now\" + \"Ticked vs. what the Beyond Building lessons expect\") (no Axios → supabase.functions.invoke, --no-verify-jwt, user from JWT, VITE_STRIPE_PUBLIC_KEY)",
+    "Local repo assignments/week-02/netflix/package.json: no axios, no react-router-dom"
+  ]
+}

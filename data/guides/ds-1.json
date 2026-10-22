@@ -1,0 +1,72 @@
+{
+  "id": "ds-1",
+  "code": "DS 1",
+  "title": "Searching Algorithms: Binary vs Simple Search",
+  "status": "outline",
+  "summary": "Two ways to find an item: linear (simple) search checks every item one by one, which is O(n); binary search halves a sorted list each step, which is O(log n). Your first look at Big-O and why algorithm choice matters in interviews. The step-by-step arrives when the lecture is published.",
+  "goal": "Write linear and binary search in Python, count their steps, and explain when binary search is allowed and why it's faster.",
+  "required": [],
+  "steps": [
+    {
+      "title": "Read the lesson",
+      "detail": "Read Linear vs Binary Search on the curriculum site. Note binary search's must-have: the list has to be sorted.",
+      "doneWhen": "You can explain the phone-book idea of binary search out loud.",
+      "id": "s1"
+    },
+    {
+      "title": "Trace binary search by hand",
+      "detail": "On paper, search for 30 in [7, 10, 15, 18, 22, 30, 42]. Write left, right and mid for each round. Then count how many checks linear search would need for the same target.",
+      "doneWhen": "Binary search finds 30 in 2 checks; linear search needs 6.",
+      "id": "s2"
+    },
+    {
+      "title": "Skim the assignment README",
+      "detail": "The curriculum lists Linear vs Binary (three scenarios: unsorted numbers, sorted words, last occurrence; each returns the index and the step count) and a Refactor task on your earlier work. Wait for Slack before forking.",
+      "code": "gh api repos/Code-Platoon-Assignments/ds-linear-vs-binary-search/readme -H \"Accept: application/vnd.github.raw\" | less",
+      "codeLabel": "Terminal",
+      "doneWhen": "You know the three scenarios and what each function must return.",
+      "id": "s3"
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Linear search",
+      "meaning": "Check each item in order until you find it. Works on any list."
+    },
+    {
+      "term": "Binary search",
+      "meaning": "Check the middle, throw away the half that can't hold the target, and repeat. Needs a sorted list."
+    },
+    {
+      "term": "Big-O",
+      "meaning": "How the work grows as the input grows, in the worst case."
+    },
+    {
+      "term": "O(n) vs O(log n)",
+      "meaning": "1,000,000 items: up to 1,000,000 checks vs about 20."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Linear vs Binary Search",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/01-binary-vs-linear-search/"
+    },
+    {
+      "label": "Curriculum: DS 1 assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/01-binary-vs-linear-search/assignments/"
+    },
+    {
+      "label": "Assignment: ds-linear-vs-binary-search",
+      "url": "https://github.com/Code-Platoon-Assignments/ds-linear-vs-binary-search"
+    }
+  ],
+  "assignments": [
+    "ds-linear-vs-binary-search"
+  ],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/01-binary-vs-linear-search/ (lesson)",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/01-binary-vs-linear-search/assignments/ (Linear vs Binary, Refactor)",
+    "Code-Platoon-Assignments/ds-linear-vs-binary-search README"
+  ]
+}

@@ -1,0 +1,73 @@
+{
+  "id": "be-3",
+  "code": "BE 3",
+  "title": "Validators & Serializers",
+  "status": "outline",
+  "summary": "Model field validators (rules that keep bad data out of the database), Django REST Framework (DRF) ModelSerializers that turn models into JSON and back, and Django tests that prove your models behave. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Add validators to Django model fields and build DRF serializers that convert model data to and from JSON, with tests that check the rules.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Install Django REST Framework",
+      "detail": "DRF is the add-on that turns Django into a JSON API. Install it in your practice venv from BE 2 and add `'rest_framework'` to INSTALLED_APPS in settings.py.",
+      "code": "cd ~/Desktop/django-practice && source .venv/bin/activate\npip install djangorestframework\npython -c \"import rest_framework; print(rest_framework.VERSION)\"",
+      "codeLabel": "Terminal",
+      "doneWhen": "The import command prints a DRF version number."
+    },
+    {
+      "id": "s2",
+      "title": "Compare SQL CHECKs to Django validators",
+      "detail": "Your Netflix migration has `check (rating between 0 and 5)`. In Django the same rule usually sits on the field as `validators=[MinValueValidator(0), MaxValueValidator(5)]` and runs in Python before saving. Read the validators reference to see the built-in ones.",
+      "doneWhen": "You can write the Django validator version of your Netflix rating rule."
+    },
+    {
+      "id": "s3",
+      "title": "Read the DRF serializers guide",
+      "detail": "Read the opening sections and the ModelSerializer section. With Supabase, the REST API returned JSON for you; in Django, the serializer is the piece that does it.",
+      "doneWhen": "You can explain serializing and deserializing in one sentence each."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Validator",
+      "meaning": "A function that checks a value and raises an error if it breaks a rule."
+    },
+    {
+      "term": "Serializer",
+      "meaning": "DRF code that converts a model object into JSON (and JSON back into a model)."
+    },
+    {
+      "term": "Deserialization",
+      "meaning": "Turning incoming JSON into Python data, validating it on the way in."
+    },
+    {
+      "term": "Django REST Framework",
+      "meaning": "A Django add-on for building JSON APIs."
+    },
+    {
+      "term": "TestCase",
+      "meaning": "Django's test class; each test runs against a fresh test database."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Validators and Serializers",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/3-validators-and-serializers/"
+    },
+    {
+      "label": "Django docs: Validators",
+      "url": "https://docs.djangoproject.com/en/stable/ref/validators/"
+    },
+    {
+      "label": "DRF: Serializers",
+      "url": "https://www.django-rest-framework.org/api-guide/serializers/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/3-validators-and-serializers/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/3-validators-and-serializers/assignments/"
+  ]
+}

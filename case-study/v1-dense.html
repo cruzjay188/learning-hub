@@ -1,0 +1,1327 @@
+<title>Eagle Learning Hub Case Study</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="How I audited, redesigned and systematized the learning hub I use every day at bootcamp.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Case study for the Eagle Learning Hub, written in the hub's own design system.
+   Layout: a reading column with a sticky section rail on the left. The rail IS the hub's StepList:
+   the section you're reading is the orange "now" step, sections you've read tick off in teal.
+   Tokens below are copied 1:1 from hub/index.html (names match the design system). */
+:root {
+  --bg: #f3f6f6;
+  --surface: #ffffff;
+  --surface-2: #e9efef;
+  --ink: #0f2427;
+  --ink-2: #2c4144;
+  --muted: #56696c;
+  --line: #d3dddd;
+  --control: #7a8e90;
+  --teal: #1b6b6d;
+  --teal-strong: #12575a;
+  --teal-soft: #d6eae9;
+  --on-teal: #ffffff;
+  --now: #e2560a;
+  --now-ink: #a8400a;
+  --now-soft: #fde6d6;
+  --warn: #7a5300;
+  --warn-mark: #b07d12;
+  --warn-soft: #f8edcc;
+  --code-bg: #0f2427;
+  --code-ink: #dcecea;
+  --focus: #12575a;
+  --frame: #dfe7e7;
+  --shadow-ring: 0 0 0 1px var(--line), 0 1px 2px rgb(15 36 39 / .04);
+  --shadow-pop: 0 12px 32px rgb(15 36 39 / .18), 0 2px 6px rgb(15 36 39 / .08);
+  --shadow-frame: 0 30px 60px -20px rgb(15 36 39 / .25), 0 0 0 1px var(--line);
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r-ctl: 6px; --r-panel: 10px; --r-code: 8px; --r-frame: 14px;
+  --ease-out: cubic-bezier(.23, 1, .32, 1);
+  --ease-in-out: cubic-bezier(.645, .045, .355, 1);
+  --ease-spring: linear(0, 0.073, 0.242, 0.445, 0.641, 0.806, 0.93, 1.013, 1.061, 1.081, 1.082, 1.072, 1.056, 1.039, 1.023, 1.011, 1.002, 0.997, 0.994, 0.993, 0.993, 0.995, 1);
+  --dur-press: 140ms; --dur-micro: 180ms; --dur-ui: 240ms; --dur-move: 320ms;
+  --k: 1; /* motion-lab speed multiplier: 1 normal, 4 = 0.25x */
+  --bar-h: 56px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1416; --surface: #111c1f; --surface-2: #172529; --ink: #e2ecec; --ink-2: #c3d2d3; --muted: #93a6a8;
+    --line: #22343a; --control: #5f7a7f; --teal: #5ab6b2; --teal-strong: #8ad3cf; --teal-soft: #173a3b; --on-teal: #04201f;
+    --now: #ff7a33; --now-ink: #ff9b62; --now-soft: #3a2316; --warn: #e9bd5b; --warn-mark: #e3b24a; --warn-soft: #34290f;
+    --code-bg: #071012; --code-ink: #d5e6e4; --focus: #8ad3cf; --frame: #1a292d;
+    --shadow-ring: 0 0 0 1px var(--line);
+    --shadow-pop: 0 12px 32px rgb(0 0 0 / .5), 0 2px 6px rgb(0 0 0 / .3);
+    --shadow-frame: 0 30px 60px -20px rgb(0 0 0 / .7), 0 0 0 1px var(--line);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1416; --surface: #111c1f; --surface-2: #172529; --ink: #e2ecec; --ink-2: #c3d2d3; --muted: #93a6a8;
+  --line: #22343a; --control: #5f7a7f; --teal: #5ab6b2; --teal-strong: #8ad3cf; --teal-soft: #173a3b; --on-teal: #04201f;
+  --now: #ff7a33; --now-ink: #ff9b62; --now-soft: #3a2316; --warn: #e9bd5b; --warn-mark: #e3b24a; --warn-soft: #34290f;
+  --code-bg: #071012; --code-ink: #d5e6e4; --focus: #8ad3cf; --frame: #1a292d;
+  --shadow-ring: 0 0 0 1px var(--line);
+  --shadow-pop: 0 12px 32px rgb(0 0 0 / .5), 0 2px 6px rgb(0 0 0 / .3);
+  --shadow-frame: 0 30px 60px -20px rgb(0 0 0 / .7), 0 0 0 1px var(--line);
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html { scroll-padding-top: calc(var(--bar-h) + 24px); -webkit-text-size-adjust: 100%; }
+body { background: var(--bg); color: var(--ink-2); font: 400 16px/1.6 var(--font-body); -webkit-font-smoothing: antialiased; }
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 60; background: var(--surface); }
+h1, h2, h3, h4 { font-family: var(--font-display); font-weight: 600; color: var(--ink); margin: 0; text-wrap: balance; letter-spacing: -.005em; }
+p { margin: 0; }
+a { color: var(--teal-strong); text-underline-offset: 3px; }
+button { font: inherit; cursor: pointer; color: inherit; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+.mono { font-family: var(--font-mono); }
+.num { font-variant-numeric: tabular-nums; }
+.sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.ext::after { content: " ↗"; }
+
+/* ---------- top bar ---------- */
+.bar { position: sticky; top: env(safe-area-inset-top, 0px); z-index: 50; height: var(--bar-h);
+  background: color-mix(in srgb, var(--surface) 92%, transparent); backdrop-filter: saturate(1.4) blur(12px); -webkit-backdrop-filter: saturate(1.4) blur(12px);
+  border-bottom: 1px solid var(--line); }
+.bar__in { height: 100%; max-width: 1180px; margin: 0 auto; display: flex; align-items: center; gap: 16px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.brand { display: flex; align-items: center; gap: 10px; color: var(--ink); text-decoration: none; min-width: 0; }
+.brand b { font: 600 17px/1 var(--font-display); white-space: nowrap; }
+.brand span { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.bar__end { margin-left: auto; display: flex; align-items: center; gap: 4px; }
+.bar__progress { position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--teal); transform-origin: left; transform: scaleX(var(--read, 0)); }
+.toggle { display: inline-flex; align-items: center; gap: 8px; height: 36px; padding: 0 10px; border: 0; border-radius: var(--r-ctl); background: none; font-size: 13px; font-weight: 500; color: var(--ink-2); }
+.toggle:hover { background: var(--surface-2); }
+.toggle i { width: 28px; height: 16px; border-radius: 8px; background: var(--control); position: relative; transition: background-color var(--dur-micro) var(--ease-out); }
+.toggle i::after { content: ""; position: absolute; top: 2px; left: 2px; width: 12px; height: 12px; border-radius: 50%; background: var(--surface); transition: transform var(--dur-micro) var(--ease-out); }
+.toggle[aria-pressed="true"] i { background: var(--teal); }
+.toggle[aria-pressed="true"] i::after { transform: translateX(12px); }
+.bar a.toggle { text-decoration: none; color: var(--teal-strong); }
+
+/* ---------- page grid ---------- */
+.page { max-width: 1180px; margin: 0 auto; display: grid; grid-template-columns: 200px minmax(0, 1fr); column-gap: 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 0 96px; }
+main { min-width: 0; max-width: 880px; }
+
+/* section rail = the hub's StepList */
+.rail { position: sticky; top: calc(var(--bar-h) + 40px); align-self: start; margin-top: 64px; }
+.rail p { font-size: 12px; color: var(--muted); margin: 0 0 12px; }
+.rail ol { list-style: none; margin: 0; padding: 0; }
+.rail li { position: relative; }
+.rail li:not(:last-child)::before, .rail li:not(:last-child)::after { content: ""; position: absolute; left: 11px; top: 26px; bottom: -2px; width: 2px; background: var(--line); }
+.rail li:not(:last-child)::after { background: color-mix(in srgb, var(--teal) 55%, var(--line)); transform: scaleY(0); transform-origin: top; transition: transform var(--dur-move) var(--ease-in-out); }
+.rail li[data-state="done"]::after { transform: scaleY(1); }
+.rail a { display: flex; align-items: center; gap: 10px; min-height: 36px; padding: 2px 0; font-size: 13.5px; line-height: 1.3; color: var(--muted); text-decoration: none; }
+.rail a:hover { color: var(--ink); }
+.mk { position: relative; z-index: 1; flex: none; width: 24px; height: 24px; border-radius: 50%; border: 1.5px solid var(--control); background: var(--bg);
+  display: grid; place-items: center; font: 500 10.5px var(--font-mono); color: var(--muted);
+  transition: background-color var(--dur-micro) var(--ease-out), border-color var(--dur-micro) var(--ease-out), box-shadow var(--dur-micro) var(--ease-out); }
+.mk > * { grid-area: 1 / 1; }
+.mk .n { transition: opacity 120ms var(--ease-out), transform 160ms var(--ease-out), filter 120ms var(--ease-out); }
+.mk svg { opacity: 0; transition: opacity 80ms linear; }
+.mk svg path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset 240ms var(--ease-out) 60ms; }
+li[data-state="done"] .mk { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+li[data-state="done"] .mk .n { opacity: 0; transform: scale(.6); filter: blur(2px); }
+li[data-state="done"] .mk svg { opacity: 1; }
+li[data-state="done"] .mk svg path { stroke-dashoffset: 0; }
+li[data-state="now"] .mk { border-color: var(--now); color: var(--now-ink); box-shadow: 0 0 0 3px var(--now-soft); }
+li[data-state="now"] a { color: var(--ink); font-weight: 600; }
+
+/* ---------- type + sections ---------- */
+.eyebrow { font: 500 12.5px var(--font-mono); color: var(--muted); letter-spacing: .02em; }
+.eyebrow b { color: var(--now-ink); font-weight: 500; }
+section { padding-top: 96px; }
+.s-head { display: grid; gap: 10px; margin-bottom: 28px; }
+.s-head h2 { font-size: clamp(28px, 4vw, 36px); line-height: 1.12; }
+.s-head p { max-width: 64ch; font-size: 17px; line-height: 1.6; }
+h3 { font-size: 21px; line-height: 1.25; }
+.prose { display: grid; gap: 14px; max-width: 66ch; }
+.prose strong { color: var(--ink); font-weight: 600; }
+.caption { font-size: 13.5px; color: var(--muted); line-height: 1.5; }
+.callout { display: flex; gap: 12px; padding: 14px 16px; border-radius: var(--r-ctl); background: var(--surface-2); font-size: 14.5px; color: var(--ink-2); max-width: 70ch; }
+.callout strong { color: var(--ink); }
+.callout svg { flex: none; margin-top: 3px; color: var(--teal-strong); }
+
+/* ---------- hero ---------- */
+.hero { padding-top: 64px; }
+.hero__title { margin-top: 18px; font-size: clamp(48px, 9vw, 104px); line-height: .95; letter-spacing: -.02em; }
+.hero__title em { font-style: normal; color: var(--now-ink); }
+.hero__lede { margin-top: 22px; font-size: clamp(17px, 2vw, 20px); line-height: 1.55; max-width: 60ch; color: var(--ink-2); }
+.hero__lede strong { color: var(--ink); font-weight: 600; }
+.facts { margin: 32px 0 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: 1px solid var(--line); }
+.facts > div { padding: 12px 16px 0 0; display: grid; gap: 2px; align-content: start; }
+.facts dt { font-size: 12.5px; color: var(--muted); }
+.facts dd { margin: 0; font-size: 14px; line-height: 1.45; color: var(--ink); font-weight: 500; }
+.hero__cta { margin-top: 28px; display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+
+/* buttons (hub Button) */
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; height: 40px; padding: 0 16px;
+  border-radius: var(--r-ctl); font-weight: 600; font-size: 14px; white-space: nowrap; text-decoration: none;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+  transition-property: background-color, border-color, transform; transition-duration: var(--dur-press); transition-timing-function: var(--ease-out); }
+.btn:hover { border-color: var(--control); }
+.btn:active { transform: scale(.97); }
+.btn--primary { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+.btn--primary:hover { background: var(--teal-strong); border-color: var(--teal-strong); }
+.btn--sm { height: 32px; padding: 0 12px; font-size: 13px; }
+.btn--quiet { border-color: transparent; background: transparent; color: var(--teal-strong); padding: 0 10px; }
+.btn--quiet:hover { background: var(--surface-2); border-color: transparent; }
+
+/* metrics ledger */
+.metrics { margin-top: 56px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ink); }
+.metric { padding: 16px 20px 0 0; display: grid; gap: 6px; align-content: start; }
+.metric + .metric { padding-left: 20px; border-left: 1px solid var(--line); }
+.metric__k { font-size: 13px; color: var(--muted); }
+.metric__v { font: 500 26px/1.1 var(--font-mono); color: var(--ink); font-variant-numeric: tabular-nums; letter-spacing: -.02em; white-space: nowrap; }
+.metric__v s { text-decoration: none; color: var(--muted); }
+.metric__v .arr { color: var(--control); margin: 0 4px; font-size: .8em; }
+.metric__v small { font-size: .6em; color: var(--muted); }
+.metric__n { font-size: 13px; line-height: 1.45; color: var(--ink-2); }
+.metric__tag { justify-self: start; font: 500 11px var(--font-mono); color: var(--warn); background: var(--warn-soft); padding: 1px 6px; border-radius: 4px; }
+
+/* ---------- device frames ---------- */
+.stage { margin-top: 56px; position: relative; }
+.browser { border-radius: var(--r-frame); background: var(--frame); box-shadow: var(--shadow-frame); overflow: hidden; }
+.browser__top { height: 36px; display: flex; align-items: center; gap: 7px; padding: 0 14px; }
+.browser__top i { width: 10px; height: 10px; border-radius: 50%; background: color-mix(in srgb, var(--control) 55%, var(--frame)); }
+.browser__url { margin: 0 auto; transform: translateX(-20px); font: 500 11.5px var(--font-mono); color: var(--muted); background: color-mix(in srgb, var(--surface) 70%, var(--frame)); padding: 3px 14px; border-radius: 6px; max-width: 60%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.screen { background: var(--bg); position: relative; }
+.stage__hint { margin-top: 18px; display: flex; gap: 8px; align-items: center; font-size: 13.5px; color: var(--muted); }
+.stage__hint .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--now); box-shadow: 0 0 0 3px var(--now-soft); flex: none; }
+
+/* live Today mock (hub classes, scoped) */
+.app-bar { height: 48px; display: flex; align-items: center; gap: 22px; padding: 0 24px; background: var(--surface); border-bottom: 1px solid var(--line); font-size: 13.5px; }
+.app-bar b { font: 600 15px var(--font-display); color: var(--ink); display: flex; align-items: center; gap: 8px; }
+.app-bar .tab { color: var(--muted); font-weight: 500; position: relative; height: 48px; display: flex; align-items: center; }
+.app-bar .tab[aria-current] { color: var(--ink); }
+.app-bar .tab[aria-current]::after { content: ""; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--teal); }
+.app-bar .save { margin-left: auto; font-size: 12px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.app-bar .save::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: var(--teal); }
+.app { display: grid; grid-template-columns: minmax(0, 1fr) 236px; gap: 40px; padding: 28px 28px 32px; }
+.app__date { font-size: 34px; line-height: 1.05; }
+.app__meta { margin-top: 6px; font-size: 13px; color: var(--muted); }
+.app__meta b { color: var(--ink-2); font-weight: 600; }
+.timeline { margin-top: 34px; position: relative; }
+.track { display: flex; gap: 3px; }
+.block { flex: var(--m) 0 0; min-width: 0; position: relative; }
+.block__bar { height: 7px; border-radius: 4px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); }
+.block[data-state="past"] .block__bar { background: color-mix(in srgb, var(--teal) 55%, var(--surface-2)); box-shadow: none; }
+.block[data-state="now"] .block__bar { background: var(--surface); box-shadow: inset 0 0 0 2px var(--now); }
+.block__time { margin-top: 8px; font: 500 11px var(--font-mono); color: var(--muted); }
+.block__label { font-size: 12.5px; font-weight: 600; color: var(--ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; padding-right: 6px; }
+.block[data-state="past"] .block__label { color: var(--muted); }
+.nowline { position: absolute; top: -16px; width: 2px; height: 26px; background: var(--now); border-radius: 1px; }
+.nowline span { position: absolute; bottom: 100%; left: 50%; transform: translateX(-50%); font: 600 10.5px var(--font-mono); color: var(--now-ink); }
+
+.upnext { margin-top: 26px; position: relative; background: var(--surface); border-radius: var(--r-panel); box-shadow: var(--shadow-ring); padding: 20px 22px 18px 26px; }
+.upnext__rule { position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: var(--r-panel) 0 0 var(--r-panel); background: var(--now); }
+.upnext__eyebrow { font-size: 12.5px; color: var(--now-ink); font-weight: 600; display: flex; flex-wrap: wrap; gap: 0 6px; }
+.upnext__eyebrow u { text-underline-offset: 3px; }
+.upnext__title { margin-top: 6px; font-size: 22px; line-height: 1.25; }
+.upnext__detail { margin-top: 6px; font-size: 14px; color: var(--ink-2); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.donewhen { margin-top: 12px; display: flex; gap: 8px; font-size: 13.5px; color: var(--ink-2); }
+.donewhen svg { flex: none; margin-top: 3px; color: var(--teal-strong); }
+.donewhen b { color: var(--teal-strong); font-weight: 600; }
+.upnext__actions { margin-top: 16px; display: flex; align-items: center; gap: 10px 14px; flex-wrap: wrap; }
+.upnext__left { margin-left: auto; font-size: 12.5px; color: var(--muted); }
+.upnext__body.is-leaving { opacity: 0; transform: translateY(-4px); transition: opacity 140ms var(--ease-out), transform 140ms var(--ease-out); }
+.upnext__body.is-entering { animation: swapIn 280ms var(--ease-out) both; }
+@keyframes swapIn { from { opacity: 0; transform: translateY(8px); filter: blur(3px); } }
+
+.side h4 { font-size: 15px; display: flex; justify-content: space-between; align-items: baseline; }
+.side h4 span { font: 400 12px var(--font-body); color: var(--muted); }
+.goal-days { margin-top: 12px; display: flex; align-items: center; gap: 7px; }
+.gd { display: grid; justify-items: center; gap: 4px; font-size: 10.5px; color: var(--muted); }
+.gd i { width: 22px; height: 22px; border-radius: 50%; border: 1.5px solid var(--control); display: grid; place-items: center; color: transparent; }
+.gd[data-on="true"] i { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+.gd[data-today="true"] { color: var(--now-ink); font-weight: 600; }
+.gd[data-today="true"] i { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--now); }
+.gd--we i { width: 13px; height: 13px; margin-block: 4.5px; }
+.gd.is-new i { animation: gdPop calc(320ms * var(--k)) var(--ease-spring) both; }
+.goal-days.is-met .gd[data-on="true"] i { animation: gdPop calc(360ms * var(--k)) var(--ease-spring) both; animation-delay: calc(var(--i) * 45ms * var(--k)); }
+@keyframes gdPop { from { transform: scale(.7); } }
+.goal-sep { width: 1px; height: 26px; background: var(--line); }
+.side__note { margin-top: 10px; font-size: 13px; color: var(--ink-2); }
+.side__note b { color: var(--ink); }
+.side hr { border: 0; border-top: 1px solid var(--line); margin: 20px 0; }
+.course-bar { height: 6px; border-radius: 3px; background: var(--surface-2); box-shadow: inset 0 0 0 1px var(--line); overflow: hidden; margin: 10px 0 8px; }
+.course-bar span { display: block; height: 100%; background: var(--teal); clip-path: inset(0 calc(100% - var(--w, 0%)) 0 0 round 3px); transition: clip-path 480ms var(--ease-in-out); }
+
+
+/* toast (hub Toast) */
+.toast { position: fixed; left: 50%; bottom: calc(24px + env(safe-area-inset-bottom, 0px)); z-index: 70; display: flex; align-items: center; gap: 14px;
+  padding: 10px 12px 10px 16px; border-radius: 10px; background: var(--ink); color: var(--bg); font-size: 14px; box-shadow: var(--shadow-pop);
+  max-width: calc(100vw - 32px); opacity: 0; transform: translate(-50%, 6px) scale(.98); pointer-events: none;
+  transition: opacity 150ms var(--ease-out), transform 150ms var(--ease-out); }
+.toast.is-from { transform: translate(-50%, 16px) scale(.96); transition: none; }
+.toast[data-show="true"] { opacity: 1; transform: translate(-50%, 0); pointer-events: auto; transition-duration: 260ms; }
+.toast span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.toast button { border: 0; background: none; color: var(--bg); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; min-height: 32px; padding: 0 4px; flex: none; }
+
+/* ---------- TL;DR ledger ---------- */
+.ledger { margin: 0; border-top: 1px solid var(--line); }
+.ledger > div { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line); }
+.ledger dt { font: 600 16px/1.5 var(--font-display); color: var(--ink); }
+.ledger dd { margin: 0; max-width: 64ch; }
+.ledger dd strong { color: var(--ink); font-weight: 600; }
+
+/* ---------- before / after ---------- */
+.ba { position: relative; border-radius: var(--r-frame); overflow: hidden; box-shadow: var(--shadow-frame); background: var(--surface); --pos: 50%; aspect-ratio: 1360 / 1100; max-width: 100%; }
+.ba img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; object-position: top; user-select: none; -webkit-user-drag: none; }
+.ba__after { clip-path: inset(0 0 0 var(--pos)); }
+.ba__line { position: absolute; top: 0; bottom: 0; left: var(--pos); width: 2px; margin-left: -1px; background: var(--ink); pointer-events: none; }
+.ba__knob { position: absolute; top: 50%; left: 50%; width: 40px; height: 40px; margin: -20px 0 0 -20px; border-radius: 50%; background: var(--ink); color: var(--bg); display: grid; place-items: center; box-shadow: var(--shadow-pop); transition: transform var(--dur-press) var(--ease-out); }
+.ba__range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; touch-action: pan-y; }
+.ba__range:focus-visible ~ .ba__line .ba__knob { outline: 2px solid var(--focus); outline-offset: 3px; }
+.ba__range:active ~ .ba__line .ba__knob { transform: scale(.92); }
+.ba__tag { position: absolute; bottom: 14px; font: 500 12px var(--font-mono); padding: 4px 8px; border-radius: 5px; background: var(--ink); color: var(--bg); pointer-events: none; }
+.ba__tag--l { left: 14px; } .ba__tag--r { right: 14px; background: var(--teal); color: var(--on-teal); }
+.changes { margin-top: 28px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 28px; counter-reset: c; }
+.changes li { list-style: none; display: grid; gap: 6px; font-size: 14.5px; }
+.changes h3 { font-size: 17px; display: flex; gap: 10px; align-items: baseline; }
+.changes h3::before { counter-increment: c; content: counter(c); font: 500 12px var(--font-mono); color: var(--muted); }
+.changes ol, .changes { padding: 0; margin-block: 28px 0; }
+.phones { margin-top: 48px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; max-width: 640px; }
+.phones figure { margin: 0; display: grid; gap: 12px; }
+.phones .shot { position: relative; border-radius: 28px; padding: 7px; background: var(--ink); box-shadow: var(--shadow-ring); }
+.phones .shot img { display: block; width: 100%; border-radius: 22px; }
+.fold { position: absolute; left: -10px; right: -10px; height: 0; border-top: 2px dashed var(--now); }
+.fold span { position: absolute; right: 0; top: 4px; font: 600 10.5px var(--font-mono); color: var(--now-ink); background: var(--bg); padding: 1px 4px; border-radius: 3px; }
+.target { position: absolute; left: 7px; right: 7px; border: 2px solid var(--teal); border-radius: 8px; background: color-mix(in srgb, var(--teal) 10%, transparent); }
+
+/* ---------- context ---------- */
+.jobs { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--line); margin-top: 32px; }
+.job { padding: 18px 20px 4px 0; display: grid; gap: 8px; align-content: start; }
+.job + .job { padding-left: 20px; border-left: 1px solid var(--line); }
+.job q { font: 600 20px/1.25 var(--font-display); color: var(--ink); quotes: "“" "”"; }
+.job p { font-size: 14px; }
+.constraints { margin-top: 36px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.constraints li { list-style: none; display: flex; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.constraints li::before { content: ""; flex: none; width: 6px; height: 6px; margin-top: 9px; border-radius: 50%; background: var(--control); }
+.constraints { padding: 0; }
+.scale-row { margin-top: 28px; display: flex; flex-wrap: wrap; gap: 8px 28px; font-size: 14px; color: var(--muted); }
+.scale-row b { font: 500 20px var(--font-mono); color: var(--ink); margin-right: 6px; font-variant-numeric: tabular-nums; }
+
+/* ---------- process ---------- */
+.proc { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.proc li { display: grid; grid-template-columns: 34px minmax(0, 1fr) 150px; gap: 16px; padding: 16px 0; border-bottom: 1px solid var(--line); align-items: start; }
+.proc .n { font: 500 13px/24px var(--font-mono); color: var(--muted); }
+.proc h3 { font-size: 18px; }
+.proc p { margin-top: 4px; font-size: 14.5px; max-width: 60ch; }
+.proc .out { margin-top: 8px; display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; height: 24px; padding: 0 8px; border-radius: 999px; font-size: 12px; font-weight: 500; background: var(--surface-2); color: var(--ink-2); white-space: nowrap; }
+.chip--mono { font-family: var(--font-mono); }
+.who { justify-self: end; display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.who .chip[data-who="me"] { background: var(--teal-soft); color: var(--teal-strong); }
+.loop { margin-top: 28px; display: flex; flex-wrap: wrap; align-items: center; gap: 10px; font-size: 14px; color: var(--ink-2); }
+.loop .chip { height: 30px; padding: 0 12px; font-size: 13px; background: var(--surface); box-shadow: var(--shadow-ring); }
+.loop svg { color: var(--control); }
+
+/* ---------- audit ---------- */
+.dumb { margin-top: 8px; }
+.dumb__axis, .dumb__row { display: grid; grid-template-columns: minmax(0, 220px) minmax(0, 1fr) 52px; gap: 16px; align-items: center; }
+.dumb__axis { font: 500 11px var(--font-mono); color: var(--muted); padding-bottom: 6px; border-bottom: 1px solid var(--line); }
+.dumb__ticks { position: relative; height: 16px; }
+.dumb__ticks span { position: absolute; transform: translateX(-50%); }
+.dumb__row { min-height: 38px; border-bottom: 1px solid var(--line); font-size: 14px; color: var(--ink); }
+.dumb__track { position: relative; height: 38px; }
+.dumb__track::before { content: ""; position: absolute; inset: 50% 0 auto; border-top: 1px dashed var(--line); }
+.dumb__seg { position: absolute; top: 50%; height: 2px; margin-top: -1px; left: var(--a); width: calc(var(--b) - var(--a)); background: var(--teal); transform-origin: left; transition: transform 600ms var(--ease-in-out); }
+.dumb__v1, .dumb__v2 { position: absolute; top: 50%; width: 12px; height: 12px; margin: -6px 0 0 -6px; border-radius: 50%; }
+.dumb__v1 { left: var(--a); background: var(--bg); border: 2px solid var(--control); }
+.dumb__v2 { left: var(--b); background: var(--teal); transition: transform 600ms var(--ease-in-out); }
+.dumb__delta { font: 500 12.5px var(--font-mono); color: var(--teal-strong); text-align: right; }
+.dumb.pending .dumb__seg { transform: scaleX(0); }
+.dumb.pending .dumb__v2 { transform: translateX(calc(-1 * var(--px, 0px))); }
+.legend { margin-top: 12px; display: flex; gap: 18px; font-size: 12.5px; color: var(--muted); }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend i { width: 10px; height: 10px; border-radius: 50%; }
+
+.fixes { margin-top: 48px; border-top: 1px solid var(--line); }
+.fix { display: grid; grid-template-columns: 68px minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding: 16px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.fix__head { display: contents; }
+.fixes__cols { display: grid; grid-template-columns: 68px minmax(0, 1fr) minmax(0, 1fr); gap: 20px; padding: 10px 0; font-size: 12.5px; color: var(--muted); border-bottom: 1px solid var(--line); }
+.sev { justify-self: start; font: 500 11.5px var(--font-mono); padding: 2px 7px; border-radius: 4px; background: var(--warn-soft); color: var(--warn); white-space: nowrap; height: fit-content; }
+.fix b { display: block; color: var(--ink); font-weight: 600; margin-bottom: 2px; }
+.fix .m { font-family: var(--font-mono); font-size: 13px; color: var(--ink); font-variant-numeric: tabular-nums; }
+.fix .ok { color: var(--teal-strong); }
+
+/* page length drawn to scale */
+.len { margin-top: 56px; padding: 24px; border-radius: var(--r-panel); background: var(--surface); box-shadow: var(--shadow-ring); }
+.len h3 { font-size: 18px; }
+.len__rows { margin-top: 22px; display: grid; gap: 30px; }
+.len__row { display: grid; grid-template-columns: 54px minmax(0, 1fr); gap: 14px; align-items: center; }
+.len__lab { font: 500 13px var(--font-mono); color: var(--ink); }
+.len__bar { position: relative; height: 34px; }
+.len__fill { position: absolute; left: 0; top: 0; bottom: 0; width: var(--w); border-radius: 4px; background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--control) 26%, var(--surface-2)) 0 calc(100% / var(--screens) - 2px), var(--surface) calc(100% / var(--screens) - 2px) calc(100% / var(--screens))); transform-origin: left; transition: transform 700ms var(--ease-in-out); }
+.len__row--v2 .len__fill { background: repeating-linear-gradient(90deg, color-mix(in srgb, var(--teal) 40%, var(--surface-2)) 0 calc(100% / var(--screens) - 2px), var(--surface) calc(100% / var(--screens) - 2px) calc(100% / var(--screens))); }
+.len.pending .len__fill { transform: scaleX(0); }
+.len__total { position: absolute; top: 50%; transform: translateY(-50%); left: calc(var(--w) + 10px); font: 500 13px var(--font-mono); color: var(--ink); white-space: nowrap; font-variant-numeric: tabular-nums; }
+.len__mark { position: absolute; top: -6px; bottom: -6px; left: var(--x); width: 2px; background: var(--now); }
+.len__mark span { position: absolute; top: 100%; margin-top: 4px; font-size: 12px; color: var(--now-ink); white-space: nowrap; font-weight: 500; }
+.len__mark--r span { right: 0; }
+.len__ruler { position: relative; height: 18px; margin-left: 68px; margin-top: 34px; border-top: 1px solid var(--line); font: 500 10.5px var(--font-mono); color: var(--muted); }
+.len__ruler span { position: absolute; top: 4px; transform: translateX(-50%); }
+.len__ruler span:first-child { transform: none; }
+
+/* ---------- decisions ---------- */
+.decision { margin-top: 20px; border-radius: var(--r-panel); background: var(--surface); box-shadow: var(--shadow-ring); overflow: hidden; }
+.decision__head { padding: 20px 22px 0; display: grid; gap: 6px; }
+.decision__head .eyebrow { color: var(--muted); }
+.decision__head h3 { font-size: 22px; }
+.decision__grid { padding: 16px 22px 22px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px 28px; font-size: 14.5px; }
+.decision__grid h4 { font: 600 12.5px var(--font-body); color: var(--muted); margin-bottom: 4px; }
+.decision__grid .rej { color: var(--muted); }
+.decision__grid .rej s { text-decoration-thickness: 1px; }
+.decision__demo { border-top: 1px solid var(--line); padding: 18px 22px 20px; background: color-mix(in srgb, var(--surface-2) 45%, var(--surface)); }
+.seg { display: inline-flex; padding: 3px; border-radius: 8px; background: var(--surface-2); gap: 2px; }
+.seg button { height: 30px; padding: 0 12px; border: 0; border-radius: 6px; background: none; font-size: 13px; font-weight: 500; color: var(--ink-2); transition: background-color var(--dur-micro) var(--ease-out); }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--ink); box-shadow: 0 0 0 1px var(--line), 0 1px 2px rgb(0 0 0 / .06); }
+.status-rows { margin-top: 14px; border-top: 1px solid var(--line); }
+.srow { display: flex; align-items: center; gap: 12px; min-height: 46px; border-bottom: 1px solid var(--line); font-size: 14px; }
+.srow .code { font: 500 12px var(--font-mono); color: var(--ink-2); width: 40px; flex: none; }
+.srow .t { flex: 1; min-width: 0; color: var(--ink); font-weight: 600; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pill { font-size: 12px; font-weight: 600; padding: 2px 8px; border-radius: 999px; white-space: nowrap; }
+.st { width: 20px; height: 20px; flex: none; display: grid; place-items: center; }
+.st > * { grid-area: 1 / 1; transition: opacity var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+[data-ver="v1"] .st .v2, [data-ver="v2"] .st .v1 { opacity: 0; transform: scale(.7); }
+.pill > span { display: none; }
+[data-ver="v1"] .pill .v1, [data-ver="v2"] .pill .v2 { display: inline; }
+[data-ver="v1"] .pill { background: var(--warn-soft); color: var(--warn); }
+[data-ver="v2"] .pill { background: var(--surface-2); color: var(--muted); }
+.mini-compare { margin-top: 4px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.tile { border-radius: 8px; padding: 12px 14px; box-shadow: var(--shadow-ring); background: var(--surface); font-size: 13px; }
+.tile__k { color: var(--muted); }
+.tile__v { font: 600 22px var(--font-mono); color: var(--ink); }
+.tile .bar0 { margin-top: 8px; height: 6px; border-radius: 3px; background: var(--surface-2); }
+
+/* ---------- design system ---------- */
+.ds-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 28px; }
+.colors { border-top: 1px solid var(--line); }
+.crow { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: start; font-size: 14px; }
+.sw { width: 44px; height: 44px; border-radius: 8px; box-shadow: inset 0 0 0 1px rgb(0 0 0 / .08); }
+.crow b { color: var(--ink); display: block; font-weight: 600; }
+.crow code { font: 500 12px var(--font-mono); color: var(--muted); }
+.neutrals { margin-top: 16px; display: flex; gap: 4px; }
+.neutrals div { flex: 1; height: 40px; border-radius: 6px; box-shadow: inset 0 0 0 1px var(--line); position: relative; }
+.neutrals span { position: absolute; top: 100%; left: 0; margin-top: 4px; font: 500 10px var(--font-mono); color: var(--muted); white-space: nowrap; }
+.type { margin-top: 44px; border-top: 1px solid var(--line); }
+.type > div { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 14px; padding: 14px 0; border-bottom: 1px solid var(--line); align-items: baseline; }
+.type .tlab { font: 500 11.5px var(--font-mono); color: var(--muted); }
+.inspect-wrap { display: grid; gap: 14px; align-content: start; }
+.inspect-wrap .upnext { margin-top: 0; }
+[data-tok] { position: relative; }
+[data-tok]::after { content: attr(data-tok); position: absolute; left: -2px; top: -9px; z-index: 3; font: 500 10.5px/1.5 var(--font-mono); letter-spacing: 0; padding: 0 5px; border-radius: 3px;
+  background: var(--teal); color: var(--on-teal); white-space: nowrap; pointer-events: none; opacity: 0; transform: translateY(3px); transition: opacity var(--dur-micro) var(--ease-out), transform var(--dur-micro) var(--ease-out); }
+.upnext__rule[data-tok] { position: absolute; }
+.inspect-wrap .upnext > * { transition: margin-top var(--dur-ui) var(--ease-out); }
+.inspecting .upnext { padding-top: 30px; }
+.inspecting .upnext__title, .inspecting .upnext__detail, .inspecting .upnext__actions { margin-top: 22px !important; }
+.inspecting [data-tok] { outline: 1px dashed var(--teal); outline-offset: 2px; }
+.inspecting [data-tok]::after { opacity: 1; transform: none; }
+.upnext__rule[data-tok]::after { left: 10px; top: 6px; background: var(--now); color: var(--surface); }
+.upnext[data-tok]::after { left: auto; right: 10px; top: auto; bottom: 10px; }
+.inspecting .upnext__rule[data-tok] { outline: 0; }
+.comps { margin-top: 44px; border-top: 1px solid var(--line); }
+.comps > div { display: grid; grid-template-columns: 120px minmax(0, 1fr); gap: 14px; padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.comps dt { font-weight: 600; color: var(--ink); }
+.comps dd { margin: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+.comps { margin-bottom: 0; }
+
+/* ---------- motion lab ---------- */
+.lab-bar { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; justify-content: space-between; padding: 12px 0; border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); position: sticky; top: calc(var(--bar-h) + env(safe-area-inset-top, 0px)); z-index: 5; background: var(--bg); }
+.lab-bar p { font-size: 13.5px; color: var(--muted); }
+.lab-bar__ctl { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.lab { margin-top: 24px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.spec { background: var(--surface); border-radius: var(--r-panel); box-shadow: var(--shadow-ring); display: grid; grid-template-rows: auto 1fr auto; overflow: hidden; }
+.spec__stage { min-height: 190px; display: grid; place-items: center; padding: 24px; background: var(--bg); border-bottom: 1px solid var(--line); }
+.spec__meta { padding: 14px 16px 6px; display: grid; gap: 4px; }
+.spec__meta h3 { font-size: 17px; }
+.spec__meta p { font-size: 13.5px; }
+.spec__foot { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; padding: 8px 16px 14px; }
+.spec__foot .chip { height: 22px; font-size: 11.5px; }
+.spec__foot .btn { margin-left: auto; }
+
+/* lab: tick */
+.cbrow { display: flex; align-items: center; gap: 12px; padding: 12px 16px; border-radius: 8px; background: var(--surface); box-shadow: var(--shadow-ring); font-size: 14.5px; font-weight: 500; color: var(--ink); }
+.cbrow span { transition: color var(--dur-micro) var(--ease-out); }
+.cbrow[data-done="true"] span { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.cb { position: relative; flex: none; width: 24px; height: 24px; border-radius: 6px; border: 2px solid var(--control); background: var(--surface); padding: 0; display: grid; place-items: center; color: transparent;
+  transition-property: background-color, border-color; transition-duration: calc(160ms * var(--k)); }
+.cb::after { content: ""; position: absolute; inset: -10px; }
+.cb:hover { border-color: var(--teal); }
+.cb[aria-checked="true"] { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+.cb svg { opacity: 0; transition: opacity calc(80ms * var(--k)) linear; }
+.cb svg path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset calc(220ms * var(--k)) var(--ease-out) calc(40ms * var(--k)); }
+.cb[aria-checked="true"] svg { opacity: 1; }
+.cb[aria-checked="true"] svg path { stroke-dashoffset: 0; }
+.cb.is-new { animation: tickPress calc(260ms * var(--k)) var(--ease-spring); }
+@keyframes tickPress { from { transform: scale(.86); } }
+
+/* lab: step rail */
+.steps { width: 100%; max-width: 300px; }
+.step { position: relative; display: grid; grid-template-columns: 32px minmax(0, 1fr); column-gap: 12px; padding-bottom: 14px; }
+.step::before, .step::after { content: ""; position: absolute; left: 15px; top: 32px; bottom: 0; width: 2px; background: var(--line); }
+.step::after { background: color-mix(in srgb, var(--teal) 55%, var(--line)); transform: scaleY(0); transform-origin: top; transition: transform calc(320ms * var(--k)) var(--ease-in-out); }
+.step:last-child::before, .step:last-child::after { display: none; }
+.step[data-done="true"]::after { transform: scaleY(1); transition-delay: calc(80ms * var(--k)); }
+.marker { position: relative; z-index: 1; width: 32px; height: 32px; border-radius: 50%; border: 2px solid var(--control); background: var(--bg); display: grid; place-items: center; font: 500 12px var(--font-mono); color: var(--muted); padding: 0;
+  transition: background-color calc(180ms * var(--k)) var(--ease-out), border-color calc(180ms * var(--k)) var(--ease-out), box-shadow calc(180ms * var(--k)) var(--ease-out); }
+.marker > * { grid-area: 1 / 1; }
+.marker .n { transition: opacity calc(120ms * var(--k)) var(--ease-out), transform calc(160ms * var(--k)) var(--ease-out), filter calc(120ms * var(--k)) var(--ease-out); }
+.marker svg { opacity: 0; transition: opacity calc(80ms * var(--k)) linear; }
+.marker svg path { stroke-dasharray: 1; stroke-dashoffset: 1; transition: stroke-dashoffset calc(240ms * var(--k)) var(--ease-out) calc(60ms * var(--k)); }
+.step[data-done="true"] .marker { background: var(--teal); border-color: var(--teal); color: var(--on-teal); }
+.step[data-done="true"] .marker .n { opacity: 0; transform: scale(.6); filter: blur(2px); }
+.step[data-done="true"] .marker svg { opacity: 1; }
+.step[data-done="true"] .marker svg path { stroke-dashoffset: 0; }
+.step.is-new[data-done="true"] .marker { animation: tickPress calc(280ms * var(--k)) var(--ease-spring); }
+.step[data-current="true"] .marker { border-color: var(--now); color: var(--now-ink); box-shadow: 0 0 0 4px var(--now-soft); }
+.step__t { padding-top: 4px; font: 600 15px/1.35 var(--font-display); color: var(--ink); }
+.step[data-done="true"] .step__t { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; font-weight: 500; }
+
+/* lab: swap */
+.swap { width: 100%; max-width: 320px; position: relative; background: var(--surface); border-radius: var(--r-panel); box-shadow: var(--shadow-ring); padding: 14px 16px 14px 20px; }
+.swap::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: var(--r-panel) 0 0 var(--r-panel); background: var(--now); }
+.swap__e { font-size: 12px; font-weight: 600; color: var(--now-ink); }
+.swap__t { margin-top: 3px; font: 600 18px/1.25 var(--font-display); color: var(--ink); }
+.swap__b.is-leaving { opacity: 0; transform: translateY(-4px); transition: opacity calc(140ms * var(--k)) var(--ease-out), transform calc(140ms * var(--k)) var(--ease-out); }
+.swap__b.is-entering { animation: swapIn calc(280ms * var(--k)) var(--ease-out) both; }
+
+/* lab: curves */
+.curves { margin-top: 16px; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
+.curve { background: var(--surface); border-radius: var(--r-panel); box-shadow: var(--shadow-ring); padding: 14px 16px 16px; display: grid; gap: 10px; }
+.curve h4 { font-size: 15px; }
+.curve code { font: 500 11px var(--font-mono); color: var(--muted); overflow-wrap: anywhere; }
+.curve svg { width: 100%; height: auto; overflow: visible; }
+.curve .grid { stroke: var(--line); }
+.curve .path { stroke: var(--teal); fill: none; stroke-width: 2.2; stroke-linecap: round; }
+.curve--spring .path { stroke: var(--now); }
+.rail-demo { position: relative; height: 20px; border-radius: 10px; background: var(--surface-2); }
+.rail-demo i { position: absolute; left: 2px; top: 2px; width: 16px; height: 16px; border-radius: 50%; background: var(--teal); }
+.curve--spring .rail-demo i { background: var(--now); }
+.curve.play .rail-demo i { animation: slide calc(900ms * var(--k)) var(--e) both; }
+@keyframes slide { to { transform: translateX(var(--dist, 200px)); } }
+.curve__foot { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 12.5px; color: var(--muted); }
+
+.never { margin-top: 28px; }
+.mtable { width: 100%; border-collapse: collapse; font-size: 14px; }
+.mtable th { text-align: left; font-size: 12.5px; color: var(--muted); font-weight: 500; padding: 8px 12px 8px 0; border-bottom: 1px solid var(--line); }
+.mtable td { padding: 11px 12px 11px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.mtable td:first-child { color: var(--ink); font-weight: 600; }
+.mtable td.m { font-family: var(--font-mono); font-size: 13px; white-space: nowrap; color: var(--ink); font-variant-numeric: tabular-nums; }
+.mtable .bad { color: var(--warn); }
+.mtable .good { color: var(--teal-strong); }
+.tablewrap { overflow-x: auto; }
+
+/* ---------- AI ---------- */
+.ai { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0; border-top: 1px solid var(--ink); }
+.ai > div { padding: 16px 20px 0 0; display: grid; gap: 10px; align-content: start; }
+.ai > div + div { padding-left: 20px; border-left: 1px solid var(--line); }
+.ai h3 { font-size: 17px; }
+.ai ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; font-size: 14px; }
+.ai li { display: flex; gap: 8px; }
+.ai li::before { content: ""; flex: none; width: 5px; height: 5px; margin-top: 9px; border-radius: 50%; background: var(--control); }
+
+/* ---------- next ---------- */
+.next { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; }
+.next h3 { font-size: 18px; margin-bottom: 10px; }
+.next ul { margin: 0; padding: 0; list-style: none; border-top: 1px solid var(--line); }
+.next li { padding: 12px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.next li strong { color: var(--ink); }
+.foot { margin-top: 96px; padding-top: 24px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 12px 28px; align-items: center; font-size: 14px; color: var(--muted); }
+.foot b { color: var(--ink); font: 600 18px var(--font-display); }
+
+/* ---------- entrance (first paint only, from a visible rest state) ---------- */
+.enter > * { animation: rise 520ms var(--ease-out) both; }
+.enter > :nth-child(2) { animation-delay: 60ms; } .enter > :nth-child(3) { animation-delay: 120ms; }
+.enter > :nth-child(4) { animation-delay: 180ms; } .enter > :nth-child(5) { animation-delay: 240ms; } .enter > :nth-child(n+6) { animation-delay: 300ms; }
+@keyframes rise { from { opacity: 0; transform: translateY(10px); } }
+.stage.enter-stage { animation: stageIn 700ms var(--ease-out) 260ms both; }
+@keyframes stageIn { from { opacity: 0; transform: translateY(24px) scale(.985); } }
+
+.instant, .instant * { transition: none !important; }
+
+/* ---------- motion off ---------- */
+:root[data-motion="off"] *, :root[data-motion="off"] *::before, :root[data-motion="off"] *::after { animation: none !important; transition: none !important; }
+@media (prefers-reduced-motion: reduce) {
+  :root:not([data-motion="on"]) *, :root:not([data-motion="on"]) *::before, :root:not([data-motion="on"]) *::after { animation: none !important; transition: none !important; }
+}
+
+/* ---------- responsive ---------- */
+@media (max-width: 1100px) {
+  .page { grid-template-columns: minmax(0, 1fr); }
+  .rail { display: none; }
+  main { max-width: none; }
+}
+@media (max-width: 820px) {
+  .app { grid-template-columns: minmax(0, 1fr); gap: 24px; padding: 20px 18px 24px; }
+  .side { border-top: 1px solid var(--line); padding-top: 18px; }
+  .metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .metric:nth-child(3) { padding-left: 0; border-left: 0; }
+  .metric:nth-child(n+3) { margin-top: 20px; padding-top: 16px; border-top: 1px solid var(--line); }
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .changes, .jobs, .ai { grid-template-columns: minmax(0, 1fr); }
+  .job + .job, .ai > div + div { padding-left: 0; border-left: 0; border-top: 1px solid var(--line); margin-top: 16px; }
+  .ds-grid, .lab, .next, .constraints { grid-template-columns: minmax(0, 1fr); }
+  .curves { grid-template-columns: minmax(0, 1fr); }
+  .fix, .fixes__cols { grid-template-columns: 60px minmax(0, 1fr); }
+  .fix > :nth-child(3) { grid-column: 2; }
+  .fixes__cols span:nth-child(3) { display: none; }
+  .decision__grid { grid-template-columns: minmax(0, 1fr); }
+}
+@media (max-width: 560px) {
+  .brand span, .bar a.toggle { display: none; }
+  .app-bar .tab:not([aria-current]), .app-bar .save { display: none; }
+  .timeline .block:nth-child(n+4) { display: none; }
+  .ledger > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .proc li { grid-template-columns: 28px minmax(0, 1fr); }
+  .who { grid-column: 2; justify-self: start; flex-direction: row; }
+  .dumb__axis, .dumb__row { grid-template-columns: minmax(0, 104px) minmax(0, 1fr) 36px; gap: 10px; font-size: 12.5px; }
+  .metric__v { font-size: 21px; }
+  .phones { gap: 14px; }
+  .len { padding: 18px 14px; }
+  .len__row { grid-template-columns: 26px minmax(0, 1fr); gap: 8px; }
+  .len__ruler { margin-left: 34px; }
+  .len__ruler span:nth-child(even) { display: none; }
+  .type > div, .comps > div { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .mini-compare { grid-template-columns: minmax(0, 1fr); }
+}
+</style>
+
+<div class="bar" role="banner">
+  <div class="bar__in">
+    <a class="brand" href="#top" aria-label="Back to top">
+      <svg width="28" height="28" viewBox="0 0 28 28" aria-hidden="true"><rect width="28" height="28" rx="7" fill="var(--teal)"/><path d="M8.5 7.5l6.5 6.5-6.5 6.5M14 7.5l6.5 6.5-6.5 6.5" fill="none" stroke="var(--now)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <b>Jeffrey</b><span>Case study · Eagle Learning Hub</span>
+    </a>
+    <div class="bar__end">
+      <button class="toggle" id="motionToggle" type="button" aria-pressed="true"><i aria-hidden="true"></i>Motion</button>
+      <a class="toggle ext" href="https://claude.ai/artifact/HZUBEYey53MBnWwo1CXsiG" target="_blank" rel="noopener">Design system</a>
+    </div>
+    <span class="bar__progress" id="readBar" aria-hidden="true"></span>
+  </div>
+</div>
+
+<div class="page" id="top">
+  <nav class="rail" aria-label="Sections">
+    <p>11 sections</p>
+    <ol id="railList"></ol>
+  </nav>
+
+  <main>
+    <!-- ============ HERO ============ -->
+    <section class="hero" id="overview" data-label="Overview" style="padding-top:64px">
+      <div class="enter">
+        <p class="eyebrow">Case study · <b>Oct 18–19, 2026</b> · solo, AI-assisted</p>
+        <h1 class="hero__title">What do I do <em>now?</em></h1>
+        <p class="hero__lede">Every day of my 15-week coding bootcamp starts with that question. I built a learning hub to answer it, then audited it like a stranger would, rebuilt it, and turned it into a design system with its own motion rules. <strong>The result: one next action, finished where you see it, on any screen.</strong></p>
+        <dl class="facts">
+          <div><dt>Role</dt><dd>Design engineer, solo. Claude agents as my audit and research team</dd></div>
+          <div><dt>Timeline</dt><dd>2 days · v1, audit, v2, re-audit, system, motion</dd></div>
+          <div><dt>Platform</dt><dd>One static HTML page, vanilla JS, light and dark, 390px up</dd></div>
+          <div><dt>Tools</dt><dd>Claude Code, Mobbin, Playwright, IBM Plex</dd></div>
+        </dl>
+      </div>
+
+      <div class="stage enter-stage">
+        <div class="browser">
+          <div class="browser__top" aria-hidden="true"><i></i><i></i><i></i><span class="browser__url">Eagle Learning Hub · Today</span></div>
+          <div class="screen" id="mock">
+            <div class="app-bar" aria-hidden="true">
+              <b><svg width="20" height="20" viewBox="0 0 28 28"><rect width="28" height="28" rx="7" fill="var(--teal)"/><path d="M8.5 7.5l6.5 6.5-6.5 6.5M14 7.5l6.5 6.5-6.5 6.5" fill="none" stroke="var(--now)" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/></svg>Eagle Learning Hub</b>
+              <span class="tab" aria-current="page">Today</span><span class="tab">Course</span><span class="tab">Review</span><span class="tab">Work</span>
+              <span class="save">Saved to your account</span>
+            </div>
+            <div class="app">
+              <div>
+                <h2 class="app__date">Monday, October 19</h2>
+                <p class="app__meta"><b>Week 3</b> of 15 · Day 10 of 67</p>
+                <div class="timeline" aria-hidden="true">
+                  <div class="nowline" style="left: calc(16% + 31% * .62)"><span>11:15</span></div>
+                  <div class="track">
+                    <div class="block" data-state="past" style="--m:16"><div class="block__bar"></div><div class="block__time">9:30am</div><div class="block__label">Stand Up</div></div>
+                    <div class="block" data-state="now" style="--m:31"><div class="block__bar"></div><div class="block__time">10am</div><div class="block__label">AI-8 Authentication</div></div>
+                    <div class="block" style="--m:25"><div class="block__bar"></div><div class="block__time">2:30pm</div><div class="block__label">Work time</div></div>
+                    <div class="block" style="--m:14"><div class="block__bar"></div><div class="block__time">5:30pm</div><div class="block__label">Team Meet</div></div>
+                    <div class="block" style="--m:14"><div class="block__bar"></div><div class="block__time">6pm</div><div class="block__label">Stand Down</div></div>
+                  </div>
+                </div>
+                <article class="upnext" aria-labelledby="unTitle">
+                  <span class="upnext__rule" aria-hidden="true"></span>
+                  <div class="upnext__body" id="unBody">
+                    <p class="upnext__eyebrow"><span>Up next</span>·<u>AI-8 Authentication</u>·<span id="unCount">step 1 of 10</span></p>
+                    <h3 class="upnext__title" id="unTitle">Do Part I: peer quiz, then FreeCodeCamp</h3>
+                    <p class="upnext__detail" id="unDetail">Partner up for the 15-question How Authentication Works quiz (switch reader at question 8), then do 50 steps of the FreeCodeCamp Python certification.</p>
+                    <p class="donewhen"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5 8.2l2 2 4-4.2" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Done when</b> <span id="unDone">Quiz done with a partner, and FreeCodeCamp shows 50 more Python steps complete.</span></span></p>
+                  </div>
+                  <div class="upnext__actions">
+                    <button class="btn btn--primary" id="markDone" type="button"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>Mark step done</button>
+                    <button class="btn" type="button" tabindex="-1" aria-hidden="true">Open guide</button>
+                    <span class="upnext__left" id="unLeft">About 5 hrs left in this guide</span>
+                  </div>
+                </article>
+              </div>
+              <aside class="side" aria-label="This week">
+                <h4>This week <span id="goalCount">0 of 4 days</span></h4>
+                <div class="goal-days" id="goalDays" aria-hidden="true">
+                  <span class="gd" data-today="true" style="--i:0"><i><svg width="12" height="12" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>M</span>
+                  <span class="gd" style="--i:1"><i></i>T</span><span class="gd" style="--i:2"><i></i>W</span><span class="gd" style="--i:3"><i></i>T</span><span class="gd" style="--i:4"><i></i>F</span>
+                  <span class="goal-sep"></span>
+                  <span class="gd gd--we"><i></i>S</span><span class="gd gd--we"><i></i>S</span>
+                </div>
+                <p class="side__note" id="goalNote"><b>4 more days</b> this week meets your goal.</p>
+                <hr>
+                <h4>Course <span id="courseCount">0 of 116 steps</span></h4>
+                <div class="course-bar"><span id="courseBar"></span></div>
+                <p class="caption">13 guides ready · Graduation Fri Jan 15</p>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p class="stage__hint"><span class="dot" aria-hidden="true"></span><span>This is the real component, not a screenshot. Press <strong>Mark step done</strong> and watch the card, the week goal and the course bar.</span></p>
+
+      <div class="metrics" aria-label="Results">
+        <div class="metric"><span class="metric__k">Phone lecture page</span><span class="metric__v"><s>9,000</s><span class="arr">→</span>3,387<small>px</small></span><span class="metric__n">62% shorter. Rating and notes moved from y = 7,976 into a sticky bar.</span></div>
+        <div class="metric"><span class="metric__k">Unticked checkbox contrast</span><span class="metric__v"><s>1.39</s><span class="arr">→</span>3.17<small>:1</small></span><span class="metric__n">Now passes WCAG 1.4.11, the 3:1 floor for controls.</span></div>
+        <div class="metric"><span class="metric__k">Heuristic score</span><span class="metric__v"><s>3</s><span class="arr">→</span>4<small>/5</small></span><span class="metric__n">Nielsen's 10 heuristics, 8 tasks, 2 rounds.</span><span class="metric__tag">self-audit, n=1</span></div>
+        <div class="metric"><span class="metric__k">Design system</span><span class="metric__v">22<small> components</small></span><span class="metric__n">22 colors in 2 themes, 14 text styles, 15 motion rules. Lifted from shipped code.</span></div>
+      </div>
+    </section>
+
+    <!-- ============ TL;DR ============ -->
+    <section id="tldr" data-label="The short version" style="padding-top:72px">
+      <div class="s-head"><h2>The short version</h2></div>
+      <dl class="ledger">
+        <div><dt>Problem</dt><dd>v1 tracked my work but didn't move me forward. Today pointed at a <strong>lecture</strong>, not a step. On my phone, rating and notes sat 8,000px down the page. Lectures I had attended showed up in amber as "Not started".</dd></div>
+        <div><dt>What I did</dt><dd>Ran a heuristic review with 8 task walkthroughs and 38 screenshots, wrote a brief from 14 Mobbin searches, rebuilt the hub, re-audited it, fixed what was left, then extracted the design system and a motion system.</dd></div>
+        <div><dt>Result</dt><dd>Every severity-3 problem from v1 is fixed or mostly fixed. Today ends in one button that finishes the current step. Controls pass contrast in both themes, and there's a ⌘K palette and keyboard shortcuts.</dd></div>
+        <div><dt>Not proven yet</dt><dd>Every score comes from my own review of a tool built for one user: me. The next step is a task test with five classmates, set out at the end.</dd></div>
+      </dl>
+    </section>
+
+    <!-- ============ BEFORE / AFTER ============ -->
+    <section id="before-after" data-label="Before and after">
+      <div class="s-head">
+        <p class="eyebrow">Today view · 1360px · Mon Oct 19, 11:15 ET</p>
+        <h2>Same data, same morning, one day apart</h2>
+        <p>Drag the handle, or focus it and use the arrow keys. Both captures use the same fake clock and empty progress, so only the design differs.</p>
+      </div>
+      <div class="ba" id="ba">
+        <img src="img/today-v1.jpg" alt="v1 Today: a lecture card with Open guide, seven open-work rows with status pills, and three progress meters reading 0%." width="1360" height="1100">
+        <img class="ba__after" src="img/today-v2.jpg" alt="v2 Today: a timeline with an 11:15 now-line, an Up next card naming step 1 with a Mark step done button, and a week goal rail." width="1360" height="1100">
+        <input class="ba__range" id="baRange" type="range" min="0" max="100" value="50" step="1" aria-label="Compare v1 and v2. Left of the handle is v1, right is v2." aria-valuetext="50% v1, 50% v2">
+        <span class="ba__line" aria-hidden="true"><span class="ba__knob"><svg width="18" height="18" viewBox="0 0 20 20"><path d="M7 5l-4 5 4 5M13 5l4 5-4 5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span>
+        <span class="ba__tag ba__tag--l" aria-hidden="true">v1 · Oct 18</span>
+        <span class="ba__tag ba__tag--r" aria-hidden="true">v2 · Oct 19</span>
+      </div>
+      <ol class="changes">
+        <li><h3>A step, not a lecture</h3><p>"Today's lecture · Open guide" became <strong>Up next</strong>: the step's title, what done looks like, and a button that finishes it right here.</p></li>
+        <li><h3>Three 0% meters removed</h3><p>Guide steps 0%, lectures 0/10 and "15% elapsed" never changed and led nowhere. One course line in the side rail replaces them.</p></li>
+        <li><h3>A timeline that knows the time</h3><p>A now-line at 11:15 sits on today's schedule, so "where am I in the day" takes one glance.</p></li>
+      </ol>
+
+      <div class="phones">
+        <figure>
+          <div class="shot">
+            <img src="img/phone-today-v1.jpg" alt="v1 on a phone: the header and a tall vertical timeline push the Open guide button below the first screen." width="390" height="844">
+          </div>
+          <figcaption class="caption"><strong>v1 phone.</strong> The main button, Open guide, ends at y = 894 on an 844px screen. You have to scroll before you can do anything.</figcaption>
+        </figure>
+        <figure>
+          <div class="shot">
+            <img src="img/phone-today-v2.jpg" alt="v2 on a phone: slim top bar, one-line now strip, and the Up next card with Mark step done above the bottom tab bar." width="390" height="844">
+            <span class="target" style="top: calc(7px + (678 / 844) * (100% - 14px)); height: calc((44 / 844) * (100% - 14px)); right: 50%;" aria-hidden="true"></span>
+          </div>
+          <figcaption class="caption"><strong>v2 phone.</strong> Mark step done sits at y = 678–722, above the tab bar. The 117px header became a 49px bar plus bottom tabs.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ============ CONTEXT ============ -->
+    <section id="problem" data-label="The problem">
+      <div class="s-head">
+        <p class="eyebrow">Context</p>
+        <h2>One user, a packed day, and a phone between classes</h2>
+        <p>Code Platoon runs AI and full-stack engineering for 15 weeks, Monday to Friday. Each day has Stand Up, a lecture, work time, a team meeting and Stand Down. Every lecture comes with homework, and the course moves on whether you finished or not. The user is me, so I could test every idea against a real day.</p>
+      </div>
+      <div class="scale-row num">
+        <span><b>58</b>lectures</span><span><b>67</b>class days</span><span><b>116</b>guide steps</span><span><b>18</b>assignments</span>
+      </div>
+      <div class="jobs">
+        <div class="job"><q>What do I do right now?</q><p>At 11:15 between activities, on a phone. Needs a step, not a page to read.</p></div>
+        <div class="job"><q>Did I actually finish that?</q><p>Ticking off homework steps, honestly, without the app nagging about days I was in class.</p></div>
+        <div class="job"><q>What's slipping?</q><p>Lectures I felt shaky on should come back for review before they're gone.</p></div>
+      </div>
+      <h3 style="margin-top:44px">Constraints</h3>
+      <ul class="constraints">
+        <li>One static HTML file. No build step, no framework, vanilla JS.</li>
+        <li>Runs in a sandboxed page: nothing loads except fonts from Google.</li>
+        <li>Light and dark are both first-class. Works from 390px wide.</li>
+        <li>Progress saves to the page's database, with a browser fallback.</li>
+        <li>Keep the Code Platoon teal, and give orange exactly one job.</li>
+        <li>Course data is generated from the calendar. The UI can't invent dates.</li>
+      </ul>
+    </section>
+
+    <!-- ============ PROCESS ============ -->
+    <section id="process" data-label="Process">
+      <div class="s-head">
+        <p class="eyebrow">Process · Oct 18 → Oct 19</p>
+        <h2>Audit, brief, build, then audit again</h2>
+        <p>I didn't trust my own eyes on a tool I'd just built, so I set up a loop with a separate reviewer. Each round produced a document with screenshots and measurements, and the next round had to answer it.</p>
+      </div>
+      <ol class="proc">
+        <li><span class="n">01</span><div><h3>Build v1</h3><p>Today, Course map, Assignments and My work, fed by a script that reads the course calendar and my progress file.</p><div class="out"><span class="chip">4 views</span><span class="chip">58 lecture guides</span></div></div><div class="who"><span class="chip" data-who="me">Me</span></div></li>
+        <li><span class="n">02</span><div><h3>Heuristic review of v1</h3><p>Nielsen's 10 heuristics, 8 real tasks ("tick a step, then undo", "find FE-3 three weeks away"), at desktop, phone, weekend and after class. Every claim measured in a real browser.</p><div class="out"><span class="chip">38 screenshots</span><span class="chip">score 3/5</span><span class="chip">7 severity-3 issues</span></div></div><div class="who"><span class="chip">ux-auditor agent</span><span class="chip" data-who="me">Me: scope + tasks</span></div></li>
+        <li><span class="n">03</span><div><h3>Research and design brief</h3><p>Fourteen Mobbin searches across learning apps (Codecademy, Babbel, Uxcel, Brilliant), work tools (Linear, Sentry, Clerk) and calendars (Rise). Out came five principles, a new information architecture and a spec for every surface.</p><div class="out"><span class="chip">14 searches</span><span class="chip">5 principles</span><span class="chip">586-line brief</span></div></div><div class="who"><span class="chip">ui-designer agent</span><span class="chip" data-who="me">Me: constraints</span></div></li>
+        <li><span class="n">04</span><div><h3>Build v2</h3><p>A Review tab, Up next at the step level, a sticky action bar on phones, the ⌘K palette and in-place updates so focus survives a tick.</p><div class="out"><span class="chip">4 tabs</span><span class="chip">13 shortcuts</span></div></div><div class="who"><span class="chip" data-who="me">Me + Claude Code</span></div></li>
+        <li><span class="n">05</span><div><h3>Re-audit, then fix what's left</h3><p>The same 8 tasks again. Three problems remained: scrolling overshot the next step, evening Up next pointed at a week-old lecture, and some changes had no Undo. All three were fixed the same day.</p><div class="out"><span class="chip">score 4/5</span><span class="chip">3 fixes</span></div></div><div class="who"><span class="chip">ux-auditor agent</span><span class="chip" data-who="me">Me</span></div></li>
+        <li><span class="n">06</span><div><h3>Extract the design system</h3><p>Tokens and components lifted from the shipped CSS by a script, so the system can't drift from the product.</p><div class="out"><span class="chip">22 components</span><span class="chip">44 color values</span></div></div><div class="who"><span class="chip" data-who="me">Me + Claude Code</span></div></li>
+        <li><span class="n">07</span><div><h3>Motion</h3><p>Rules first, then 15 motions. A Playwright script captures frames mid-animation and checks that keyboard shortcuts and reduced motion run none.</p><div class="out"><span class="chip">15 motions</span><span class="chip">0 on keyboard</span></div></div><div class="who"><span class="chip" data-who="me">Me + Claude Code</span></div></li>
+      </ol>
+      <div class="loop" aria-label="The design loop">
+        <span class="chip">Brief</span><svg width="18" height="10" viewBox="0 0 18 10" aria-hidden="true"><path d="M1 5h15M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="chip">Build</span><svg width="18" height="10" viewBox="0 0 18 10" aria-hidden="true"><path d="M1 5h15M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="chip">Audit</span><svg width="18" height="10" viewBox="0 0 18 10" aria-hidden="true"><path d="M1 5h15M12 1l4 4-4 4" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span class="chip">Fix list</span><span>and back to the brief. Two full turns in two days.</span>
+      </div>
+    </section>
+
+    <!-- ============ AUDIT ============ -->
+    <section id="audit" data-label="Audit to fix">
+      <div class="s-head">
+        <p class="eyebrow">Heuristic review · v1 vs v2</p>
+        <h2>Where v1 broke, and what fixed it</h2>
+        <p>Scores are 1–5 per heuristic, from my own review in both rounds. Treat them as direction, not proof. The measurements under them are the stronger evidence.</p>
+      </div>
+      <div class="dumb pending-able" id="dumb">
+        <div class="dumb__axis" aria-hidden="true"><span>Heuristic</span><div class="dumb__ticks"><span style="left:0">1</span><span style="left:25%">2</span><span style="left:50%">3</span><span style="left:75%">4</span><span style="left:100%">5</span></div><span style="text-align:right">Δ</span></div>
+        <div id="dumbRows"></div>
+      </div>
+      <div class="legend" aria-hidden="true"><span><i style="border:2px solid var(--control)"></i>v1 · Oct 18</span><span><i style="background:var(--teal)"></i>v2 · Oct 19</span></div>
+
+      <div class="fixes" role="table" aria-label="Severity-3 findings and their fixes">
+        <div class="fixes__cols" role="row"><span role="columnheader">Severity</span><span role="columnheader">v1 finding, measured</span><span role="columnheader">v2 fix, re-measured</span></div>
+        <div class="fix" role="row"><span class="sev" role="cell">Sev 3</span><div role="cell"><b>Phone lecture actions buried</b>Rating and notes start at <span class="m">y = 7,976</span> of a <span class="m">9,000px</span> page.</div><div role="cell"><b class="ok">Sticky Rate · Notes · Done bar</b>Always on screen at <span class="m">y = 735–788</span>; page is <span class="m">3,387px</span>.</div></div>
+        <div class="fix" role="row"><span class="sev" role="cell">Sev 3</span><div role="cell"><b>Checkboxes nearly invisible</b>Unticked border <span class="m">1.39:1</span> light, <span class="m">1.34:1</span> dark. Steps read as plain text.</div><div role="cell"><b class="ok">A <code>control</code> token for borders</b><span class="m">3.17:1</span> light, <span class="m">4.07:1</span> dark.</div></div>
+        <div class="fix" role="row"><span class="sev" role="cell">Sev 3</span><div role="cell"><b>Attended lectures look failed</b>Nine past lectures shown as amber dashed "Not started".</div><div role="cell"><b class="ok">"Not checked off", in grey</b>Amber now means a real problem only. A catch-up banner offers a 2-minute fix.</div></div>
+        <div class="fix" role="row"><span class="sev" role="cell">Sev 3</span><div role="cell"><b>No way to jump</b>No search. FE-3 is <span class="m">2,717px</span> down the phone map, which opens at week 1.</div><div role="cell"><b class="ok">⌘K / "/" palette</b>Lectures, key terms and assignments. The map opens at this week.</div></div>
+        <div class="fix" role="row"><span class="sev" role="cell">Sev 3</span><div role="cell"><b>Focus lost after every tick</b>Whole view re-rendered; <span class="m">activeElement = BODY</span>.</div><div role="cell"><b class="ok">Update in place</b>Focus stays on the control, or moves to the next step.</div></div>
+        <div class="fix" role="row"><span class="sev" role="cell">Sev 3</span><div role="cell"><b>Data freshness invisible</b>Nothing says when assignments last synced.</div><div role="cell"><b class="ok">Sync date in the save chip and help sheet</b>Partly fixed: it's in a tooltip, not on the page.</div></div>
+      </div>
+
+      <div class="len pending-able" id="len">
+        <h3>The phone lecture page, drawn to scale</h3>
+        <p class="caption" style="margin-top:4px">Each segment is one 844px phone screen. Orange marks where the actions are.</p>
+        <div class="len__rows">
+          <div class="len__row"><span class="len__lab">v1</span>
+            <div class="len__bar" style="--w: 78%; --screens: 10.66">
+              <div class="len__fill"></div><span class="len__total">9,000px</span>
+              <span class="len__mark len__mark--r" style="--x: calc(78% * 7976 / 9000)"><span>Rate + notes, y = 7,976</span></span>
+            </div>
+          </div>
+          <div class="len__row len__row--v2"><span class="len__lab">v2</span>
+            <div class="len__bar" style="--w: calc(78% * 3387 / 9000); --screens: 4.01">
+              <div class="len__fill"></div><span class="len__total">3,387px</span>
+              <span class="len__mark" style="--x: calc(78% * 735 / 9000)"><span>Action bar, always visible</span></span>
+            </div>
+          </div>
+        </div>
+        <div class="len__ruler" aria-hidden="true" id="lenRuler"></div>
+      </div>
+    </section>
+
+    <!-- ============ DECISIONS ============ -->
+    <section id="decisions" data-label="Decisions">
+      <div class="s-head">
+        <p class="eyebrow">Decision log</p>
+        <h2>Three calls that shaped v2</h2>
+        <p>Each one gave something up. These are the trade-offs I'd defend in a review.</p>
+      </div>
+
+      <article class="decision">
+        <div class="decision__head"><p class="eyebrow">Decision 1 · Today view</p><h3>Up next names a step and can finish it</h3></div>
+        <div class="decision__grid">
+          <div><h4>Context</h4><p>v1's card said "Today's lecture · Open guide". To do anything I had to open the guide, scroll, and find step 1.</p></div>
+          <div><h4>Options</h4><p class="rej"><s>Keep the lecture card and add a progress ring</s></p><p>Show the step itself, with "Done when" and a button that ticks it</p></div>
+          <div><h4>Chose</h4><p>The step. Uxcel's "Continue learning" card names the current lesson and the time left. I borrowed that and took it one level down, to the step, because a step is what fits between classes.</p></div>
+          <div><h4>Cost</h4><p>Today now needs per-step data and an Undo toast, and the card is taller. You can try it in the mockup at the top of this page.</p></div>
+        </div>
+      </article>
+
+      <article class="decision">
+        <div class="decision__head"><p class="eyebrow">Decision 2 · Color semantics</p><h3>Honest, not guilty</h3></div>
+        <div class="decision__grid">
+          <div><h4>Context</h4><p>On day one, nine lectures I'd attended showed as amber "Not started", because the hub didn't exist when I did the work.</p></div>
+          <div><h4>Options</h4><p class="rej"><s>Streak pressure: amber or red for anything overdue</s></p><p>Neutral grey for "not ticked", amber only for real problems, orange only for now</p></div>
+          <div><h4>Chose</h4><p>Neutral. Each color gets one job: teal for progress, orange for now, amber for a real problem.</p></div>
+          <div><h4>Cost</h4><p>Less urgency. I accepted that because guilt makes people stop opening an app, and this one only works if I open it daily.</p></div>
+        </div>
+        <div class="decision__demo">
+          <div class="seg" role="group" aria-label="Show version"><button type="button" aria-pressed="true" data-ver-btn="v1">v1</button><button type="button" aria-pressed="false" data-ver-btn="v2">v2</button></div>
+          <div class="status-rows" id="statusRows" data-ver="v1">
+            <div class="srow"><span class="st"><svg class="v1" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="var(--warn-mark)" stroke-width="1.8" stroke-dasharray="3 2.4"/></svg><svg class="v2" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="var(--control)" stroke-width="1.6"/></svg></span><span class="code">AI-5</span><span class="t">Single Page Applications</span><span class="pill"><span class="v1">Not started</span><span class="v2">Not checked off</span></span></div>
+            <div class="srow"><span class="st"><svg class="v1" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="var(--warn-mark)" stroke-width="1.8" stroke-dasharray="3 2.4"/></svg><svg class="v2" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="var(--control)" stroke-width="1.6"/></svg></span><span class="code">AI-6</span><span class="t">Databases &amp; Supabase</span><span class="pill"><span class="v1">Not started</span><span class="v2">Not checked off</span></span></div>
+            <div class="srow"><span class="st"><svg class="v1" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="var(--warn-mark)" stroke-width="1.8" stroke-dasharray="3 2.4"/></svg><svg class="v2" width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="7" fill="none" stroke="var(--control)" stroke-width="1.6"/></svg></span><span class="code">AI-7</span><span class="t">Full Stack Applications</span><span class="pill"><span class="v1">Not started</span><span class="v2">Not checked off</span></span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="decision">
+        <div class="decision__head"><p class="eyebrow">Decision 3 · Layout</p><h3>A ledger, not a dashboard</h3></div>
+        <div class="decision__grid">
+          <div><h4>Context</h4><p>v1's rail had three meters reading 0%, 0/10 and 15%. They didn't change during a day and didn't lead to any action.</p></div>
+          <div><h4>Options</h4><p class="rej"><s>Summary tiles with big numbers</s></p><p>Dense rows on hairlines, with progress inside each row: rings, mini-bars, counts</p></div>
+          <div><h4>Chose</h4><p>Rows, like Linear and GitHub. Progress sits where you act on it. Panels are rare, so the one that remains (Up next) stands out.</p></div>
+          <div><h4>Cost</h4><p>Less "wow" in a screenshot. The page looks quieter than a typical dashboard, and that was the point.</p></div>
+        </div>
+        <div class="decision__demo">
+          <p class="caption" style="margin-bottom:10px">What came out of v1's side rail:</p>
+          <div class="mini-compare">
+            <div class="tile"><div class="tile__k">Guide steps done</div><div class="tile__v">0%</div><div class="bar0"></div></div>
+            <div class="tile"><div class="tile__k">Lectures finished</div><div class="tile__v">0/10</div><div class="bar0"></div></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <!-- ============ DESIGN SYSTEM ============ -->
+    <section id="system" data-label="Design system">
+      <div class="s-head">
+        <p class="eyebrow">Eagle Hub Design System</p>
+        <h2>A system extracted from shipped code</h2>
+        <p>A script reads the hub's CSS and writes the tokens and component cards, so token names match the code exactly. When the product changes, the system is rebuilt from it.</p>
+      </div>
+      <div class="ds-grid">
+        <div>
+          <h3>One job per color</h3>
+          <div class="colors" style="margin-top:12px">
+            <div class="crow"><span class="sw" style="background:var(--teal)"></span><div><b>Teal means progress and done</b>Checks, progress bars, the primary button, links, focus.<br><code>--teal · --teal-strong · --teal-soft</code></div></div>
+            <div class="crow"><span class="sw" style="background:var(--now)"></span><div><b>Orange means now and next, only</b>The Up next rule, the now-line, the current step. Never buttons, never warnings.<br><code>--now · --now-ink · --now-soft</code></div></div>
+            <div class="crow"><span class="sw" style="background:var(--warn-mark)"></span><div><b>Amber means a real problem</b>Save errors, "Ask instructor". Never "past and not ticked".<br><code>--warn · --warn-mark · --warn-soft</code></div></div>
+          </div>
+          <div class="neutrals" aria-label="Neutral tokens">
+            <div style="background:var(--ink)"><span>ink</span></div><div style="background:var(--ink-2)"></div><div style="background:var(--muted)"><span>muted</span></div><div style="background:var(--control)"></div><div style="background:var(--line)"><span>line</span></div><div style="background:var(--surface-2)"></div><div style="background:var(--bg)"><span>bg</span></div>
+          </div>
+        </div>
+        <div class="inspect-wrap" id="inspectWrap">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+            <h3>Inspect a component</h3>
+            <button class="toggle" id="inspectToggle" type="button" aria-pressed="false"><i aria-hidden="true"></i>Show tokens</button>
+          </div>
+          <article class="upnext" data-tok="--r-panel · ring --line">
+            <span class="upnext__rule" data-tok="--now"></span>
+            <p class="upnext__eyebrow"><span data-tok="--now-ink">Up next</span>·<u>AI-9 3rd Party APIs</u>·<span>step 1 of 9</span></p>
+            <h3 class="upnext__title"><span data-tok="display 600 22/27">Read the TMDB API docs</span></h3>
+            <p class="upnext__detail" style="margin-top:8px"><span data-tok="--ink-2 · body 15/24">Find the endpoints for trending movies and search, and note what the API key unlocks.</span></p>
+            <div class="upnext__actions"><span class="btn btn--primary btn--sm" data-tok="--teal / --on-teal">Mark step done</span><span class="btn btn--sm" data-tok="--control border">Open guide</span></div>
+          </article>
+          <p class="caption">Turn on "Show tokens" to see which token each part uses. It's the same card as the mockup at the top, built from the same classes.</p>
+        </div>
+      </div>
+
+      <div class="type" aria-label="Type">
+        <div><span class="tlab">Display<br>Plex Sans Condensed 600</span><span style="font:600 30px/1.1 var(--font-display);color:var(--ink)">Do Part I: peer quiz, then FreeCodeCamp</span></div>
+        <div><span class="tlab">Body<br>Plex Sans 15/24</span><span>Mark what you've already finished so Up next points at the right step.</span></div>
+        <div><span class="tlab">Mono<br>Plex Mono 500</span><span class="mono" style="color:var(--ink)">AI-8 · 11:15 · 2 of 10 steps</span></div>
+      </div>
+
+      <dl class="comps">
+        <div><dt>Actions</dt><dd><span class="chip">Button</span><span class="chip">Chip</span></dd></div>
+        <div><dt>Inputs</dt><dd><span class="chip">Checkbox</span><span class="chip">ConfidenceRating</span><span class="chip">WeekGoal</span></dd></div>
+        <div><dt>Content</dt><dd><span class="chip">UpNext</span><span class="chip">StepList</span><span class="chip">CodeBlock</span><span class="chip">Row</span><span class="chip">RecallCard</span></dd></div>
+        <div><dt>Status</dt><dd><span class="chip">StatusIcon</span><span class="chip">StrengthMeter</span></dd></div>
+        <div><dt>Time</dt><dd><span class="chip">DayTimeline</span><span class="chip">CourseRuler</span><span class="chip">Heatmap</span></dd></div>
+        <div><dt>Feedback</dt><dd><span class="chip">Banner</span><span class="chip">Toast</span><span class="chip">EmptyState</span></dd></div>
+        <div><dt>Navigation</dt><dd><span class="chip">Navigation</span><span class="chip">CommandPalette</span></dd></div>
+        <div><dt>Overlays</dt><dd><span class="chip">Sheet</span><span class="chip">Menu</span></dd></div>
+      </dl>
+    </section>
+
+    <!-- ============ MOTION ============ -->
+    <section id="motion" data-label="Motion">
+      <div class="s-head">
+        <p class="eyebrow">Motion system</p>
+        <h2>Motion explains what changed</h2>
+        <p>Every motion answers "what just happened?": a tick landed, the next step arrived, the week goal was met. Nothing moves for decoration. UI motion stays under 300ms, and things you do a hundred times a day, like ⌘K or keyboard shortcuts, don't animate at all.</p>
+      </div>
+      <div class="lab-bar" id="labBar">
+        <p>These are the hub's real motions. Slow them down to see the curves.</p>
+        <div class="lab-bar__ctl">
+          <div class="seg" role="group" aria-label="Playback speed"><button type="button" aria-pressed="true" data-speed="1">1×</button><button type="button" aria-pressed="false" data-speed="4">0.25×</button></div>
+          <button class="btn btn--sm" type="button" id="playAll">Play all</button>
+        </div>
+      </div>
+      <div class="lab">
+        <div class="spec" id="specTick">
+          <div class="spec__stage"><div class="cbrow" id="tickRow"><button class="cb" id="tickCb" type="button" role="checkbox" aria-checked="false" aria-label="Create the two files the prompts read"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><span>Create the two files the prompts read</span></div></div>
+          <div class="spec__meta"><h3>Tick</h3><p>The box fills, then the check draws itself, with a small spring press. The draw starts 40ms late so you see it land.</p></div>
+          <div class="spec__foot"><span class="chip chip--mono">220–260ms</span><span class="chip chip--mono">spring 8%</span><button class="btn btn--sm btn--quiet" type="button" data-play="tick">Play</button></div>
+        </div>
+        <div class="spec" id="specRail">
+          <div class="spec__stage"><div class="steps" id="railDemo">
+            <div class="step" data-current="true"><span class="marker"><span class="n">1</span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="step__t">Do Part I: peer quiz</span></div>
+            <div class="step"><span class="marker"><span class="n">2</span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="step__t">Restructure Myflix</span></div>
+            <div class="step"><span class="marker"><span class="n">3</span><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="step__t">Paste the restructure prompt</span></div>
+          </div></div>
+          <div class="spec__meta"><h3>Step rail</h3><p>The number blurs out as the check draws in. Then a teal line runs down to the next step, which takes the orange ring.</p></div>
+          <div class="spec__foot"><span class="chip chip--mono">320ms</span><span class="chip chip--mono">ease-in-out</span><span class="chip chip--mono">+80ms</span><button class="btn btn--sm btn--quiet" type="button" data-play="rail">Play</button></div>
+        </div>
+        <div class="spec" id="specSwap">
+          <div class="spec__stage"><div class="swap"><div class="swap__b" id="swapBody"><p class="swap__e" id="swapE">Up next · step 2 of 10</p><p class="swap__t" id="swapT">Restructure Myflix into front-end/ + supabase/</p></div></div></div>
+          <div class="spec__meta"><h3>Up next swap</h3><p>The old step fades up and out quickly. The new one rises 8px out of a 3px blur. Exits are faster than entrances.</p></div>
+          <div class="spec__foot"><span class="chip chip--mono">140ms out</span><span class="chip chip--mono">280ms in</span><button class="btn btn--sm btn--quiet" type="button" data-play="swap">Play</button></div>
+        </div>
+        <div class="spec" id="specGoal">
+          <div class="spec__stage"><div>
+            <div class="goal-days" id="labGoal" aria-hidden="true">
+              <span class="gd" style="--i:0"><i><svg width="12" height="12" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>M</span>
+              <span class="gd" style="--i:1"><i><svg width="12" height="12" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>T</span>
+              <span class="gd" style="--i:2"><i><svg width="12" height="12" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>W</span>
+              <span class="gd" style="--i:3"><i><svg width="12" height="12" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>T</span>
+              <span class="gd" style="--i:4"><i><svg width="12" height="12" viewBox="0 0 16 16"><path d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></i>F</span>
+            </div>
+            <p class="side__note" id="labGoalNote" style="text-align:center">Goal: 4 days</p>
+          </div></div>
+          <div class="spec__meta"><h3>Week goal</h3><p>Logging today pops its dot. Meeting the goal sends a wave through the filled dots, 45ms apart. It happens once a week, so it can be a little special.</p></div>
+          <div class="spec__foot"><span class="chip chip--mono">320–360ms</span><span class="chip chip--mono">45ms stagger</span><button class="btn btn--sm btn--quiet" type="button" data-play="goal">Play</button></div>
+        </div>
+      </div>
+
+      <div class="curves" id="curves">
+        <div class="curve" style="--e: var(--ease-out)"><h4>ease-out</h4><code>cubic-bezier(.23, 1, .32, 1)</code><svg viewBox="0 0 100 70" aria-hidden="true" data-curve="0.23,1,0.32,1"></svg><div class="rail-demo"><i></i></div><div class="curve__foot"><span>Anything arriving or leaving</span><button class="btn btn--sm btn--quiet" type="button" data-curve-play>Play</button></div></div>
+        <div class="curve" style="--e: var(--ease-in-out)"><h4>ease-in-out</h4><code>cubic-bezier(.645, .045, .355, 1)</code><svg viewBox="0 0 100 70" aria-hidden="true" data-curve="0.645,0.045,0.355,1"></svg><div class="rail-demo"><i></i></div><div class="curve__foot"><span>Things moving on screen</span><button class="btn btn--sm btn--quiet" type="button" data-curve-play>Play</button></div></div>
+        <div class="curve curve--spring" style="--e: var(--ease-spring)"><h4>spring</h4><code>linear(…) · 8% overshoot</code><svg viewBox="0 0 100 70" aria-hidden="true" data-spring></svg><div class="rail-demo"><i></i></div><div class="curve__foot"><span>Small confirmations only</span><button class="btn btn--sm btn--quiet" type="button" data-curve-play>Play</button></div></div>
+      </div>
+
+      <div class="never">
+        <h3>What never animates, and why</h3>
+        <div class="tablewrap" style="margin-top:12px">
+          <table class="mtable">
+            <thead><tr><th>Element</th><th>Rule</th><th>Reason</th></tr></thead>
+            <tbody>
+              <tr><td>⌘K palette</td><td class="m">none</td><td>Opened many times a day. A fade would only slow it down.</td></tr>
+              <tr><td>Keyboard shortcuts</td><td class="m">none</td><td>j, k, x and 1–5 should feel instant. Motion is for pointer feedback.</td></tr>
+              <tr><td>Now-line</td><td class="m">none</td><td>It moves every minute. Animating it would pull the eye all day.</td></tr>
+              <tr><td>Reduced motion</td><td class="m">all off</td><td>Every animation and transition is removed and state changes happen instantly. A Playwright script checks this. The Motion switch at the top of this page does the same.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============ ACCESSIBILITY ============ -->
+    <section id="access" data-label="Accessibility">
+      <div class="s-head">
+        <p class="eyebrow">Accessibility floor · measured in Chromium</p>
+        <h2>Measured, not eyeballed</h2>
+        <p>Text has to reach 4.5:1 and controls 3:1, in both themes, with 44px targets on phones. Every number below was measured with a script in a real browser.</p>
+      </div>
+      <div class="tablewrap">
+        <table class="mtable">
+          <thead><tr><th>Check</th><th>v1</th><th>v2</th></tr></thead>
+          <tbody>
+            <tr><td>Unticked checkbox border</td><td class="m bad">1.39:1 · 1.34:1 dark</td><td class="m good">3.17:1 · 4.07:1 dark</td></tr>
+            <tr><td>Text on pressed teal, dark</td><td class="m bad">2.39:1</td><td class="m good">7.12:1</td></tr>
+            <tr><td>Focus after a tick</td><td class="m bad">lost to &lt;body&gt;</td><td class="m good">stays on the control</td></tr>
+            <tr><td>Step checkbox target, phone</td><td class="m bad">32 × 32px</td><td class="m good">44px hit area</td></tr>
+            <tr><td>Phone header height</td><td class="m bad">117px</td><td class="m good">49px + tab bar</td></tr>
+            <tr><td>Horizontal overflow at 390px</td><td class="m good">0px</td><td class="m good">0px, 20 runs</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="caption" style="margin-top:12px">Still open after v2: some small targets (code tags, the breadcrumb, Undo) are under 44px.</p>
+    </section>
+
+    <!-- ============ AI ============ -->
+    <section id="ai" data-label="Working with AI">
+      <div class="s-head">
+        <p class="eyebrow">How I worked</p>
+        <h2>AI agents as a review team</h2>
+        <p>I used Claude Code with two specialist agents I configured: a UX auditor and a UI designer. They did a lot of the work. This section says which parts.</p>
+      </div>
+      <div class="ai">
+        <div><h3>What the agents produced</h3><ul><li>Both heuristic reports, with screenshots and measurements</li><li>The Mobbin research and the v2 design brief</li><li>Code drafts for v2, the system generator and the motion QA script</li></ul></div>
+        <div><h3>What I owned</h3><ul><li>The question the product answers, and the bar: "would an experienced product designer ship this?"</li><li>The constraints, the review loop and its order</li><li>Which findings to fix and what shipped</li></ul></div>
+        <div><h3>How it was checked</h3><ul><li>Every claim tied to a screenshot or a measured number</li><li>A second audit against the same 8 tasks, not a fresh, easier list</li><li>Frame captures mid-animation, and a reduced-motion run</li></ul></div>
+      </div>
+      <div class="callout" style="margin-top:28px"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.5" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M8 7v4M8 4.8v.1" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><p><strong>Why say this up front?</strong> The speed (two audits, a system and motion in two days) only makes sense with the AI. What I want you to judge is the direction and the decisions, and those were mine.</p></div>
+    </section>
+
+    <!-- ============ NEXT ============ -->
+    <section id="next" data-label="What's next">
+      <div class="s-head">
+        <p class="eyebrow">Reflection</p>
+        <h2>What I'd do differently, and what's next</h2>
+      </div>
+      <div class="next">
+        <div>
+          <h3>Differently</h3>
+          <ul>
+            <li><strong>Start on the phone.</strong> Every one of v1's worst problems was on the phone, where I actually use it between classes.</li>
+            <li><strong>Write the tokens before v2, not after.</strong> Pulling the system out of shipped code kept it honest, but naming colors earlier would have prevented the orange overload in v1.</li>
+            <li><strong>Get a second user sooner.</strong> I wrote both the tasks and the answers.</li>
+          </ul>
+        </div>
+        <div>
+          <h3>Next</h3>
+          <ul>
+            <li><strong>Task test with 5 classmates.</strong> The same 8 tasks, timed, think-aloud. The key measure is time to find "what do I do now".</li>
+            <li><strong>Watch the review loop for a full cycle.</strong> Ratings come back after 1 to 10 days, so it needs two weeks of real use.</li>
+            <li><strong>Make sync freshness visible on the page</strong>, the one finding still only partly fixed.</li>
+          </ul>
+        </div>
+      </div>
+      <footer class="foot">
+        <b>Jeffrey</b>
+        <span>AI + Full-Stack Software Engineering, Code Platoon, 2026</span>
+        <a class="ext" href="https://github.com/cruzjay188" target="_blank" rel="noopener">GitHub · cruzjay188</a>
+        <span>This page uses the hub's own tokens and components.</span>
+      </footer>
+    </section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(() => {
+  const $ = (s, r = document) => r.querySelector(s);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const root = document.documentElement;
+  const reflow = el => void el.offsetWidth;
+
+  /* ---------- motion switch: defaults to the OS setting ---------- */
+  const osReduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const motionBtn = $("#motionToggle");
+  const motionOn = () => root.dataset.motion ? root.dataset.motion === "on" : !osReduce;
+  function setMotion(on) {
+    root.dataset.motion = on ? "on" : "off";
+    motionBtn.setAttribute("aria-pressed", String(on));
+    try { localStorage.setItem("cs:motion", on ? "on" : "off"); } catch (e) {}
+  }
+  let saved = null; try { saved = localStorage.getItem("cs:motion"); } catch (e) {}
+  if (saved) setMotion(saved === "on"); else motionBtn.setAttribute("aria-pressed", String(!osReduce));
+  motionBtn.addEventListener("click", () => setMotion(!motionOn()));
+  const wait = ms => new Promise(r => setTimeout(r, motionOn() ? ms : 0));
+
+  /* ---------- section rail (the hub's StepList) + reading bar ---------- */
+  const sections = $$("main section[data-label]");
+  const check = '<svg width="11" height="11" viewBox="0 0 16 16" aria-hidden="true"><path pathLength="1" d="M3 8.5l3.2 3L13 4.5" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+  $("#railList").innerHTML = sections.map((s, i) =>
+    `<li data-for="${s.id}"><a href="#${s.id}"><span class="mk"><span class="n">${i + 1}</span>${check}</span>${s.dataset.label}</a></li>`).join("");
+  $(".rail p").textContent = sections.length + " sections";
+  const items = $$("#railList li");
+  let current = -1;
+  function spy() {
+    const y = innerHeight * 0.35;
+    let idx = 0;
+    sections.forEach((s, i) => { if (s.getBoundingClientRect().top < y) idx = i; });
+    if (innerHeight + scrollY >= document.documentElement.scrollHeight - 4) idx = sections.length - 1;
+    if (idx !== current) {
+      current = idx;
+      items.forEach((li, i) => {
+        li.dataset.state = i < idx ? "done" : i === idx ? "now" : "todo";
+        const a = li.querySelector("a");
+        if (i === idx) a.setAttribute("aria-current", "location"); else a.removeAttribute("aria-current");
+      });
+    }
+    const max = document.documentElement.scrollHeight - innerHeight;
+    $("#readBar").style.setProperty("--read", max > 0 ? Math.min(1, scrollY / max).toFixed(4) : 0);
+  }
+  addEventListener("scroll", spy, { passive: true });
+  addEventListener("resize", spy);
+  spy();
+
+  /* ---------- toast (hub Toast) ---------- */
+  const toastEl = $("#toast");
+  let toastT = null;
+  function toast(msg, undo) {
+    clearTimeout(toastT);
+    toastEl.innerHTML = "";
+    const s = document.createElement("span"); s.textContent = msg; toastEl.append(s);
+    if (undo) { const b = document.createElement("button"); b.type = "button"; b.textContent = "Undo"; b.onclick = () => { hideToast(); undo(); }; toastEl.append(b); }
+    if (toastEl.dataset.show !== "true") { toastEl.classList.add("is-from"); reflow(toastEl); toastEl.classList.remove("is-from"); }
+    toastEl.dataset.show = "true";
+    const arm = () => { toastT = setTimeout(hideToast, 4200); };
+    toastEl.onmouseenter = () => clearTimeout(toastT); toastEl.onmouseleave = arm; arm();
+  }
+  function hideToast() { toastEl.dataset.show = "false"; }
+
+  /* ---------- live Up next mock ---------- */
+  const STEPS = [
+    { t: "Do Part I: peer quiz, then FreeCodeCamp", d: "Partner up for the 15-question How Authentication Works quiz (switch reader at question 8), then do 50 steps of the FreeCodeCamp Python certification.", w: "Quiz done with a partner, and FreeCodeCamp shows 50 more Python steps complete.", left: "About 5 hrs left in this guide" },
+    { t: "Restructure Myflix into front-end/ + supabase/", d: "The auth prompts point at front-end/ and supabase/ paths, but Myflix is still flat. Do the restructure from the Full-Stack lecture first.", w: "The root has front-end/ and supabase/, and npm run dev still shows My List.", left: "About 4 hrs 30 min left" },
+    { t: "Paste the restructure prompt", d: "The instructor's prompt, word for word. Read Claude's plan (what moves where) before you approve it.", w: "/mcp shows supabase connected and /agents lists front-end-agent and supabase-agent.", left: "About 4 hrs left" },
+    { t: "Create the two files the prompts read", d: "The Supabase and React prompts read supabase/schema.sql and a user journey outline. Ask Claude to combine your three migration files.", w: "supabase/schema.sql and front-end/app_outline/user_journey.md exist, and you've read both.", left: "About 3 hrs 30 min left" },
+  ];
+  let idx = 0, busy = false;
+  const body = $("#unBody"), gdMon = $("#goalDays .gd");
+  function paintCard() {
+    if (idx >= STEPS.length) {
+      $("#unCount").textContent = "demo complete";
+      $("#unTitle").textContent = "That's the demo. The real guide has 6 more steps.";
+      $("#unDetail").textContent = "Each tick updated the week goal and the course bar without leaving Today. Use Undo in the toast, or reset to try it again.";
+      $("#unDone").textContent = "You've seen how one step finishes in place.";
+      $("#unLeft").textContent = "";
+      $("#markDone").lastChild.textContent = "Reset demo";
+      return;
+    }
+    const s = STEPS[idx];
+    $("#unCount").textContent = `step ${idx + 1} of 10`;
+    $("#unTitle").textContent = s.t; $("#unDetail").textContent = s.d; $("#unDone").textContent = s.w; $("#unLeft").textContent = s.left;
+    $("#markDone").lastChild.textContent = "Mark step done";
+  }
+  function paintProgress(pop) {
+    const done = Math.min(idx, STEPS.length);
+    $("#courseCount").textContent = `${done} of 116 steps`;
+    $("#courseBar").style.setProperty("--w", (done / 116 * 100).toFixed(2) + "%");
+    const on = done > 0;
+    if (on && gdMon.dataset.on !== "true" && pop) { gdMon.classList.remove("is-new"); reflow(gdMon); gdMon.classList.add("is-new"); }
+    gdMon.dataset.on = String(on);
+    $("#goalCount").textContent = `${on ? 1 : 0} of 4 days`;
+    $("#goalNote").innerHTML = `<b>${on ? 3 : 4} more days</b> this week meets your goal.`;
+  }
+  async function swapTo(next, pop) {
+    if (busy) return; busy = true;
+    if (motionOn()) { body.classList.add("is-leaving"); await wait(140); }
+    idx = next; paintCard(); body.classList.remove("is-leaving");
+    if (motionOn()) { body.classList.remove("is-entering"); reflow(body); body.classList.add("is-entering"); }
+    paintProgress(pop);
+    busy = false;
+  }
+  $("#markDone").addEventListener("click", async () => {
+    if (idx >= STEPS.length) { await swapTo(0, false); return; }
+    const title = STEPS[idx].t, prev = idx;
+    await swapTo(idx + 1, true);
+    toast(`Done: ${title}`, () => swapTo(prev, false));
+  });
+  paintCard(); paintProgress(false);
+
+  /* ---------- before / after slider ---------- */
+  const ba = $("#ba"), range = $("#baRange");
+  range.addEventListener("input", () => {
+    ba.style.setProperty("--pos", range.value + "%");
+    range.setAttribute("aria-valuetext", `${range.value}% v1, ${100 - range.value}% v2`);
+  });
+
+  /* ---------- dumbbell chart (scores from the v1 and v2 reports) ---------- */
+  const H = [["Visibility of system status",3,4],["Match with the real world",3,4],["User control and freedom",3,4],["Consistency and standards",3,4],["Error prevention",2,4],["Recognition over recall",3,4],["Flexibility and efficiency",2,4],["Aesthetic and minimalist",3,4],["Error recovery",3,4],["Help and documentation",2,4]];
+  const pct = v => ((v - 1) / 4 * 100) + "%";
+  $("#dumbRows").innerHTML = H.map(([n, a, b]) =>
+    `<div class="dumb__row" role="img" aria-label="${n}: ${a} in v1, ${b} in v2"><span>${n}</span><div class="dumb__track" style="--a:${pct(a)};--b:${pct(b)}"><span class="dumb__seg"></span><span class="dumb__v1"></span><span class="dumb__v2"></span></div><span class="dumb__delta">+${b - a}</span></div>`).join("");
+  function sizeDumb() { $$(".dumb__track").forEach(t => { const r = t.getBoundingClientRect().width; const a = parseFloat(t.style.getPropertyValue("--a")), b = parseFloat(t.style.getPropertyValue("--b")); t.style.setProperty("--px", ((b - a) / 100 * r) + "px"); }); }
+  sizeDumb(); addEventListener("resize", sizeDumb);
+
+  /* ruler for the length chart: 0 to 11,000 in 1,000px steps, on the same 78%-per-9,000 scale */
+  $("#lenRuler").innerHTML = Array.from({ length: 12 }, (_, i) => `<span style="left:${(78 * i * 1000 / 9000).toFixed(3)}%">${i ? (i * 1000).toLocaleString("en-US") : "0"}</span>`).filter((_, i) => i <= 11).join("");
+
+  /* charts are complete at rest; as one first scrolls into view, it snaps to its start state and draws in once */
+  if ("IntersectionObserver" in window) {
+    const io = new IntersectionObserver(es => es.forEach(e => {
+      if (!e.isIntersecting) return;
+      const el = e.target; io.unobserve(el);
+      if (!motionOn()) return;
+      el.classList.add("pending", "instant"); reflow(el); el.classList.remove("instant");
+      requestAnimationFrame(() => requestAnimationFrame(() => el.classList.remove("pending")));
+    }), { threshold: 0 });
+    $$(".pending-able").forEach(el => { if (el.getBoundingClientRect().top > innerHeight) io.observe(el); });
+  }
+
+  /* ---------- decision 2 toggle ---------- */
+  $$("[data-ver-btn]").forEach(b => b.addEventListener("click", () => {
+    $$("[data-ver-btn]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    $("#statusRows").dataset.ver = b.dataset.verBtn;
+  }));
+
+  /* ---------- token inspector ---------- */
+  $("#inspectToggle").addEventListener("click", e => {
+    const on = e.currentTarget.getAttribute("aria-pressed") !== "true";
+    e.currentTarget.setAttribute("aria-pressed", String(on));
+    $("#inspectWrap").classList.toggle("inspecting", on);
+  });
+
+  /* ---------- motion lab ---------- */
+  $$("[data-speed]").forEach(b => b.addEventListener("click", () => {
+    $$("[data-speed]").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    root.style.setProperty("--k", b.dataset.speed);
+  }));
+  const k = () => parseFloat(getComputedStyle(root).getPropertyValue("--k")) || 1;
+
+  const tickCb = $("#tickCb"), tickRow = $("#tickRow");
+  function setTick(on, anim) {
+    tickCb.setAttribute("aria-checked", String(on)); tickRow.dataset.done = String(on);
+    if (on && anim) { tickCb.classList.remove("is-new"); reflow(tickCb); tickCb.classList.add("is-new"); }
+  }
+  tickCb.addEventListener("click", () => setTick(tickCb.getAttribute("aria-checked") !== "true", true));
+
+  const railSteps = $$("#railDemo .step");
+  function setRail(n, anim) {
+    railSteps.forEach((s, i) => {
+      const was = s.dataset.done === "true";
+      s.dataset.done = String(i < n); s.dataset.current = String(i === n);
+      if (anim && i < n && !was) { s.classList.remove("is-new"); reflow(s); s.classList.add("is-new"); }
+    });
+  }
+  railSteps.forEach((s, i) => s.querySelector(".marker").addEventListener("click", () => setRail(s.dataset.done === "true" ? i : i + 1, true)));
+
+  const SW = [["Up next · step 2 of 10", "Restructure Myflix into front-end/ + supabase/"], ["Up next · step 3 of 10", "Paste the restructure prompt"], ["Up next · step 4 of 10", "Create the two files the prompts read"]];
+  let swI = 0;
+  const swapBody = $("#swapBody");
+  async function swapLab() {
+    if (motionOn()) { swapBody.classList.add("is-leaving"); await wait(140 * k()); }
+    swI = (swI + 1) % SW.length;
+    $("#swapE").textContent = SW[swI][0]; $("#swapT").textContent = SW[swI][1];
+    swapBody.classList.remove("is-leaving", "is-entering"); reflow(swapBody); swapBody.classList.add("is-entering");
+  }
+
+  const goalDots = $$("#labGoal .gd"), goalWrap = $("#labGoal");
+  let goalN = 0;
+  function setGoal(n, anim) {
+    goalN = n; goalWrap.classList.remove("is-met");
+    goalDots.forEach((d, i) => {
+      const on = i < n; const was = d.dataset.on === "true"; d.dataset.on = String(on); d.classList.remove("is-new");
+      if (anim && on && !was) { reflow(d); d.classList.add("is-new"); }
+    });
+    $("#labGoalNote").textContent = n >= 4 ? "Goal met: 4 of 4 days" : `Goal: 4 days · ${n} logged`;
+    if (n >= 4 && anim) setTimeout(() => { goalDots.forEach(d => d.classList.remove("is-new")); reflow(goalWrap); goalWrap.classList.add("is-met"); }, 340 * k());
+  }
+  setGoal(0, false);
+
+  const plays = {
+    async tick() { setTick(false, false); await wait(250 * k()); setTick(true, true); },
+    async rail() { setRail(0, false); await wait(250 * k()); setRail(1, true); await wait(700 * k()); setRail(2, true); },
+    async swap() { await swapLab(); },
+    async goal() { setGoal(0, false); for (let n = 1; n <= 4; n++) { await wait(380 * k()); setGoal(n, true); } },
+  };
+  $$("[data-play]").forEach(b => b.addEventListener("click", () => plays[b.dataset.play]()));
+  $("#playAll").addEventListener("click", () => { Object.values(plays).forEach(f => f()); $$(".curve").forEach(playCurve); });
+
+  /* curves: plot cubic-beziers and the spring's linear() points */
+  function bez(x1, y1, x2, y2) {
+    const pts = [];
+    for (let t = 0; t <= 1.0001; t += 0.02) {
+      const u = 1 - t;
+      pts.push([3 * u * u * t * x1 + 3 * u * t * t * x2 + t * t * t, 3 * u * u * t * y1 + 3 * u * t * t * y2 + t * t * t]);
+    }
+    return pts;
+  }
+  const SPR = [0, 0.073, 0.242, 0.445, 0.641, 0.806, 0.93, 1.013, 1.061, 1.081, 1.082, 1.072, 1.056, 1.039, 1.023, 1.011, 1.002, 0.997, 0.994, 0.993, 0.993, 0.995, 1];
+  const toPath = pts => "M" + pts.map(([x, y]) => `${(x * 100).toFixed(2)},${(60 - y * 50).toFixed(2)}`).join(" L");
+  const frame = '<line class="grid" x1="0" y1="60" x2="100" y2="60"/><line class="grid" x1="0" y1="10" x2="100" y2="10" stroke-dasharray="2 2"/>';
+  $$("[data-curve]").forEach(svg => { const [a, b, c, d] = svg.dataset.curve.split(",").map(Number); svg.innerHTML = frame + `<path class="path" d="${toPath(bez(a, b, c, d))}"/>`; });
+  $$("[data-spring]").forEach(svg => { svg.innerHTML = frame + `<path class="path" d="${toPath(SPR.map((v, i) => [i / (SPR.length - 1), v]))}"/>`; });
+  function playCurve(c) {
+    const r = c.querySelector(".rail-demo"); c.style.setProperty("--dist", (r.clientWidth - 20) + "px");
+    c.classList.remove("play"); reflow(c); c.classList.add("play");
+  }
+  $$("[data-curve-play]").forEach(b => b.addEventListener("click", () => playCurve(b.closest(".curve"))));
+})();
+</script>

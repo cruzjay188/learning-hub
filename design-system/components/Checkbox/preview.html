@@ -1,0 +1,21 @@
+<!-- @dsCard group="Inputs" height=150 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Checkbox — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<ul class="rows" style="border-top:0;max-width:560px">
+  <li class="check-row" data-done="true"><button type="button" class="cb" role="checkbox" aria-checked="true" aria-label="Skim the TMDB API docs"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="check-row__text"><p>Skim the TMDB API docs</p><p class="row__sub">You can name 2–3 endpoints you'll use.</p></div></li>
+  <li class="check-row" data-done="false"><button type="button" class="cb" role="checkbox" aria-checked="false" aria-label="Get a TMDB API key"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="check-row__text"><p>Get a TMDB API key</p><p class="row__sub">It's saved in .env.local, not in git.</p></div></li>
+</ul>
+<script>
+document.querySelectorAll('.cb').forEach(function (b) { b.addEventListener('click', function () { var on = b.getAttribute('aria-checked') !== 'true'; b.setAttribute('aria-checked', on); b.closest('.check-row').dataset.done = on; }); });
+</script>
+</body>
+</html>

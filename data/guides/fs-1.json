@@ -1,0 +1,74 @@
+{
+  "id": "fs-1",
+  "code": "FS 1",
+  "title": "Docker Compose",
+  "status": "outline",
+  "summary": "Running a whole app (PostgreSQL, a Django API and a React front end) as one system with Docker Compose: services, networks and volumes, Gunicorn as Django's production server, Nginx serving the React build and passing /api requests to Django, and running migrations inside containers. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Run a database, a Django API and a React front end together from one docker-compose.yml, with Nginx in front.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Do Docker's Compose quickstart",
+      "detail": "The official quickstart builds a tiny two-service app. It shows the `docker compose` commands you'll use every day.",
+      "code": "docker compose version\ndocker compose up -d\ndocker compose ps\ndocker compose down",
+      "codeLabel": "Terminal",
+      "doneWhen": "`docker compose ps` lists the quickstart's services as running."
+    },
+    {
+      "id": "s2",
+      "title": "Read the curriculum's project layout",
+      "detail": "The Full-Stack module expects `client/` (React + Vite), `server/` (Django) and `db/` folders, each with its own Dockerfile. Your Netflix app (assignments/week-02/netflix) is still a flat layout, so compare it to this one.",
+      "doneWhen": "You can say which folder each part of a full-stack app goes in."
+    },
+    {
+      "id": "s3",
+      "title": "Learn how containers find each other",
+      "detail": "Read the Compose networking page. Inside Compose, each service is reachable by its service name.",
+      "doneWhen": "You can explain why Django connects to host `db` instead of `localhost` inside Compose."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Service",
+      "meaning": "One container definition in docker-compose.yml, like db, server or client."
+    },
+    {
+      "term": "Volume",
+      "meaning": "Storage that outlives a container, so the database keeps its data."
+    },
+    {
+      "term": "Docker network",
+      "meaning": "A private network Compose creates so services can reach each other by name."
+    },
+    {
+      "term": "Gunicorn",
+      "meaning": "A production server that runs Django; it replaces `runserver`."
+    },
+    {
+      "term": "Nginx reverse proxy",
+      "meaning": "A web server that serves the React files and forwards /api requests to Django."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Docker Compose",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/1-docker-compose/"
+    },
+    {
+      "label": "Docker docs: Compose quickstart",
+      "url": "https://docs.docker.com/compose/gettingstarted/"
+    },
+    {
+      "label": "Docker docs: Networking in Compose",
+      "url": "https://docs.docker.com/compose/how-tos/networking/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/1-docker-compose/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/0-project-layout/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/1-docker-compose/1-back-end/"
+  ]
+}

@@ -1,0 +1,84 @@
+{
+  "id": "be-1",
+  "code": "BE 1",
+  "title": "RDMS with PostgreSQL",
+  "status": "outline",
+  "summary": "How relational databases work: tables, rows and columns, constraints (NOT NULL, UNIQUE, CHECK, PRIMARY KEY, FOREIGN KEY), running PostgreSQL in Docker, getting around in psql, and writing SQL that filters, sorts, groups and imports CSV data. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Run PostgreSQL in Docker, create tables with constraints, and query them from psql.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Start a practice Postgres in Docker",
+      "detail": "The curriculum runs PostgreSQL in Docker, and you already have Docker. This is a throwaway local database, separate from Supabase. Pick any local-only password; never reuse a real one.",
+      "code": "docker run --name pg-practice -e POSTGRES_PASSWORD=YOUR_LOCAL_PASSWORD -p 5432:5432 -d postgres:17\ndocker exec -it pg-practice psql --version\ndocker exec -it pg-practice psql -U postgres -c \"SELECT version();\"",
+      "codeLabel": "Terminal",
+      "doneWhen": "You see a line that starts with \"PostgreSQL 17\" and a psql version number."
+    },
+    {
+      "id": "s2",
+      "title": "Find the constraints in your Netflix migrations",
+      "detail": "This cohort started with Supabase, which is PostgreSQL underneath, so you are not starting from scratch. You've already written SQL migrations: open assignments/week-02/netflix/supabase/migrations/20261016000000_my_list.sql and 20261016190000_profiles_catalog.sql. Look for `not null`, `check (rating between 0 and 5)`, `references ... on delete cascade` and `name text not null unique`. Those are the exact constraints BE 1 teaches, now typed by hand. Your RLS policies (`auth.uid() = user_id`) are a Supabase feature for per-user rows; in Django that job moves into the API code (BE 7).",
+      "doneWhen": "You can point to one real example each of NOT NULL, CHECK, FOREIGN KEY and UNIQUE in your own migrations."
+    },
+    {
+      "id": "s3",
+      "title": "Practice psql meta-commands",
+      "detail": "psql has backslash commands for looking around. Open psql in the container, make a small table, and inspect it.",
+      "code": "docker exec -it pg-practice psql -U postgres\nCREATE TABLE dogs (id serial PRIMARY KEY, name text NOT NULL, age int CHECK (age >= 0));\n\\dt\n\\d dogs\n\\q",
+      "codeLabel": "Terminal",
+      "doneWhen": "`\\d dogs` shows the three columns and the `age >= 0` check constraint."
+    },
+    {
+      "id": "s4",
+      "title": "Read the Postgres SQL tutorial",
+      "detail": "Read chapter 2 of the official tutorial (creating, populating and querying tables, joins, aggregates). The curriculum's own homework for this module is the SQL Basics reading (chapters 1 and 2), the SQL Basics GitHub exercises and the SQLZoo tutorial; this cohort's homework may differ.",
+      "doneWhen": "You can explain in one sentence what GROUP BY does."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Relational database",
+      "meaning": "Data stored in tables of rows and columns that can point to each other."
+    },
+    {
+      "term": "Constraint",
+      "meaning": "A rule the database enforces on every row, like NOT NULL or CHECK (age >= 0)."
+    },
+    {
+      "term": "Primary key",
+      "meaning": "The column that uniquely identifies each row in a table."
+    },
+    {
+      "term": "Foreign key",
+      "meaning": "A column that must match a primary key in another table, linking the two."
+    },
+    {
+      "term": "psql",
+      "meaning": "PostgreSQL's command-line client for running SQL and backslash commands like \\dt."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Intro to RDBMS",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/1-rdbms/"
+    },
+    {
+      "label": "PostgreSQL tutorial",
+      "url": "https://www.postgresql.org/docs/current/tutorial.html"
+    },
+    {
+      "label": "PostgreSQL docs: Constraints",
+      "url": "https://www.postgresql.org/docs/current/ddl-constraints.html"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 75,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/1-rdbms/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/1-rdbms/0-setup/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/1-rdbms/assignments/",
+    "schedule/syllabus.md (Module 8)",
+    "assignments/week-02/netflix/supabase/migrations/"
+  ]
+}

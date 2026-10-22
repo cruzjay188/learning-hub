@@ -1,0 +1,82 @@
+{
+  "id": "docker",
+  "code": "",
+  "title": "Intro to Docker",
+  "status": "outline",
+  "summary": "Containers: why they exist, how they compare to virtual machines, how a Dockerfile becomes an image and an image becomes a container, and how to inspect and clean them up. The step-by-step arrives when the lecture is published.",
+  "goal": "Write a small Dockerfile, build it into an image, run it as a throwaway container, and clean up after yourself.",
+  "required": [],
+  "steps": [
+    {
+      "title": "Read the two Docker lessons",
+      "detail": "Skim Introduction to Docker and Leveraging Docker on the curriculum site. Watch for: image vs container, the Dockerfile instructions (FROM, COPY, RUN, CMD), and --rm.",
+      "doneWhen": "You can explain the difference between an image and a container.",
+      "id": "s1"
+    },
+    {
+      "title": "Check Docker runs on your Mac",
+      "detail": "Docker is already installed. Open Docker Desktop first, then run a one-off test container. --rm deletes the container when it exits.",
+      "code": "docker --version\ndocker run --rm hello-world\ndocker ps -a",
+      "codeLabel": "Terminal",
+      "doneWhen": "You see \"Hello from Docker!\", and docker ps -a lists no leftover hello-world container.",
+      "id": "s2"
+    },
+    {
+      "title": "Skim the Docker Fundamentals README",
+      "detail": "The curriculum's assignment is Docker Fundamentals: four small tasks, one folder each (task-1-hello on alpine, a file read, env vars, a script), all run as disposable one-off containers. Read it now; wait for Slack before forking.",
+      "code": "gh api repos/Code-Platoon-Assignments/docker-fundamentals/readme -H \"Accept: application/vnd.github.raw\" | less",
+      "codeLabel": "Terminal",
+      "doneWhen": "You know the four tasks and what \"end-state\" each one asks for.",
+      "id": "s3"
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Container",
+      "meaning": "A running, isolated copy of an app and everything it needs."
+    },
+    {
+      "term": "Image",
+      "meaning": "The read-only template a container starts from, built from a Dockerfile."
+    },
+    {
+      "term": "Dockerfile",
+      "meaning": "A text recipe: start FROM a base image, COPY files, RUN setup, set the CMD to run."
+    },
+    {
+      "term": "Container vs VM",
+      "meaning": "A VM fakes a whole computer; a container shares your OS kernel, so it's much lighter and faster."
+    },
+    {
+      "term": "--rm",
+      "meaning": "A docker run flag that deletes the container as soon as it exits."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Docker",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/1-docker/"
+    },
+    {
+      "label": "Curriculum: Introduction to Docker",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/1-docker/1-intro-to-docker/"
+    },
+    {
+      "label": "Curriculum: Leveraging Docker",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/1-docker/2-leveraging-docker/"
+    },
+    {
+      "label": "Assignment: docker-fundamentals",
+      "url": "https://github.com/Code-Platoon-Assignments/docker-fundamentals"
+    }
+  ],
+  "assignments": [
+    "docker-fundamentals"
+  ],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/1-docker/ (overview, TLOs/ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/1-docker/assignments/ (lists Docker Fundamentals)",
+    "Code-Platoon-Assignments/docker-fundamentals README"
+  ]
+}

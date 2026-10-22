@@ -1,0 +1,25 @@
+<!-- @dsCard group="Content" height=400 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>UpNext — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<section class="upnext" style="margin:0 0 8px;max-width:720px" aria-labelledby="up-h"><span class="upnext__back" aria-hidden="true"></span><div class="upnext__body">
+  <p class="upnext__eyebrow"><span>Up next</span><span aria-hidden="true">·</span><a href="#">AI-8 Authentication</a><span class="upnext__step"><span class="ringw " style="width:18px;height:18px" data-done="false" aria-hidden="true"><svg class="ring" viewBox="0 0 20 20" data-zero="false"><circle class="ring__track" cx="10" cy="10" r="8.7" stroke-width="2.6" pathLength="100"/><circle class="ring__fill" cx="10" cy="10" r="8.7" stroke-width="2.6" pathLength="100" style="--p:10"/></svg><span class="ringw__disc"><svg width="10" height="10" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></span><span>Step <span class="tick" aria-hidden="true"><span class="d" style="--d:2"><i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i></span></span><span class="sr-only">2</span> of 10</span></span></p>
+  <div class="segs" style="--n:10" aria-hidden="true"><i data-s="done"></i><i data-s="now"></i><i data-s=""></i><i data-s=""></i><i data-s=""></i><i data-s=""></i><i data-s=""></i><i data-s=""></i><i data-s=""></i><i data-s=""></i></div>
+  <h2 class="upnext__title" id="up-h">Restructure Myflix into front-end/ + supabase/</h2>
+  <p class="upnext__detail">Commit first so you can roll back. Then run the restructure prompt from the Full-Stack lecture.</p>
+  <p class="done-when"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.3 8.2l1.9 1.9 3.6-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Done when</b>The root has front-end/, supabase/, one .claude/ and .mcp.json.</span></p>
+  <div class="upnext__actions"><button type="button" class="btn btn--primary"><svg class="ico-check" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl"><span class="lbl__idle">Mark step done</span><span class="lbl__done" aria-hidden="true">Done</span></span></button><a class="btn btn--quiet" href="#">Open guide</a><span class="upnext__left">About 4.5 hrs left in this guide</span></div>
+</div></section>
+<script>
+document.querySelector('.btn--primary').addEventListener('click', function (e) { var b = e.currentTarget; b.classList.add('is-done'); setTimeout(function () { b.classList.remove('is-done'); }, 1200); });
+</script>
+</body>
+</html>
