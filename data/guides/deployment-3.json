@@ -1,0 +1,76 @@
+{
+  "id": "deployment-3",
+  "code": "Deploy 3",
+  "title": "Dev vs Prod",
+  "status": "outline",
+  "summary": "Locking down a live app: moving secrets and settings (SECRET_KEY, the database password, ALLOWED_HOSTS, CORS allowed origins) into environment variables, closing the exposed database port, and moving the login token out of localStorage into an HttpOnly, Secure cookie. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Turn a working deployed app into a secured one by reading every secret from the environment and keeping the login token in an HttpOnly cookie.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Run Django's deploy check",
+      "detail": "Read Django's deployment checklist, then run the built-in check on your practice project. It lists the dev-only settings this lecture fixes.",
+      "code": "cd ~/Desktop/django-practice && source .venv/bin/activate\npython manage.py check --deploy",
+      "codeLabel": "Terminal",
+      "doneWhen": "You see a list of security warnings (DEBUG, SECRET_KEY, cookies and so on)."
+    },
+    {
+      "id": "s2",
+      "title": "Read MDN on cookies",
+      "detail": "Focus on the HttpOnly, Secure and SameSite attributes.",
+      "doneWhen": "You can explain why an HttpOnly cookie can't be stolen by an injected script but a localStorage token can."
+    },
+    {
+      "id": "s3",
+      "title": "Confirm your Netflix secrets are ignored",
+      "detail": "Your Netflix .gitignore lists `.env` and `.env.local`. Check that git really ignores the file; you'll repeat this check on every project.",
+      "code": "cd ~/Desktop/codeplatoon/assignments/week-02/netflix\ngit check-ignore .env.local",
+      "codeLabel": "Terminal",
+      "doneWhen": "The command prints `.env.local`."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Environment variable",
+      "meaning": "A setting the server reads at startup, so secrets never live in the code."
+    },
+    {
+      "term": "ALLOWED_HOSTS",
+      "meaning": "The list of domain names Django will answer to; anything else gets a 400."
+    },
+    {
+      "term": "CORS",
+      "meaning": "Browser rules for which websites may call your API from JavaScript."
+    },
+    {
+      "term": "HttpOnly cookie",
+      "meaning": "A cookie the browser sends automatically but JavaScript can't read."
+    },
+    {
+      "term": "DEBUG",
+      "meaning": "Django's development mode; it shows detailed errors and must be off in production."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Secrets and Configurations",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-IV/3-dev-vs-prod/1-secrets-and-configs/"
+    },
+    {
+      "label": "Django docs: Deployment checklist",
+      "url": "https://docs.djangoproject.com/en/stable/howto/deployment/checklist/"
+    },
+    {
+      "label": "MDN: Using HTTP cookies",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Guides/Cookies"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/3-dev-vs-prod/1-secrets-and-configs/",
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/3-dev-vs-prod/2-https-cookies/",
+    "Note: the module overview page (phase-IV/3-dev-vs-prod/) is still empty; content came from its two lesson pages"
+  ]
+}

@@ -1,0 +1,172 @@
+{
+  "id": "onboarding",
+  "code": "Day 1",
+  "title": "Onboarding & Installfest (Welcome Aboard, Prep Machine + CLI, Interacting with Assignments)",
+  "status": "full",
+  "summary": "Day 1 turns your Mac into a developer machine: terminal basics, Homebrew, Python, Node, Git, the GitHub CLI, PostgreSQL, Docker and VS Code. It ends with the fork, clone, commit, push loop you use for every assignment.",
+  "goal": "Run Python, JavaScript and SQL from your terminal, and fork, clone, commit and push a Code Platoon assignment.",
+  "required": [
+    "Installfest assignment: CLI Practice (the Terminal Tutor course, then the local test/ folder exercise)",
+    "Installfest goal (TLO): run Python, JS and SQL programs from the command line and install dependencies with pip and npm",
+    "Installfest goal (TLO): write and edit code with VS Code",
+    "Installfest skill (ELO): use git on the command line, logged in to your GitHub account, to clone repos and push code",
+    "Interacting with Assignments: fork the assignment, work on it locally or in Codespaces, run its tests, then commit and push to your fork (no pull request needed)"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Install Docker Desktop and VS Code",
+      "detail": "Your CLAUDE.md already lists Docker and VS Code on this Mac, so this is a check, not a fresh install. In VS Code, open the command palette (Cmd+Shift+P) and run \"Shell Command: Install 'code' command in PATH\" so `code` works from any terminal.",
+      "code": "docker --version",
+      "codeLabel": "Terminal",
+      "doneWhen": "docker --version prints a version, and typing `code .` in a terminal opens that folder in VS Code."
+    },
+    {
+      "id": "s2",
+      "title": "Install Homebrew and check its health",
+      "detail": "Homebrew is the Mac's package manager: it installs and updates developer tools for you. Install it from brew.sh if `brew` isn't found, then update it and run the health check.",
+      "code": "/bin/bash -c \"$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)\"\nbrew update\nbrew doctor",
+      "codeLabel": "Terminal",
+      "doneWhen": "brew doctor says \"Your system is ready to brew.\" Warnings are OK to read and skip for now."
+    },
+    {
+      "id": "s3",
+      "title": "Install Python and a default venv",
+      "detail": "A virtual environment (venv) keeps each project's Python packages separate. Your CLAUDE.md lists Python 3.14, so just confirm it, then create and activate the default venv. Heads-up: the page creates `~/.default`, but its starter .zshrc line says `source $HOME/default/bin/activate` (no dot). Use the same name in both places or new terminals will show an error.",
+      "code": "python3 --version\nbrew install python\ncd ~\npython3 -m venv .default\nsource ~/.default/bin/activate",
+      "codeLabel": "Terminal",
+      "doneWhen": "You see (.default) at the start of your prompt, and `deactivate` removes it."
+    },
+    {
+      "id": "s4",
+      "title": "Install Node.js and npm",
+      "detail": "Node runs JavaScript outside the browser; npm installs JavaScript packages. Your CLAUDE.md lists Node 26, so the version checks are the important part.",
+      "code": "brew install npm\nsudo npm install -g n\nsudo n stable\nnode -v\nnpm -v",
+      "codeLabel": "Terminal",
+      "doneWhen": "node -v and npm -v both print version numbers."
+    },
+    {
+      "id": "s5",
+      "title": "Configure Git and log in to GitHub",
+      "detail": "Git saves snapshots of your code on your machine; GitHub stores them online. Use your GitHub username (cruzjay188) and the email on your GitHub account. You're already logged in to `gh` as cruzjay188, so the clone test just proves it works.",
+      "code": "git config --global user.name \"<YOUR_NAME>\"\ngit config --global user.email \"<YOUR_EMAIL>\"\ngit config --global core.editor \"code --wait\"\ngit config --global -l\ngh auth login\ngh repo clone lodash/lodash\nrm -rf lodash",
+      "codeLabel": "Terminal",
+      "doneWhen": "git config --global -l shows your user.name, user.email and core.editor=code --wait, and the lodash clone works."
+    },
+    {
+      "id": "s6",
+      "title": "Install PostgreSQL and open psql",
+      "detail": "PostgreSQL is the database the course uses later (Supabase runs it in the cloud). Your CLAUDE.md doesn't list Postgres, so check whether you did this on Day 1.",
+      "code": "brew install postgresql@14\nbrew services restart postgresql@14\npsql postgres",
+      "codeLabel": "Terminal",
+      "doneWhen": "Your prompt changes to postgres=#. Type \\q to leave."
+    },
+    {
+      "id": "s7",
+      "title": "Add Live Server to VS Code",
+      "detail": "Every Knowledge Check is a team quiz you open with Live Server (right-click index.html → Open with Live Server). It's in the Installfest's recommended extensions, along with ESLint, Prettier, GitLens and others.",
+      "doneWhen": "Right-clicking an index.html in VS Code shows \"Open with Live Server\"."
+    },
+    {
+      "id": "s8",
+      "title": "Practice the command line (CLI Practice)",
+      "detail": "Do the Terminal Tutor course, then the README's exercise on your own Mac: make a test folder in ~, make test.txt with touch, edit it with `code`, view it with head/tail/less, go up a level and delete the folder. progress.md shows cli-practice as done, so use the README's \"Points to Ponder\" (cd ., cd .., cd ~, cd /, making, renaming and deleting files) as a self-quiz.",
+      "doneWhen": "You can answer every Points to Ponder question without looking it up."
+    },
+    {
+      "id": "s9",
+      "title": "Learn the fork, clone, commit, push loop",
+      "detail": "Fork the assignment on GitHub (your own copy), clone your fork, work, then commit and push. In this workspace `/start-assignment` and `/save-project` do this for you, but know the manual commands too. Assignments aren't graded, and you submit by pushing.",
+      "code": "git clone https://github.com/your-username/assignment-name.git\ncd assignment-name\ngit status\ngit add .\ngit commit -m \"Complete assignment section 1\"\ngit push origin main",
+      "codeLabel": "Terminal",
+      "doneWhen": "Your commit shows on your fork's GitHub page (for example github.com/cruzjay188/cli-practice)."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "CLI (command line interface)",
+      "meaning": "Typing text commands in a terminal instead of clicking around a window."
+    },
+    {
+      "term": "Unix",
+      "meaning": "The family of operating systems macOS and Linux come from, which is why they share commands like ls and cd."
+    },
+    {
+      "term": "Package manager",
+      "meaning": "A tool that installs and updates software for you: brew for the Mac, pip for Python, npm for JavaScript."
+    },
+    {
+      "term": "Virtual environment (venv)",
+      "meaning": "A folder that holds one project's Python packages so projects don't clash."
+    },
+    {
+      "term": ".zshrc",
+      "meaning": "A settings file your terminal runs every time it opens, used for PATH changes and aliases."
+    },
+    {
+      "term": "Absolute vs relative path",
+      "meaning": "An absolute path starts from / (the top of the disk); a relative path starts from the folder you're in."
+    },
+    {
+      "term": "Fork",
+      "meaning": "Your own copy of someone else's GitHub repo, under your account."
+    },
+    {
+      "term": "Clone",
+      "meaning": "Downloading a GitHub repo to your computer."
+    },
+    {
+      "term": "Commit / push",
+      "meaning": "A commit is a saved snapshot on your machine; a push uploads your commits to GitHub."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Installfest",
+      "url": "https://codeplatoon.github.io/se-curriculum/Installfest/"
+    },
+    {
+      "label": "Curriculum: Preparing your Machine",
+      "url": "https://codeplatoon.github.io/se-curriculum/Installfest/1-preparing-your-machine/"
+    },
+    {
+      "label": "Curriculum: Command Line Interface",
+      "url": "https://codeplatoon.github.io/se-curriculum/Installfest/2-command-line-interface/"
+    },
+    {
+      "label": "Curriculum: Manual Installment",
+      "url": "https://codeplatoon.github.io/se-curriculum/Installfest/3-manual-installment/"
+    },
+    {
+      "label": "Curriculum: Dev Containers (the easy alternative)",
+      "url": "https://codeplatoon.github.io/se-curriculum/Installfest/4-dev-containers/"
+    },
+    {
+      "label": "Curriculum: Interacting with Assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/Installfest/5-interacting-with-assignments/"
+    },
+    {
+      "label": "Assignment: cli-practice",
+      "url": "https://github.com/Code-Platoon-Assignments/cli-practice"
+    },
+    {
+      "label": "Terminal Tutor",
+      "url": "https://www.terminaltutor.com/"
+    }
+  ],
+  "assignments": [
+    "cli-practice"
+  ],
+  "estMinutes": 240,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/Installfest/ (TLOs and ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/Installfest/assignments/ (CLI Practice)",
+    "https://codeplatoon.github.io/se-curriculum/Installfest/1-preparing-your-machine/ (Docker, VS Code, code command, extensions)",
+    "https://codeplatoon.github.io/se-curriculum/Installfest/3-manual-installment/ (Homebrew, Python, venv, Node, Git, gh, PostgreSQL, .zshrc)",
+    "https://codeplatoon.github.io/se-curriculum/Installfest/5-interacting-with-assignments/ (fork, clone, commit, push)",
+    "https://github.com/Code-Platoon-Assignments/cli-practice README",
+    "~/Desktop/codeplatoon/schedule/schedule.md (Mon Oct 5 sessions)",
+    "~/Desktop/codeplatoon/progress.md (cli-practice status) and CLAUDE.md (installed tools)",
+    "No material found for the Welcome Aboard or Student Portal Onboarding sessions"
+  ]
+}

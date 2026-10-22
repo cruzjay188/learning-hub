@@ -1,0 +1,161 @@
+{
+  "id": "ai-1",
+  "code": "AI-1",
+  "title": "Working with LLMs",
+  "status": "full",
+  "summary": "How large language models produce text (next-token prediction, Transformers, attention), and how to write prompts that reliably get useful answers using the CREF framework and named prompting techniques.",
+  "goal": "Write a structured prompt with CREF and work out whether a bad answer came from your prompt or from the model's limits.",
+  "required": [
+    "Part I: IBM – Getting Started with Generative AI",
+    "Part I: Anthropic – AI Fluency for Students",
+    "Part I: Anthropic – AI Capabilities & Limitations",
+    "Part I: FreeCodeCamp Python Certification – complete 50 steps",
+    "Part II: IBM – Craft Precise Prompts for AI Models",
+    "Part II: FreeCodeCamp JavaScript Certification – complete 100 steps"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read \"What are Large Language Models\"",
+      "detail": "Follow the path from rule-based to retrieval-based to generative chatbots, then how an LLM predicts the next token. Note which models are encoder-only, decoder-only or encoder-decoder, and how Claude, Gemini and ChatGPT compare.",
+      "doneWhen": "You can explain next-token prediction to a friend in two sentences."
+    },
+    {
+      "id": "s2",
+      "title": "Learn CREF and the five bad-prompt patterns",
+      "detail": "CREF stands for Clarity, Role/Context, Examples, Format. The five failure patterns are too vague, missing context, contradictory, overloaded and assumed knowledge. Study the lecture's \"Anatomy of a Good Prompt\".",
+      "code": "[Role / Persona]\nYou are a software engineering instructor teaching junior developers.\n\n[Context]\nThe student just learned about for loops in Python and is now seeing list \ncomprehensions for the first time.\n\n[Task]\nExplain list comprehensions step by step, starting from the equivalent for loop,\nand then showing the compressed syntax.\n\n[Format]\nUse a code block for each example. Keep the explanation under 200 words.\n\n[Constraint]\nDo not use lambda functions or any concepts beyond basic iteration.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You can take a vague prompt like \"Help me with my code\" and rewrite it to fix each CREF gap."
+    },
+    {
+      "id": "s3",
+      "title": "Run the iterative prompting experiment",
+      "detail": "Open Claude, ChatGPT and Gemini in three tabs. Work through Scenario 1's six prompts in order in one conversation, then Scenario 2 (Resume Review). After each answer, note what the model assumed and what was missing. The first two prompts are below; the rest are on the page.",
+      "code": "Help me plan a birthday party.\n\nPlan a birthday party for my 8-year-old daughter. There will be 15 kids.\nOur budget is $200.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You have a short note on which refinement changed the answer most, and which model did best at each stage."
+    },
+    {
+      "id": "s4",
+      "title": "Try the four named techniques",
+      "detail": "Zero-shot (no examples), few-shot (2–3 examples first), chain-of-thought (reason step by step) and role/persona. Try the lecture's chain-of-thought example, then write one of each for something from your own week.",
+      "code": "A Django view is returning a 500 error when a POST request comes in but works fine\nfor GET requests. Think through the most likely causes step by step, then suggest\na debugging strategy.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You've written and tested one prompt for each technique."
+    },
+    {
+      "id": "s5",
+      "title": "Diagnose a bad response",
+      "detail": "Ask \"whose fault is it?\" A prompt problem (too general, missed the point, inconsistent) is fixed by rewording. A model limit (hallucination, knowledge cutoff, context window, capability ceiling) needs a different approach, like pasting in current docs. If three rewrites fail the same way, it's probably the model.",
+      "doneWhen": "You can name the four model limitations and what to do about each."
+    },
+    {
+      "id": "s6",
+      "title": "Part I: IBM and Anthropic courses",
+      "detail": "Do IBM's Getting Started with Generative AI, then Anthropic's AI Fluency for Students and AI Capabilities & Limitations. The page warns that AI changes fast, so some course content may be outdated. These aren't tracked in progress.md, so keep your own checklist.",
+      "doneWhen": "All three courses show as completed in their platforms."
+    },
+    {
+      "id": "s7",
+      "title": "Part I: 50 FreeCodeCamp Python steps",
+      "detail": "Complete 50 steps of the FreeCodeCamp Python certification.",
+      "doneWhen": "Your FreeCodeCamp progress shows 50 more Python steps done."
+    },
+    {
+      "id": "s8",
+      "title": "Part II: precise prompts + 100 JavaScript steps",
+      "detail": "Do IBM's Craft Precise Prompts for AI Models, then 100 steps of the FreeCodeCamp JavaScript certification. (The page's JavaScript line says \"for receiving your Python Certification\", which looks like a typo; the link goes to JavaScript.)",
+      "doneWhen": "The IBM course is complete and FreeCodeCamp shows 100 more JavaScript steps."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "LLM (large language model)",
+      "meaning": "A model trained on huge amounts of text that writes by predicting the next token over and over."
+    },
+    {
+      "term": "Next-token prediction",
+      "meaning": "The model picks the most likely next piece of text, adds it, and repeats."
+    },
+    {
+      "term": "Transformer / attention",
+      "meaning": "The model design that lets an LLM weigh every part of the conversation at once when choosing the next token."
+    },
+    {
+      "term": "Prompt engineering",
+      "meaning": "Shaping what you give a model, on purpose, so its answers are accurate and in the format you need."
+    },
+    {
+      "term": "CREF",
+      "meaning": "Clarity, Role/Context, Examples, Format: four checks for a good prompt."
+    },
+    {
+      "term": "Zero-shot / few-shot",
+      "meaning": "Asking with no examples vs. showing 2–3 input → output examples first."
+    },
+    {
+      "term": "Chain-of-thought",
+      "meaning": "Asking the model to reason step by step before answering, which helps with debugging and math."
+    },
+    {
+      "term": "Hallucination",
+      "meaning": "A confident, plausible answer that is simply wrong."
+    },
+    {
+      "term": "Knowledge cutoff",
+      "meaning": "The date the model's training data ends; it doesn't know anything newer unless you paste it in."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Working with LLMs",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/"
+    },
+    {
+      "label": "Lecture: What are Large Language Models",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/1-what-are-llms/"
+    },
+    {
+      "label": "Lecture: Prompt Engineering",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/2-prompt-engineering/"
+    },
+    {
+      "label": "Assignments page (course links)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/assignments/"
+    },
+    {
+      "label": "IBM: Getting Started with Generative AI",
+      "url": "https://skills.yourlearning.ibm.com/activity/PLAN-BAEFCCAAD520?ngo-id=0302"
+    },
+    {
+      "label": "IBM: Craft Precise Prompts for AI Models",
+      "url": "https://skills.yourlearning.ibm.com/activity/PLAN-FEE211806964?ngo-id=0302"
+    },
+    {
+      "label": "Anthropic: AI Fluency for Students",
+      "url": "https://anthropic.skilljar.com/ai-fluency-for-students"
+    },
+    {
+      "label": "Anthropic: AI Capabilities & Limitations",
+      "url": "https://anthropic.skilljar.com/ai-capabilities-and-limitations"
+    },
+    {
+      "label": "FreeCodeCamp: Python",
+      "url": "https://www.freecodecamp.org/learn/python-v9/"
+    },
+    {
+      "label": "FreeCodeCamp: JavaScript",
+      "url": "https://www.freecodecamp.org/learn/javascript-v9/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 300,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/ (lesson goals, TLO, ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/assignments/ (Part I and Part II list)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/2-prompt-engineering/ (CREF, bad patterns, techniques, diagnosis, iterative scenarios)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/1-working-w-llms/1-what-are-llms/",
+    "No Knowledge Check in Code-Platoon-Assignments covers this lecture (KC3 starts at Coding Assistants)"
+  ]
+}

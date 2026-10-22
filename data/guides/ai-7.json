@@ -1,0 +1,177 @@
+{
+  "id": "ai-7",
+  "code": "AI-7",
+  "title": "Full Stack Applications",
+  "status": "full",
+  "summary": "First send CRUD requests to your Supabase database's REST API by hand in Postman. Then restructure the project into front-end/ + supabase/ and have Claude's front-end and Supabase subagents connect the React app, so your data survives a refresh.",
+  "goal": "Connect your React app to Supabase through one service file, so every add, edit and delete is saved in the database.",
+  "required": [
+    "Homework Part I, priority 1: Send Requests – every CRUD request in Postman against your Netflix Clone's database (class-site steps 1–5)",
+    "Homework Part I, priority 2: your personal project – the same work (steps 2–5) against your own app's database",
+    "Homework Part I, priority 3: FreeCodeCamp – 50 steps of the Python certification",
+    "Homework Part II, priority 1: Netflix Clone III – make it full-stack (restructure to front-end/ + supabase/ + one .claude, .env + .gitignore, the prompt, prove it, commit)",
+    "Homework Part II, priority 2: your own app – give it memory. Same steps.",
+    "Homework Part II, priority 3: FreeCodeCamp – 100 steps of the JavaScript certification",
+    "agentic-netflix-clone-III: merge your SPA and Supabase project into your first full-stack application"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Install Postman; find your URL and key",
+      "detail": "In Supabase → Integrations → Data API, copy the Project URL and delete the /rest/v1/ ending; that's your base_url. Copy the Publishable key from Project Settings → API Keys, never the secret key. Myflix already has postman/myflix.postman_collection.json; open it to see how far it gets.",
+      "code": "brew install --cask postman",
+      "codeLabel": "Terminal",
+      "doneWhen": "Postman is open with a collection whose variables are base_url and publishable_key (values saved in Postman, not in git)."
+    },
+    {
+      "id": "s2",
+      "title": "Decide on RLS before testing",
+      "detail": "In class, the tables had RLS with no policies, so the publishable key got [] back, and this prompt added temporary open policies. Myflix is different: its policies already use anonymous sign-in and auth.uid(), so an empty [] from Postman is expected. Opening access would undo that. Ask in #eagle_questions before adding dev policies to Myflix. For your own app, the class prompt fits.",
+      "code": "My tables have Row Level Security on with no policies, so my publishable key gets [] back in Postman and can't add rows. We don't have logins yet.\n\nUsing the Supabase MCP, add TEMPORARY development policies that let the anon role read and write all my tables (LIST YOUR TABLES). Name each one \"dev: open access until auth\". Show me the SQL first and wait for my approval.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You know why GET returns what it returns, and any new policy SQL was read and approved by you."
+    },
+    {
+      "id": "s3",
+      "title": "Send every CRUD request in Postman",
+      "detail": "For each table, send a POST (add Prefer:return=representation to get the new row back), a GET of all rows, a GET with a filter (?column=eq.value), a PATCH (?id=eq.<id>) and a DELETE. Always filter a PATCH or DELETE. Note each status code and check what changed in the Table Editor. Use these headers on every request:",
+      "code": "apikey:{{publishable_key}}\nAuthorization:Bearer {{publishable_key}}\nContent-Type:application/json",
+      "codeLabel": "Browser",
+      "doneWhen": "Each table has a saved POST, GET, filtered GET, PATCH and DELETE, and you wrote down every status code."
+    },
+    {
+      "id": "s4",
+      "title": "Write supabase/api_notes.md",
+      "detail": "This file doesn't exist in Myflix yet. Give one working example request per table, plus anything tricky: required columns, foreign keys, the filters your app needs, and errors you hit. It's context for Claude in Part II.",
+      "codeLabel": "File",
+      "doneWhen": "assignments/week-02/netflix/supabase/api_notes.md has one example per table and a list of gotchas."
+    },
+    {
+      "id": "s5",
+      "title": "Commit, then restructure the folders",
+      "detail": "Not done yet: assignments/week-02/netflix is still a flat layout. Commit first so you can undo anything. Then start claude in the netflix root and paste the class prompt. Myflix already has .mcp.json and a single .claude/ at the root, and supabase/ holds migrations/ rather than schema.sql. Approve the move plan only after reading it.",
+      "code": "git add -A && git commit -m \"Before full-stack\"\n\nRestructure this project into the full-stack layout below. Move files only: don't change any code.\n\nmy-app/\n├── .claude/ skills/ and agents/ from BOTH ./.claude and ./supabase/.claude, merged\n├── .mcp.json moved up from supabase/\n├── front-end/ everything that belongs to the React app (src, public, app_outline, index.html, package files, vite and lint config, .gitignore, node_modules)\n├── supabase/ my database files (schema.sql, user_stories.md, ERD screenshot, api_notes.md)\n├── CLAUDE.md update it to describe both halves\n└── README.md\n\nShow me the plan (what moves where) first and wait for my approval.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "The root has front-end/, supabase/, one .claude/, .mcp.json, CLAUDE.md and README.md. After restarting claude, /mcp shows supabase and /agents shows front-end-agent and supabase-agent."
+    },
+    {
+      "id": "s6",
+      "title": "Keep the key out of git",
+      "detail": "The env file must sit next to package.json, so after the move it goes in front-end/. Myflix uses .env.local (Vite reads it too); the class names the file .env. Put your values in with no quotes, and make sure front-end/.gitignore lists both .env and .env.local.",
+      "code": "VITE_SUPABASE_URL=https://your-project-id.supabase.co\nVITE_SUPABASE_ANON_KEY=your-publishable-key",
+      "codeLabel": "File",
+      "doneWhen": "git status from the root lists no .env or .env.local file."
+    },
+    {
+      "id": "s7",
+      "title": "Hand it to Claude on Opus",
+      "detail": "Run /model and pick Opus, then paste the class prompt (you can add @supabase/api_notes.md). Myflix already saves My List to Supabase; the gap from your Oct 18 review is that shows still load from src/data/shows.js. Tell Claude to keep your existing anonymous sign-in as it is. Before approving the plan, check for one service file, keys from import.meta.env, no new tables and no RLS changes.",
+      "code": "My current front-end application is working as desired and I want to preserve the existing UI and user experience along with my supabase projects database structure. Now I would like to integrate these two projects as one (expose API endpoints and connect UI actions within the React app to the Supabase project) to create a full stack application.\n\nI want you to use the subagents of front-end-agent and supabase-agent to communicate with one another to accomplish this task while using you as their main orchestrator for this task.\n\nDo not change any fundamental functionality and/or data without my approval.\n\n**DO NOT IMPLEMENT AUTHENTICATION NOR AUTHORIZATION PRINCIPLES**\n\nOnce the Sub-Agents return a completed action use both the Playwright MCP and the Supabase MCP to walk through the applications features yourself and test them out to ensure a successful integration.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You approved a plan that keeps your UI and schema, and Claude finished with a Playwright and Supabase walkthrough."
+    },
+    {
+      "id": "s8",
+      "title": "Prove it works, then commit",
+      "detail": "Add something in the app and refresh: it should still be there, and you should find the row in the Table Editor. Then add a row in the Table Editor and refresh the app: it should appear. Read Claude's list of assumptions. Finally run git status (no env file!) and save with /save-project.",
+      "code": "cd front-end && npm run dev",
+      "codeLabel": "Terminal",
+      "doneWhen": "Data survives a refresh in both directions, and the commit is on github.com/cruzjay188/netflix."
+    },
+    {
+      "id": "s9",
+      "title": "Your own app, then FreeCodeCamp",
+      "detail": "Priority 2 is to repeat steps 1–8 for your own app's database once it exists (see AI-5 and AI-6). Priority 3 is 50 Python steps (Part I) and 100 JavaScript steps (Part II).",
+      "doneWhen": "Your own app keeps its data after a refresh, and FreeCodeCamp shows the new steps."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "API",
+      "meaning": "The doorway one program uses to ask another for data, here your app asking Supabase."
+    },
+    {
+      "term": "REST / endpoint",
+      "meaning": "A style of API where each URL (endpoint) is a resource, like /rest/v1/titles."
+    },
+    {
+      "term": "HTTP methods",
+      "meaning": "POST creates, GET reads, PATCH/PUT updates, DELETE removes."
+    },
+    {
+      "term": "Status codes",
+      "meaning": "2xx it worked, 4xx your request has a problem (401 bad key or RLS), 5xx the server broke."
+    },
+    {
+      "term": "Publishable key",
+      "meaning": "The browser-safe Supabase key; RLS decides what it can see."
+    },
+    {
+      "term": "Policy",
+      "meaning": "One RLS rule, such as \"users can only read their own rows\"."
+    },
+    {
+      "term": "Service layer",
+      "meaning": "One file that holds every Supabase request, so components never call the database directly."
+    },
+    {
+      "term": ".env / import.meta.env",
+      "meaning": "A private file of settings like keys, read in Vite code as import.meta.env.VITE_…"
+    },
+    {
+      "term": "Postman",
+      "meaning": "An app for sending API requests by hand and reading the responses."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Lecture site: Claude and Full-Stack Apps",
+      "url": "https://kabeier.github.io/Claude-and-full-stack-apps/"
+    },
+    {
+      "label": "Slides: RESTful APIs",
+      "url": "https://kabeier.github.io/Claude-and-full-stack-apps/lecture-1-restful-apis/slides.html"
+    },
+    {
+      "label": "Slides: Connecting it All",
+      "url": "https://kabeier.github.io/Claude-and-full-stack-apps/lecture-2-connecting-it-all/slides.html"
+    },
+    {
+      "label": "Ticked API in Postman (walkthrough + fix-it table)",
+      "url": "https://kabeier.github.io/Claude-and-full-stack-apps/postman/"
+    },
+    {
+      "label": "All the prompts + good answers to Claude's questions",
+      "url": "https://github.com/kabeier/Claude-and-full-stack-apps/blob/main/demo-kit/prompts.md"
+    },
+    {
+      "label": "supabaseApi.js (example service layer)",
+      "url": "https://github.com/kabeier/Claude-and-full-stack-apps/blob/main/demo-kit/backup-ticked-fullstack/front-end/src/services/supabaseApi.js"
+    },
+    {
+      "label": "dev-policies.sql",
+      "url": "https://github.com/kabeier/Claude-and-full-stack-apps/blob/main/demo-kit/dev-policies.sql"
+    },
+    {
+      "label": "Postman downloads",
+      "url": "https://www.postman.com/downloads/"
+    },
+    {
+      "label": "Assignment: agentic-netflix-clone-III",
+      "url": "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-III"
+    }
+  ],
+  "assignments": [
+    "agentic-netflix-clone-III"
+  ],
+  "estMinutes": 480,
+  "sources": [
+    "https://kabeier.github.io/Claude-and-full-stack-apps/ (index.html: Homework Part I steps 1–5 and Part II steps 6–9, all prompts and commands)",
+    "https://kabeier.github.io/Claude-and-full-stack-apps/lecture-1-restful-apis/slides.html (Homework, Part I priorities; status codes)",
+    "https://kabeier.github.io/Claude-and-full-stack-apps/lecture-2-connecting-it-all/slides.html (Homework, Part II priorities)",
+    "https://github.com/kabeier/Claude-and-full-stack-apps/blob/main/demo-kit/prompts.md",
+    "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-III README",
+    "~/Desktop/codeplatoon/hub/guides/README.md (flat layout, missing api_notes.md, anonymous sign-in with auth.uid() RLS)",
+    "~/Desktop/codeplatoon/notes/projects/Netflix Clone.md (shows still from src/data/shows.js) and the netflix repo (.env.example, .gitignore, postman/)"
+  ]
+}

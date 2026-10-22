@@ -1,0 +1,183 @@
+{
+  "id": "ai-8",
+  "code": "AI-8",
+  "title": "Authentication",
+  "status": "full",
+  "summary": "How logins work (authentication = who you are, authorization = what you may do, 401 vs 403, JWTs), then Claude Code gives your app real email accounts, with the database's RLS rules deciding who sees what.",
+  "goal": "Replace Myflix's anonymous sign-in with real Register, Log in and Log out, so each account sees only its own lists and comments, enforced by RLS with auth.uid().",
+  "required": [
+    "Homework Part I, priority 1: How Authentication Works peer quiz (agentic-authentication-quiz)",
+    "Homework Part I, priority 2: 50 steps of the FreeCodeCamp Python certification",
+    "Homework Part II, priority 1: your own app: add authentication (lecture steps 4–8) with proper RLS rules",
+    "Homework Part II, priority 2: Netflix Clone IV: the same steps on your Netflix clone",
+    "Homework Part II, priority 3: 100 steps of the FreeCodeCamp JavaScript certification"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Do Part I: peer quiz, then FreeCodeCamp",
+      "detail": "Partner up for the 15-question How Authentication Works quiz (switch reader at question 8), then do 50 steps of the FreeCodeCamp Python certification. Optional practice from the lecture site: steps 2–3 (get a real token in Postman with the Ticked Auth collection, read it in the JWT X-ray, then delete the test account). You have no personal app yet, so Netflix is your Part II target; ask in #eagle_questions if you should start one.",
+      "doneWhen": "Quiz done with a partner, and FreeCodeCamp shows 50 more Python steps complete."
+    },
+    {
+      "id": "s2",
+      "title": "Restructure Myflix into front-end/ + supabase/",
+      "detail": "Different for you: the auth prompts point at front-end/… and supabase/… paths, but Myflix is still flat. Do the restructure from the Full-Stack lecture first (Homework Part II, step 6). Run it in ~/Desktop/codeplatoon/assignments/week-02/netflix after committing. Your .mcp.json is already in the root, so tell Claude it stays there. Your keys file is .env.local; it moves into front-end/ next to package.json.",
+      "code": "git add -A && git commit -m \"Before full-stack\"",
+      "codeLabel": "Terminal",
+      "doneWhen": "The root has front-end/, supabase/, .claude/, .mcp.json, CLAUDE.md and README.md. cd front-end && npm run dev still shows My List, and git status does not list .env.local."
+    },
+    {
+      "id": "s3",
+      "title": "Paste the restructure prompt",
+      "detail": "Instructor prompt from the Full-Stack lecture, word for word. Read Claude's plan (what moves where) before you approve. Then exit Claude, start it again in the root, choose Use this MCP server, and check /mcp (supabase connected) and /agents (front-end-agent and supabase-agent).",
+      "code": "Restructure this project into the full-stack layout below. Move files only: don't change any code.\n\nmy-app/\n├── .claude/      skills/ and agents/ from BOTH ./.claude and ./supabase/.claude, merged\n├── .mcp.json     moved up from supabase/\n├── front-end/    everything that belongs to the React app (src, public, app_outline, index.html, package files, vite and lint config, .gitignore, node_modules)\n├── supabase/     my database files (schema.sql, user_stories.md, ERD screenshot, api_notes.md)\n├── CLAUDE.md     update it to describe both halves\n└── README.md\n\nShow me the plan (what moves where) first and wait for my approval.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "/mcp shows supabase connected and /agents lists front-end-agent and supabase-agent."
+    },
+    {
+      "id": "s4",
+      "title": "Create the two files the prompts read",
+      "detail": "Different for you: the Supabase and Vite + React prompts read supabase/schema.sql and front-end/app_outline/user_journey.md, and Myflix has neither. Your schema lives in three files in supabase/migrations/. Ask Claude to combine them into one supabase/schema.sql (keep the migrations) and to write user_journey.md from what the app does today. This prompt is a suggestion, not from the lecture.",
+      "code": "Read the three files in supabase/migrations/ and write supabase/schema.sql: the whole current database (tables, the on_auth_user_created trigger, functions, RLS policies, and the catalog seed rows) in one file. Don't change the database. Then write front-end/app_outline/user_journey.md describing what a user can do in the app today, page by page. Show me both files before saving.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "supabase/schema.sql and front-end/app_outline/user_journey.md exist, and you've read both."
+    },
+    {
+      "id": "s5",
+      "title": "Back up, then drop the tables",
+      "detail": "Lecture step 4. Turn Confirm email off first (Authentication → Sign In / Providers → Email → Confirm email off → Save; development only). Export each table to CSV (Table Editor → table → Export → Export to CSV) into supabase/backups/, e.g. lists_backup_2026-10-19.csv. Your tables: profiles, genres, shows, list_entries, list_comments, lists, list_items. Your functions: handle_new_user and set_updated_at. Authentication → Users must be empty, so delete your anonymous test users. Then in Claude (root, /model → Opus) paste the instructor prompt with your tables in place of (LIST YOUR TABLES).",
+      "code": "I backed up all my tables to CSV in supabase/backups/. Using the Supabase MCP, drop my app's tables (LIST YOUR TABLES) and any functions I made for them, so the project is empty. Show me the SQL first and wait for my approval.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "7 CSVs are in supabase/backups/, Authentication → Users is empty, and Table Editor shows no tables after you approved the SQL."
+    },
+    {
+      "id": "s6",
+      "title": "Run the Supabase prompt",
+      "detail": "Lecture step 5, same session. Good answers for you: your users table is profiles. Its id IS the auth.users id, and handle_new_user / on_auth_user_created already fill it in; keep that. Every user_id defaults to auth.uid() (it already does). Every policy is to authenticated and allows only your own rows (\"tasks\" means your list entries, comments, lists and your own shows). Genres and catalog shows (no created_by) are shared, like Ticked's tags: any logged-in user can read them. The catalog seed is fine to reload, but don't re-import rows that belonged to anonymous users: they have no login. Update supabase/schema.sql when done. At each pause, check Database → Triggers (on_auth_user_created), Authentication → Policies (auth.uid() = user_id, no \"dev:\" rules) and Table Editor (RLS on).",
+      "code": "I have confirmed my application works well with this type of database schema and am now ready to implement authentication methods to my project.\n\nI would like you to take a look at the following resources:\n\n1. User Journey can be found: front-end/app_outline/user_journey.md\n2. The current supabase schema is as follows: supabase/schema.sql\n3. The current testing data I've populated while ensuring this works is here: supabase/backups/\n\nYou should know that I've currently deleted all tables existing in my project and it is now an empty project.\n\nUsing these resources as context I would like you to conduct the following:\n\n1. alter the user table function as an authentication table\n2. ensure proper RLS policies are set where a user can only view the tasks they own.\n3. recreate my database tables on supabase\n\nAfter conducting each action, pause and ask for confirmation that your actions worked correctly before proceeding to the next step.\n\nDo you have any questions before executing this task?",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "All 7 tables are back with RLS on, the trigger is listed, and supabase/schema.sql matches the database."
+    },
+    {
+      "id": "s7",
+      "title": "Run the Vite + React prompt",
+      "detail": "Lecture step 6. Fill in your URL (no /rest/v1) and publishable key from front-end/.env.local. Your variable is VITE_SUPABASE_ANON_KEY; keep that name. Good answers: a Log in page and a Register page; every other page needs a logged-in user. Show the user's name and a Log out button in the header. Keep the Supabase calls in src/lib/. Different for you: remove the signInAnonymously() call in src/lib/session.js (that's your \"demo user\"). Myflix has no React Router yet, so Claude may ask how to show the new pages. Never use the secret key.",
+      "code": "Utilizing the following resources:\n\n- Supabase db schema: supabase/schema.sql\n- user journey: front-end/app_outline/user_journey.md\n- Project API url: https://your-project-id.supabase.co\n- Project API Key: your-publishable-key\n\nI would like you to update the functionality for the User Authentication process. Consider the following actions a user can take:\n\n- Register: A brand new user can sign up for our application and interact with our site.\n- Log In: A returning user can interact with our site and ONLY their corresponding data\n- Log out: A logged in user can end their session and exit our website while removing their credentials from the front-end code.\n- User Confirmation: While logged in we need to have a way of confirming who the user is\n    - while logged in if the user refreshes the browser, we should be able of leveraging the current credentials to recover the logged in `user` and their corresponding`data`\n\nEach of these actions should be an independent phase. Utilize playwright to ensure completion of each phase prior to moving on to the next one.\n\nDo you have any questions before completing these actions?",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "Claude reports all four phases (Register, Log in, Log out, refresh) passed in Playwright."
+    },
+    {
+      "id": "s8",
+      "title": "Prove it with two accounts",
+      "detail": "Lecture step 7. Register account A in a normal window and add a show to My List. Register account B in a private window. Then you can turn off Anonymous sign-ins (Authentication → Sign In / Providers), so nobody gets in without an account.",
+      "code": "cd front-end && npm run dev",
+      "codeLabel": "Terminal",
+      "doneWhen": "B can't see A's list. Refreshing A keeps you logged in, and Log out goes back to Log in. Table Editor → profiles has one row per account, and each list_entries.user_id matches its owner."
+    },
+    {
+      "id": "s9",
+      "title": "Commit, push, and log it",
+      "detail": "Lecture step 8. Read Claude's summary, especially its assumptions. Check git status: no .env or .env.local. Note: your .mcp.json is committed today, but the instructors' Ticked repo keeps it out. It holds no key, but you can add it to .gitignore and run git rm --cached .mcp.json. Then update the Netflix IV row in progress.md (or run /save-project).",
+      "code": "git status\ngit add -A && git commit -m \"Add email authentication (Netflix Clone IV)\"\ngit push",
+      "codeLabel": "Terminal",
+      "doneWhen": "The commit is on github.com/cruzjay188/netflix with no .env file, and progress.md shows Netflix IV done."
+    },
+    {
+      "id": "s10",
+      "title": "Do 100 FreeCodeCamp JavaScript steps",
+      "detail": "Part II, priority 3: after the Netflix work, do 100 steps of the FreeCodeCamp JavaScript certification. (The curriculum page says \"Python Certification\" on this line, but its link and the lecture site say JavaScript.)",
+      "doneWhen": "FreeCodeCamp shows 100 more JavaScript steps complete."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Authentication",
+      "meaning": "Proving who you are, like logging in with email and password."
+    },
+    {
+      "term": "Authorization",
+      "meaning": "Deciding what a known user may do, like only seeing their own list."
+    },
+    {
+      "term": "401 vs 403",
+      "meaning": "401 means \"I don't know who you are\"; 403 means \"I know you, but you're not allowed.\""
+    },
+    {
+      "term": "JWT",
+      "meaning": "A signed token in three parts (header, payload, signature) that tells the server who you are; anyone can read it, so no secrets in it."
+    },
+    {
+      "term": "Access token / refresh token",
+      "meaning": "The access token is short-lived (about 1 hour); the refresh token quietly gets a new one so you stay logged in."
+    },
+    {
+      "term": "auth.uid()",
+      "meaning": "A Postgres function that returns the logged-in user's id from the JWT, so RLS rules can say \"only your rows\"."
+    },
+    {
+      "term": "RLS (Row Level Security)",
+      "meaning": "Database rules that filter every request by who is asking."
+    },
+    {
+      "term": "Trigger",
+      "meaning": "Database code that runs by itself on an event, like making a profiles row when a new account signs up."
+    },
+    {
+      "term": "Anonymous sign-in",
+      "meaning": "What Myflix uses now: a throwaway account per browser with no email, so it can't log in again on another device."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Lecture site: Claude and Auth",
+      "url": "https://kabeier.github.io/Claude-and-auth/"
+    },
+    {
+      "label": "JWT X-ray (paste a token, see its parts)",
+      "url": "https://kabeier.github.io/Claude-and-auth/lecture-1-how-auth-works/jwt-xray/"
+    },
+    {
+      "label": "Ticked Auth Postman collection",
+      "url": "https://kabeier.github.io/Claude-and-auth/demo-kit/Ticked-Auth.postman_collection.json"
+    },
+    {
+      "label": "Full-Stack lecture (restructure prompt, step 6)",
+      "url": "https://kabeier.github.io/Claude-and-full-stack-apps/"
+    },
+    {
+      "label": "Curriculum: Authentication assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/09-Building-Applications/4-authentication/assignments/"
+    },
+    {
+      "label": "Peer quiz: agentic-authentication-quiz",
+      "url": "https://github.com/Code-Platoon-Assignments/agentic-authentication-quiz"
+    },
+    {
+      "label": "Netflix Clone IV assignment",
+      "url": "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-IV"
+    },
+    {
+      "label": "FreeCodeCamp Python",
+      "url": "https://www.freecodecamp.org/learn/python-v9/"
+    },
+    {
+      "label": "FreeCodeCamp JavaScript",
+      "url": "https://www.freecodecamp.org/learn/javascript-v9/"
+    }
+  ],
+  "assignments": [
+    "agentic-authentication-quiz",
+    "agentic-netflix-clone-IV"
+  ],
+  "estMinutes": 300,
+  "sources": [
+    "https://kabeier.github.io/Claude-and-auth/ (index.html: Homework Part I steps 1–3, Part II steps 4–8, prompts quoted from it)",
+    "github.com/kabeier/Claude-and-auth: demo-kit/prompts.md (good answers to Claude's questions)",
+    "github.com/kabeier/Claude-and-auth: demo-kit/backup-ticked-auth/README.md (\"What every student project should look like now\" + \"Ticked vs. what the Beyond Building lessons expect\")",
+    "https://kabeier.github.io/Claude-and-full-stack-apps/ (Homework Part II step 6: restructure prompt)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/09-Building-Applications/4-authentication/assignments/",
+    "Code-Platoon-Assignments/agentic-authentication-quiz README; Code-Platoon-Assignments/agentic-netflix-clone-IV README",
+    "Local repo assignments/week-02/netflix: flat layout, supabase/migrations/*.sql (profiles + on_auth_user_created, 7 tables), src/lib/session.js (signInAnonymously), .env.local with VITE_SUPABASE_ANON_KEY, .mcp.json tracked"
+  ]
+}

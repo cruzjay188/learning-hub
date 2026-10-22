@@ -1,0 +1,1034 @@
+<title>Eagle Learning Hub</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Condensed:wght@500;600;700&family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap">
+<style>
+/* Layout: mission-control app. Sticky command bar, then one view at a time:
+   Today (briefing + day timeline + aside), Course map (15-week ledger), Lecture (guide + side panel),
+   Assignments, My work. Teal = progress and done; orange only marks "now / next". */
+:root {
+  --bg: #f3f6f6;
+  --surface: #ffffff;
+  --surface-2: #e9efef;
+  --ink: #0f2427;
+  --ink-2: #2c4144;
+  --muted: #5a6e71;
+  --line: #d3dddd;
+  --teal: #1b6b6d;
+  --teal-strong: #12575a;
+  --teal-soft: #d6eae9;
+  --orange: #e2560a;
+  --orange-ink: #a8400a;
+  --orange-soft: #fde6d6;
+  --warn: #9a6a00;
+  --warn-soft: #f8edcc;
+  --code-bg: #0f2427;
+  --code-ink: #dcecea;
+  --focus: #e2560a;
+  --font-display: "IBM Plex Sans Condensed", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "IBM Plex Sans", "Helvetica Neue", Arial, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+  --r-panel: 10px;
+  --r-ctl: 6px;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0b1416; --surface: #111c1f; --surface-2: #172529; --ink: #e2ecec; --ink-2: #c3d2d3; --muted: #8b9fa1;
+    --line: #22343a; --teal: #5ab6b2; --teal-strong: #7fcdc9; --teal-soft: #173a3b; --orange: #ff7a33; --orange-ink: #ff9b62;
+    --orange-soft: #3a2316; --warn: #e3b24a; --warn-soft: #34290f; --code-bg: #071012; --code-ink: #d5e6e4; --focus: #ff8a4a;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0b1416; --surface: #111c1f; --surface-2: #172529; --ink: #e2ecec; --ink-2: #c3d2d3; --muted: #8b9fa1;
+  --line: #22343a; --teal: #5ab6b2; --teal-strong: #7fcdc9; --teal-soft: #173a3b; --orange: #ff7a33; --orange-ink: #ff9b62;
+  --orange-soft: #3a2316; --warn: #e3b24a; --warn-soft: #34290f; --code-bg: #071012; --code-ink: #d5e6e4; --focus: #ff8a4a;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  margin: 0; background: var(--bg); color: var(--ink);
+  font: 400 15px/1.55 var(--font-body); -webkit-font-smoothing: antialiased;
+}
+body::before { content: ""; position: fixed; inset: 0 0 auto; height: env(safe-area-inset-top, 0px); z-index: 30; background: var(--surface); }
+h1, h2, h3, h4, p { margin: 0; }
+h1, h2, h3 { font-family: var(--font-display); text-wrap: balance; letter-spacing: -0.005em; }
+a { color: var(--teal-strong); text-underline-offset: 3px; }
+button, input, select, textarea { font: inherit; color: inherit; }
+button { cursor: pointer; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; border-radius: 4px; }
+code, .mono { font-family: var(--font-mono); }
+.num { font-variant-numeric: tabular-nums; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+.muted { color: var(--muted); }
+
+/* Command bar */
+.bar {
+  position: sticky; top: env(safe-area-inset-top, 0px); z-index: 20;
+  background: var(--surface); border-bottom: 1px solid var(--line);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+.bar__inner { max-width: 1240px; margin: 0 auto; display: flex; align-items: center; gap: 20px; min-height: 60px; flex-wrap: wrap; }
+.brand { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
+.brand svg { flex: none; }
+.brand__name { font: 700 18px/1 var(--font-display); letter-spacing: 0.01em; }
+.brand__sub { font-size: 12px; color: var(--muted); line-height: 1.2; }
+.tabs { display: flex; gap: 2px; overflow-x: auto; scrollbar-width: none; }
+.tabs::-webkit-scrollbar { display: none; }
+.tab {
+  border: 0; background: none; padding: 8px 12px; border-radius: var(--r-ctl); color: var(--muted);
+  font-weight: 500; font-size: 14px; white-space: nowrap; text-decoration: none;
+}
+.tab:hover { color: var(--ink); background: var(--surface-2); }
+.tab[aria-current="page"] { color: var(--ink); background: var(--surface-2); box-shadow: inset 0 -2px 0 var(--teal); }
+.bar__meta { margin-left: auto; display: flex; align-items: center; gap: 14px; font-size: 13px; color: var(--muted); }
+.save { display: inline-flex; align-items: center; gap: 6px; }
+.save__dot { width: 7px; height: 7px; border-radius: 50%; background: var(--muted); }
+.save[data-mode="cloud"] .save__dot { background: var(--teal); }
+.save[data-mode="saving"] .save__dot { background: var(--orange); }
+.save[data-mode="readonly"] .save__dot, .save[data-mode="error"] .save__dot { background: var(--warn); }
+
+/* Page frame */
+.page { padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 28px 64px; }
+.page__inner { max-width: 1240px; margin: 0 auto; }
+.split { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 40px; align-items: start; }
+.split > * { min-width: 0; }
+.aside { display: grid; gap: 0; position: sticky; top: calc(76px + env(safe-area-inset-top, 0px)); }
+.panel { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-panel); padding: 18px 18px 20px; }
+.aside .panel + .panel { margin-top: 14px; }
+.panel h2, .section-title { font-size: 17px; font-weight: 600; }
+.panel__head { display: flex; align-items: baseline; justify-content: space-between; gap: 10px; margin-bottom: 12px; }
+.section { margin-top: 36px; }
+.section-title { margin-bottom: 12px; display: flex; align-items: baseline; gap: 10px; }
+.section-title .count { font: 500 13px var(--font-body); color: var(--muted); }
+
+/* Briefing */
+.briefing__date { font: 600 clamp(30px, 4.4vw, 44px)/1.05 var(--font-display); letter-spacing: -0.01em; }
+.briefing__meta { margin-top: 8px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 14px; }
+.briefing__meta strong { color: var(--ink-2); font-weight: 600; }
+.notice { margin-top: 16px; padding: 12px 14px; border-radius: var(--r-ctl); background: var(--surface-2); color: var(--ink-2); font-size: 14px; }
+
+/* Day timeline: the signature element */
+.day { margin-top: 26px; position: relative; }
+.day__track { display: grid; grid-template-columns: repeat(var(--cols), minmax(0, 1fr)); position: relative; border-top: 2px solid var(--line); }
+.slot { position: relative; padding: 14px 14px 0 0; min-width: 0; }
+.slot::before {
+  content: ""; position: absolute; top: -7px; left: 0; width: 12px; height: 12px; border-radius: 50%;
+  background: var(--bg); border: 2px solid var(--line);
+}
+.slot[data-state="past"]::before { background: var(--teal); border-color: var(--teal); }
+.slot[data-state="now"]::before { background: var(--orange); border-color: var(--orange); box-shadow: 0 0 0 4px var(--orange-soft); }
+.slot__time { font: 500 13px var(--font-mono); color: var(--muted); }
+.slot__label { margin-top: 2px; font-weight: 600; font-size: 15px; line-height: 1.3; overflow-wrap: anywhere; }
+.slot__label a, .slot__label button { color: inherit; text-decoration: none; background: none; border: 0; padding: 0; text-align: left; font: inherit; }
+.slot__label a:hover, .slot__label button:hover { color: var(--teal-strong); text-decoration: underline; }
+.slot__kind { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.slot[data-kind="lecture"] .slot__label { color: var(--ink); }
+.slot[data-state="now"] .slot__time { color: var(--orange-ink); font-weight: 600; }
+.day__progress { position: absolute; top: -2px; left: 0; height: 2px; background: var(--teal); width: var(--progress, 0%); transition: width 900ms cubic-bezier(.2,.7,.2,1); }
+
+/* Next-up */
+.next { margin-top: 32px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 18px 28px; align-items: center;
+  padding: 22px 24px; border-radius: var(--r-panel); background: var(--surface); border: 1px solid var(--line); border-left: 4px solid var(--orange); }
+.next__eyebrow { font-size: 13px; color: var(--orange-ink); font-weight: 600; }
+.next__title { margin-top: 4px; font: 600 26px/1.15 var(--font-display); }
+.next__goal { margin-top: 8px; color: var(--ink-2); max-width: 62ch; }
+.next__step { margin-top: 10px; font-size: 14px; color: var(--muted); }
+.next__step strong { color: var(--ink); font-weight: 600; }
+.btn {
+  display: inline-flex; align-items: center; gap: 8px; border-radius: var(--r-ctl); padding: 10px 16px; font-weight: 600; font-size: 14px;
+  border: 1px solid var(--line); background: var(--surface); color: var(--ink); text-decoration: none; white-space: nowrap;
+}
+.btn:hover { border-color: var(--teal); }
+.btn--primary { background: var(--teal); border-color: var(--teal); color: #fff; }
+.btn--primary:hover { background: var(--teal-strong); border-color: var(--teal-strong); }
+:root[data-theme="dark"] .btn--primary { color: #04201f; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .btn--primary { color: #04201f; } }
+.btn--small { padding: 6px 10px; font-size: 13px; }
+
+/* Lists */
+.rows { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; gap: 14px; align-items: center; padding: 12px 2px; border-bottom: 1px solid var(--line); }
+.row__title { font-weight: 600; overflow-wrap: anywhere; }
+.row__title a, .row__title button { color: var(--ink); text-decoration: none; background: none; border: 0; padding: 0; font: inherit; text-align: left; }
+.row__title a:hover, .row__title button:hover { color: var(--teal-strong); text-decoration: underline; }
+.row__sub { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
+.row__end { display: flex; align-items: center; gap: 10px; justify-content: flex-end; flex-wrap: wrap; }
+
+/* Status marks */
+.mark { width: 22px; height: 22px; flex: none; display: inline-grid; place-items: center; }
+.mark svg { display: block; }
+.code-chip { font: 500 12px var(--font-mono); color: var(--ink-2); background: var(--surface-2); border-radius: 4px; padding: 2px 6px; white-space: nowrap; }
+.pill { display: inline-flex; align-items: center; gap: 5px; border-radius: 999px; padding: 2px 10px; font-size: 12px; font-weight: 600; white-space: nowrap; background: var(--surface-2); color: var(--ink-2); }
+.pill--done { background: var(--teal-soft); color: var(--teal-strong); }
+.pill--now { background: var(--orange-soft); color: var(--orange-ink); }
+.pill--warn { background: var(--warn-soft); color: var(--warn); }
+.mini-bar { width: 72px; height: 4px; border-radius: 2px; background: var(--surface-2); overflow: hidden; }
+.mini-bar span { display: block; height: 100%; background: var(--teal); width: var(--w); }
+
+/* Meters */
+.meter { margin-top: 14px; }
+.meter:first-of-type { margin-top: 0; }
+.meter__top { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; font-size: 13px; color: var(--muted); }
+.meter__value { font: 600 22px/1.1 var(--font-display); color: var(--ink); }
+.meter__track { margin-top: 6px; height: 8px; border-radius: 4px; background: var(--surface-2); overflow: hidden; }
+.meter__fill { height: 100%; width: var(--w); background: var(--teal); border-radius: 4px; transition: width 900ms cubic-bezier(.2,.7,.2,1); }
+.meter__fill--time { background: var(--muted); opacity: .55; }
+.meter__note { margin-top: 4px; font-size: 12px; color: var(--muted); }
+
+/* Weekly goal */
+.week-dots { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+.wd { display: grid; justify-items: center; gap: 4px; font-size: 11px; color: var(--muted); }
+.wd i { width: 100%; max-width: 30px; aspect-ratio: 1; border-radius: 6px; border: 1.5px solid var(--line); display: grid; place-items: center; }
+.wd[data-on="true"] i { background: var(--teal); border-color: var(--teal); }
+.wd[data-today="true"] i { border-color: var(--orange); }
+.wd[data-today="true"] { color: var(--orange-ink); font-weight: 600; }
+.goal-picker { display: flex; gap: 4px; flex-wrap: wrap; }
+.goal-picker button { border: 1px solid var(--line); background: var(--surface); border-radius: var(--r-ctl); min-width: 34px; padding: 5px 0; font-size: 13px; font-weight: 600; }
+.goal-picker button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.goal-line { margin-top: 12px; display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.toggle { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 6px 12px; font-size: 13px; font-weight: 600; }
+.toggle[aria-pressed="true"] { background: var(--teal-soft); border-color: var(--teal); color: var(--teal-strong); }
+
+/* Course map */
+.filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 18px 0 8px; }
+.chip { border: 1px solid var(--line); background: var(--surface); border-radius: 999px; padding: 5px 12px; font-size: 13px; font-weight: 500; color: var(--ink-2); }
+.chip[aria-pressed="true"] { background: var(--ink); border-color: var(--ink); color: var(--bg); }
+.week { display: grid; grid-template-columns: 148px minmax(0, 1fr); gap: 20px; padding: 20px 0; border-bottom: 1px solid var(--line); }
+.week[data-current="true"] .week__label strong { color: var(--orange-ink); }
+.week__label strong { display: block; font: 600 20px/1.1 var(--font-display); }
+.week__label span { font-size: 13px; color: var(--muted); }
+.week__label .pill { margin-top: 8px; }
+.week__mods { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 8px; }
+.lec-row { display: grid; grid-template-columns: 22px 72px minmax(0, 1fr) auto; gap: 12px; align-items: center; padding: 8px 6px; margin: 0 -6px; border-radius: var(--r-ctl); text-decoration: none; color: var(--ink); }
+.lec-row:hover { background: var(--surface-2); }
+.lec-row__title { font-weight: 500; overflow-wrap: anywhere; }
+.lec-row__date { font-size: 13px; color: var(--muted); white-space: nowrap; }
+.lec-row__end { display: flex; align-items: center; gap: 10px; }
+.week__events { margin-top: 6px; display: flex; flex-wrap: wrap; gap: 6px; }
+
+/* Lecture */
+.crumbs { font-size: 13px; color: var(--muted); display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.crumbs a { color: var(--muted); }
+.lec-head { margin-top: 12px; }
+.lec-head__code { font: 500 14px var(--font-mono); color: var(--teal-strong); }
+.lec-head h1 { margin-top: 4px; font-size: clamp(30px, 4vw, 42px); font-weight: 600; line-height: 1.08; }
+.lec-head__meta { margin-top: 10px; display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: center; color: var(--muted); font-size: 14px; }
+.lec-summary { margin-top: 18px; font-size: 17px; line-height: 1.6; color: var(--ink-2); max-width: 66ch; }
+.goal { margin-top: 18px; padding: 14px 16px; border-radius: var(--r-ctl); background: var(--teal-soft); color: var(--ink); max-width: 70ch; }
+.goal b { color: var(--teal-strong); }
+.required { margin: 0; padding: 0; list-style: none; display: grid; gap: 8px; max-width: 72ch; }
+.required li { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: 10px; }
+.required li::before { content: ""; width: 8px; height: 8px; margin-top: 8px; border-radius: 2px; background: var(--orange); }
+.steps { list-style: none; margin: 0; padding: 0; counter-reset: step; }
+.step { display: grid; grid-template-columns: 40px minmax(0, 1fr); gap: 4px 14px; padding: 18px 0; border-top: 1px solid var(--line); }
+.step:last-child { border-bottom: 1px solid var(--line); }
+.check {
+  width: 32px; height: 32px; border-radius: 8px; border: 2px solid var(--line); background: var(--surface);
+  display: grid; place-items: center; padding: 0; color: transparent; transition: background-color 160ms ease, border-color 160ms ease;
+}
+.check:hover { border-color: var(--teal); }
+.check[aria-checked="true"] { background: var(--teal); border-color: var(--teal); color: #fff; }
+.check svg { transform: scale(.6); opacity: 0; transition: transform 200ms cubic-bezier(.3,1.4,.5,1), opacity 120ms; }
+.check[aria-checked="true"] svg { transform: scale(1); opacity: 1; }
+.step__num { font: 500 12px var(--font-mono); color: var(--muted); }
+.step__title { font: 600 18px/1.3 var(--font-display); }
+.step[data-done="true"] .step__title { color: var(--muted); text-decoration: line-through; text-decoration-thickness: 1px; }
+.step__detail { margin-top: 6px; color: var(--ink-2); max-width: 70ch; overflow-wrap: anywhere; }
+.step__done { margin-top: 10px; font-size: 14px; color: var(--muted); display: flex; gap: 8px; max-width: 70ch; }
+.step__done b { color: var(--teal-strong); font-weight: 600; white-space: nowrap; }
+.codeblock { margin-top: 12px; border-radius: var(--r-ctl); background: var(--code-bg); color: var(--code-ink); overflow: hidden; max-width: 100%; }
+.codeblock__bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 6px 8px 6px 12px; font: 500 12px var(--font-mono); color: #8fb1ae; border-bottom: 1px solid rgba(255,255,255,.08); }
+.codeblock__bar button { border: 1px solid rgba(255,255,255,.18); background: transparent; color: #dcecea; border-radius: 4px; padding: 3px 9px; font: 500 12px var(--font-body); }
+.codeblock__bar button:hover { border-color: #8fd3cf; }
+.codeblock pre { margin: 0; padding: 12px 14px; overflow-x: auto; font: 13px/1.6 var(--font-mono); white-space: pre; }
+.concepts { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 18px 28px; margin: 0; }
+.concepts dt { font-weight: 600; }
+.concepts dd { margin: 2px 0 0; color: var(--ink-2); font-size: 14px; }
+.links { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.links a { overflow-wrap: anywhere; }
+.rating { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 4px; }
+.rating button { border: 1px solid var(--line); background: var(--surface); border-radius: var(--r-ctl); padding: 8px 0 6px; display: grid; justify-items: center; gap: 2px; font-size: 11px; color: var(--muted); line-height: 1.15; }
+.rating button b { font: 600 16px var(--font-display); color: var(--ink); }
+.rating button[aria-pressed="true"] { background: var(--teal); border-color: var(--teal); color: #e6f6f5; }
+.rating button[aria-pressed="true"] b { color: #fff; }
+.rating-label { margin-top: 8px; font-size: 13px; color: var(--muted); min-height: 1.4em; }
+textarea.notes { width: 100%; min-height: 150px; resize: vertical; border: 1px solid var(--line); border-radius: var(--r-ctl); background: var(--bg); padding: 10px 12px; line-height: 1.5; }
+textarea.notes:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px var(--teal-soft); }
+.notes-status { margin-top: 6px; font-size: 12px; color: var(--muted); min-height: 1.2em; }
+.ring { display: flex; align-items: center; gap: 14px; }
+.ring svg { flex: none; }
+.ring__value { font: 600 26px/1 var(--font-display); }
+.pager { margin-top: 32px; display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.pager a { display: block; padding: 14px 16px; border: 1px solid var(--line); border-radius: var(--r-panel); text-decoration: none; color: var(--ink); background: var(--surface); }
+.pager a:hover { border-color: var(--teal); }
+.pager small { display: block; color: var(--muted); font-size: 12px; }
+.pager .next-link { text-align: right; }
+.outline-note { margin-top: 18px; padding: 12px 14px; border: 1px dashed var(--line); border-radius: var(--r-ctl); color: var(--muted); font-size: 14px; max-width: 70ch; }
+
+/* My work */
+.logs { display: grid; gap: 14px; }
+.log { padding: 16px 18px; border: 1px solid var(--line); border-radius: var(--r-panel); background: var(--surface); }
+.log h3 { font-size: 18px; font-weight: 600; }
+.log p { margin-top: 6px; color: var(--ink-2); font-size: 14px; max-width: 80ch; }
+.log__path { margin-top: 10px; display: flex; align-items: center; gap: 8px; flex-wrap: wrap; font-size: 12px; color: var(--muted); }
+.heat { overflow-x: auto; }
+.heat__grid { display: grid; grid-template-columns: 36px repeat(15, minmax(18px, 1fr)); gap: 4px; min-width: 420px; }
+.heat__grid span { font-size: 11px; color: var(--muted); }
+.heat__cell { aspect-ratio: 1; border-radius: 4px; background: var(--surface-2); border: 1px solid transparent; }
+.heat__cell[data-l="1"] { background: color-mix(in srgb, var(--teal) 35%, var(--surface-2)); }
+.heat__cell[data-l="2"] { background: color-mix(in srgb, var(--teal) 65%, var(--surface-2)); }
+.heat__cell[data-l="3"] { background: var(--teal); }
+.heat__cell[data-today="true"] { border-color: var(--orange); }
+.heat__cell[data-off="true"] { background: repeating-linear-gradient(45deg, var(--surface-2), var(--surface-2) 3px, transparent 3px, transparent 6px); }
+.legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 10px; font-size: 12px; color: var(--muted); align-items: center; }
+.legend i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; vertical-align: -2px; margin-right: 5px; background: var(--teal); }
+.commit { display: grid; grid-template-columns: 86px minmax(0, 1fr); gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14px; }
+.commit time { color: var(--muted); font-size: 13px; }
+.commit a { color: var(--ink); text-decoration: none; }
+.commit a:hover { text-decoration: underline; color: var(--teal-strong); }
+
+.empty { color: var(--muted); font-size: 14px; padding: 6px 0; }
+.loading { padding: 80px 0; text-align: center; color: var(--muted); }
+
+@media (max-width: 980px) {
+  .split { grid-template-columns: minmax(0, 1fr); gap: 28px; }
+  .aside { position: static; }
+}
+@media (max-width: 640px) {
+  .bar__inner { gap: 6px 14px; padding-block: 8px; }
+  .bar__meta { margin-left: 0; width: 100%; justify-content: space-between; order: 3; }
+  .tabs { order: 2; width: 100%; margin: 0 -4px; }
+  .brand__sub { display: none; }
+  .day__track { grid-template-columns: minmax(0, 1fr); border-top: 0; border-left: 2px solid var(--line); margin-left: 6px; }
+  .slot { padding: 0 0 16px 20px; }
+  .slot::before { top: 3px; left: -7px; }
+  .day__progress { display: none; }
+  .next { grid-template-columns: minmax(0, 1fr); padding: 18px; }
+  .week { grid-template-columns: minmax(0, 1fr); gap: 8px; }
+  .lec-row { grid-template-columns: 22px minmax(0, 1fr) auto; }
+  .lec-row .code-chip { display: none; }
+  .lec-row__date { display: none; }
+  .row { grid-template-columns: auto minmax(0, 1fr); }
+  .row__end { grid-column: 2; justify-content: flex-start; }
+  .pager { grid-template-columns: 1fr; }
+  .step { grid-template-columns: 36px minmax(0, 1fr); }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
+</style>
+
+<header class="bar">
+  <div class="bar__inner">
+    <a class="brand" href="#today" aria-label="Eagle Learning Hub, go to Today">
+      <svg width="30" height="30" viewBox="0 0 30 30" aria-hidden="true">
+        <rect width="30" height="30" rx="7" fill="var(--teal)"/>
+        <path d="M9 8l7 7-7 7M15 8l7 7-7 7" fill="none" stroke="var(--orange)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <span><span class="brand__name">Eagle Learning Hub</span><br><span class="brand__sub">Code Platoon · AI + Full-Stack SE</span></span>
+    </a>
+    <nav class="tabs" aria-label="Sections">
+      <a class="tab" href="#today" data-view="today">Today</a>
+      <a class="tab" href="#map" data-view="map">Course map</a>
+      <a class="tab" href="#assignments" data-view="assignments">Assignments</a>
+      <a class="tab" href="#work" data-view="work">My work</a>
+    </nav>
+    <div class="bar__meta">
+      <span id="countdown" class="num"></span>
+      <span class="save" id="save" data-mode="local" role="status" aria-live="polite"><span class="save__dot" aria-hidden="true"></span><span id="save-text">Loading…</span></span>
+    </div>
+  </div>
+</header>
+
+<main class="page" id="main" tabindex="-1">
+  <div class="page__inner" id="view"><p class="loading">Loading your course…</p></div>
+</main>
+
+<script>
+(() => {
+"use strict";
+
+// ---------- helpers ----------
+const $ = (s, el = document) => el.querySelector(s);
+const esc = (v) => String(v ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const TZ = "America/New_York";
+const DOW = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+const MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+const DAYS_LONG = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+const CONFIDENCE = ["Lost", "Shaky", "Getting it", "Solid", "Could teach it"];
+
+function etNow() {
+  const parts = Object.fromEntries(new Intl.DateTimeFormat("en-US", { timeZone: TZ, year: "numeric", month: "2-digit", day: "2-digit", hour: "2-digit", minute: "2-digit", hourCycle: "h23" })
+    .formatToParts(new Date()).map((p) => [p.type, p.value]));
+  let today = `${parts.year}-${parts.month}-${parts.day}`;
+  let minutes = Number(parts.hour) * 60 + Number(parts.minute);
+  try {
+    const dbg = localStorage.getItem("hub:debug-now"); // QA only: "2026-10-19T11:15"
+    if (dbg) { today = dbg.slice(0, 10); minutes = Number(dbg.slice(11, 13)) * 60 + Number(dbg.slice(14, 16)); }
+  } catch {}
+  return { today, minutes };
+}
+const parseD = (iso) => { const [y, m, d] = iso.split("-").map(Number); return new Date(Date.UTC(y, m - 1, d)); };
+const isoD = (dt) => dt.toISOString().slice(0, 10);
+const addDays = (iso, n) => { const d = parseD(iso); d.setUTCDate(d.getUTCDate() + n); return isoD(d); };
+const dayDiff = (a, b) => Math.round((parseD(b) - parseD(a)) / 86400000);
+const fmtShort = (iso) => { const d = parseD(iso); return `${DOW[d.getUTCDay()]} ${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
+const fmtMonthDay = (iso) => { const d = parseD(iso); return `${MONTHS[d.getUTCMonth()]} ${d.getUTCDate()}`; };
+const fmtLong = (iso) => { const d = parseD(iso); return `${DAYS_LONG[d.getUTCDay()]}, ${MONTHS_LONG[d.getUTCMonth()]} ${d.getUTCDate()}`; };
+const fmtTime = (t) => { if (!t) return ""; let [h, m] = t.split(":").map(Number); const ap = h >= 12 ? "pm" : "am"; h = h % 12 || 12; return m ? `${h}:${String(m).padStart(2, "0")}${ap}` : `${h}${ap}`; };
+const toMin = (t) => { const [h, m] = t.split(":").map(Number); return h * 60 + m; };
+const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+
+const ICON = {
+  check: '<svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  done: '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="9" fill="var(--teal)"/><path d="M6 10.3l2.6 2.6L14 7.5" fill="none" stroke="var(--surface)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+  half: '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="var(--teal)" stroke-width="1.6"/><path d="M10 1.8a8.2 8.2 0 010 16.4z" fill="var(--teal)"/></svg>',
+  now: '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="var(--orange)" stroke-width="1.6"/><circle cx="10" cy="10" r="4" fill="var(--orange)"/></svg>',
+  missed: '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="var(--warn)" stroke-width="1.6" stroke-dasharray="3 2.2"/></svg>',
+  todo: '<svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true"><circle cx="10" cy="10" r="8.2" fill="none" stroke="var(--line)" stroke-width="1.6"/></svg>',
+  ext: '<svg width="12" height="12" viewBox="0 0 12 12" aria-hidden="true"><path d="M4.5 2.5h5v5M9.5 2.5L3 9" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>',
+};
+
+// ---------- state ----------
+const state = {
+  data: null,
+  lectures: {},      // id -> { steps: {sid: true}, notes, confidence }
+  assignments: {},   // id -> { done }
+  goal: { weeklyTarget: 4 },
+  activity: { days: {} },
+  mode: "loading",   // cloud | local | readonly | error
+  saving: 0,
+  mapFilter: "all",
+};
+const LOCAL_KEY = "eagle-hub:v1";
+function loadLocal() {
+  try { const s = JSON.parse(localStorage.getItem(LOCAL_KEY) || "null"); if (s) Object.assign(state, { lectures: s.lectures || {}, assignments: s.assignments || {}, goal: s.goal || state.goal, activity: s.activity || state.activity }); } catch {}
+}
+function saveLocal() {
+  try { localStorage.setItem(LOCAL_KEY, JSON.stringify({ lectures: state.lectures, assignments: state.assignments, goal: state.goal, activity: state.activity })); } catch {}
+}
+
+// db access: one write at a time per document, coalesced.
+let db = null;
+const writeChains = {};
+function writeDoc(path, body) {
+  saveLocal();
+  if (!db || state.mode !== "cloud") return;
+  state.saving++; renderSave();
+  const prev = writeChains[path] || Promise.resolve();
+  const run = prev.then(() => db.doc(path).set(body)).catch((e) => {
+    if (e && e.code === "invalid_argument") { state.mode = "readonly"; }
+    else if (e && e.code !== "unavailable") { state.mode = "error"; }
+  }).finally(() => { state.saving--; renderSave(); });
+  writeChains[path] = run;
+}
+
+function lectureState(id) { return state.lectures[id] || { steps: {}, notes: "", confidence: 0 }; }
+function putLecture(id, patch) {
+  const next = { ...lectureState(id), ...patch, updatedAt: new Date().toISOString() };
+  state.lectures[id] = next;
+  writeDoc(`lectures/${id}`, next);
+  markActive();
+}
+function putAssignment(id, patch) {
+  const next = { ...(state.assignments[id] || {}), ...patch, updatedAt: new Date().toISOString() };
+  state.assignments[id] = next;
+  writeDoc(`assignments/${id}`, next);
+  markActive();
+}
+function markActive(force) {
+  const { today } = etNow();
+  const days = { ...(state.activity.days || {}) };
+  if (force === false) delete days[today];
+  else if (days[today]) return;
+  else days[today] = true;
+  state.activity = { days };
+  writeDoc("meta/activity", state.activity);
+}
+
+async function connectDb() {
+  const use = window.claude && window.claude.use;
+  if (!use) { state.mode = "local"; renderSave(); return; }
+  try { db = await window.claude.use("db"); } catch { db = null; }
+  if (!db) { state.mode = "local"; renderSave(); return; }
+  state.mode = "cloud"; renderSave();
+  const fail = () => { state.mode = "error"; renderSave(); };
+  db.collection("lectures").onSnapshot((snap) => {
+    const next = {};
+    snap.docs.forEach((d) => { if (d.exists) next[d.id] = d.data(); });
+    state.lectures = next; saveLocal(); rerender();
+  }, fail);
+  db.collection("assignments").onSnapshot((snap) => {
+    const next = {};
+    snap.docs.forEach((d) => { if (d.exists) next[d.id] = d.data(); });
+    state.assignments = next; saveLocal(); rerender();
+  }, fail);
+  db.doc("meta/goal").onSnapshot((d) => { if (d.exists) { state.goal = d.data(); saveLocal(); rerender(); } }, fail);
+  db.doc("meta/activity").onSnapshot((d) => { if (d.exists) { state.activity = d.data(); saveLocal(); rerender(); } }, fail);
+}
+
+function renderSave() {
+  const el = $("#save"), txt = $("#save-text");
+  if (!el) return;
+  const mode = state.saving > 0 ? "saving" : state.mode;
+  el.dataset.mode = mode;
+  txt.textContent = {
+    saving: "Saving…", cloud: "Saved to your account", local: "Saved in this browser",
+    readonly: "View only", error: "Not saving: reload the page", loading: "Loading…",
+  }[mode] || "";
+}
+
+// ---------- derived ----------
+const L = () => state.data.lectures;
+const lectureById = (id) => L().find((l) => l.id === id);
+const stepsOf = (lec) => (lec.guide && Array.isArray(lec.guide.steps) ? lec.guide.steps : []);
+function lectureProgress(lec) {
+  const steps = stepsOf(lec), st = lectureState(lec.id).steps || {};
+  const done = steps.filter((s) => st[s.id]).length;
+  return { done, total: steps.length };
+}
+function lectureStatus(lec, today) {
+  const { done, total } = lectureProgress(lec);
+  if (total && done === total) return "done";
+  if (lec.dates.includes(today)) return "now";
+  if (done > 0) return "progress";
+  if (lec.date < today) return "missed";
+  return "upcoming";
+}
+const STATUS_ICON = { done: ICON.done, progress: ICON.half, now: ICON.now, missed: ICON.missed, upcoming: ICON.todo };
+const STATUS_TEXT = { done: "Done", progress: "In progress", now: "Today", missed: "Not started", upcoming: "Upcoming" };
+const moduleName = (id) => (state.data.modules.find((m) => m.id === id) || {}).name || "Onboarding";
+const moduleLabel = (id) => { const m = state.data.modules.find((x) => x.id === id); return m ? (m.number ? `Module ${m.number}: ${m.name}` : m.name) : "Onboarding"; };
+const dayByDate = (iso) => state.data.days.find((d) => d.date === iso);
+
+function nextClassDay(today, inclusive = true) {
+  return state.data.days.find((d) => (inclusive ? d.date >= today : d.date > today) && !d.noClass && d.items.length);
+}
+function upNextLecture(today) {
+  const lecs = L().filter((l) => l.guide);
+  // 1) today's lecture  2) earliest past lecture still unfinished (most recent first)  3) next upcoming
+  const todays = lecs.find((l) => l.dates.includes(today) && lectureStatus(l, today) !== "done");
+  if (todays) return todays;
+  const open = lecs.filter((l) => l.date < today && ["progress", "missed"].includes(lectureStatus(l, today)) && l.guide.status === "full");
+  if (open.length) return open[open.length - 1];
+  return lecs.find((l) => l.date > today);
+}
+
+// ---------- views ----------
+function viewToday() {
+  const { today, minutes } = etNow();
+  const d = state.data;
+  const day = dayByDate(today);
+  const isClassDay = day && !day.noClass && day.items.length;
+  const focusDay = isClassDay ? day : nextClassDay(today, false) || day;
+  const week = focusDay ? focusDay.week : 1;
+  const weekLecs = L().filter((l) => l.week === week);
+  const mods = [...new Set(weekLecs.map((l) => l.module).filter(Boolean))];
+  const totalDays = d.days.filter((x) => !x.noClass).length;
+  const dayIndex = d.days.filter((x) => !x.noClass && x.date <= today).length;
+  const timelineHtml = focusDay ? renderTimeline(focusDay, isClassDay ? minutes : -1, isClassDay) : "";
+  const next = upNextLecture(today);
+
+  let notice = "";
+  if (!isClassDay) {
+    const reason = day && day.noClass ? "No class today" : (parseD(today).getUTCDay() % 6 === 0 ? "No class today, it's the weekend" : "No class today");
+    notice = focusDay ? `<p class="notice">${reason}. Next class is <strong>${fmtLong(focusDay.date)}</strong>, shown below. Good time to catch up on open steps.</p>` : "";
+  }
+
+  return `
+  <div class="split">
+    <section aria-labelledby="today-h">
+      <div class="briefing">
+        <h1 class="briefing__date" id="today-h">${fmtLong(today)}</h1>
+        <p class="briefing__meta">
+          <span><strong>Week ${week}</strong> of 15</span>
+          ${mods.map((m) => `<span>${esc(moduleLabel(m))}</span>`).join("")}
+          <span class="num">Day ${Math.min(dayIndex, totalDays)} of ${totalDays}</span>
+        </p>
+        ${notice}
+      </div>
+      ${timelineHtml}
+      ${next ? renderNextUp(next, today) : ""}
+      ${renderOpenWork(today)}
+      ${renderWeekList(week, today)}
+    </section>
+    <aside class="aside" aria-label="Progress">
+      ${renderProgressPanel(today)}
+      ${renderGoalPanel(today)}
+      ${renderReviewPanel(today)}
+    </aside>
+  </div>`;
+}
+
+function renderTimeline(day, minutes, live) {
+  const r = state.data.rhythm;
+  const items = day.items.filter((i) => i.kind !== "noclass");
+  const am = items.filter((i) => i.time && i.time < "12:00");
+  const pm = items.filter((i) => i.time && i.time >= "12:00" && i.time < "17:00");
+  const label = (list, fallback) => (list.length ? list : [{ title: fallback, kind: "work" }]);
+  const slots = [
+    { time: r[0].time, items: [{ title: "Stand Up", kind: "routine" }] },
+    { time: (am[0] && am[0].time) || r[1].time, items: label(am, "Morning lecture") },
+    { time: (pm[0] && pm[0].time) || r[2].time, items: label(pm, "Work time") },
+    { time: r[3].time, items: [{ title: "Team Meet", kind: "routine" }] },
+    { time: r[4].time, items: [{ title: "Stand Down", kind: "routine" }] },
+  ];
+  const endOf = (i) => (i + 1 < slots.length ? toMin(slots[i + 1].time) : toMin("18:30"));
+  let progress = 0;
+  const html = slots.map((s, i) => {
+    let st = "next";
+    if (live) {
+      if (minutes >= endOf(i)) st = "past";
+      else if (minutes >= toMin(s.time)) st = "now";
+    }
+    const kindTxt = { lecture: "Lecture", career: "Career services", work: "Work time", project: "Project", admin: "Admin", event: "Event", milestone: "Milestone", routine: "" };
+    const body = s.items.map((it) => {
+      const lec = it.lectureId && lectureById(it.lectureId);
+      const title = lec ? `<a href="#lecture-${esc(lec.id)}">${lec.code ? `<span class="mono">${esc(lec.code)}</span> · ` : ""}${esc(lec.title)}</a>` : esc(cleanTitle(it.title));
+      return `<p class="slot__label">${title}</p>${kindTxt[it.kind] ? `<p class="slot__kind">${kindTxt[it.kind]}${it.time && it.time !== s.time ? ` · ${fmtTime(it.time)}` : ""}</p>` : ""}`;
+    }).join("");
+    return `<div class="slot" data-state="${st}" data-kind="${esc(s.items[0].kind)}"><p class="slot__time num">${fmtTime(s.time)} ET</p>${body}</div>`;
+  }).join("");
+  if (live) {
+    const start = toMin(slots[0].time), end = toMin("18:30");
+    progress = Math.max(0, Math.min(100, ((minutes - start) / (end - start)) * 100));
+  }
+  return `<div class="day" aria-label="Class day timeline, Eastern time">
+    <div class="day__track" style="--cols:${slots.length}"><span class="day__progress" style="--progress:${progress.toFixed(1)}%"></span>${html}</div>
+  </div>`;
+}
+function cleanTitle(t) {
+  return t.replace(/^(0900 |13:30 |1:30pm )/i, "").replace(/^BT\s*[-:]?\s*/i, "Career: ").replace(/^GS\s*:\s*/i, "Guest speaker: ").replace(/\s*\(\d{4}\)$/, "").replace(/WORK TIME/i, "Work time").replace(/GROUP PROJECTS/i, "Group projects");
+}
+
+function renderNextUp(lec, today) {
+  const { done, total } = lectureProgress(lec);
+  const st = lectureState(lec.id).steps || {};
+  const nextStep = stepsOf(lec).find((s) => !st[s.id]);
+  const when = lec.dates.includes(today) ? "Today's lecture" : lec.date < today ? `Still open from ${fmtShort(lec.date)}` : `Up next · ${fmtShort(lec.date)}`;
+  return `<section class="next" aria-labelledby="next-h">
+    <div>
+      <p class="next__eyebrow">${when}</p>
+      <h2 class="next__title" id="next-h">${lec.code ? `<span class="mono" style="font-size:.8em;color:var(--muted)">${esc(lec.code)}</span> ` : ""}${esc(lec.title)}</h2>
+      ${lec.guide.goal ? `<p class="next__goal">${esc(lec.guide.goal)}</p>` : ""}
+      ${nextStep ? `<p class="next__step"><span class="num">${done} of ${total} steps done</span> · Next: <strong>${esc(nextStep.title)}</strong></p>` : ""}
+    </div>
+    <a class="btn btn--primary" href="#lecture-${esc(lec.id)}">${done ? "Continue guide" : "Open guide"}</a>
+  </section>`;
+}
+
+function assignmentDone(a) {
+  const o = state.assignments[a.id];
+  if (o && typeof o.done === "boolean") return o.done;
+  return a.status === "done";
+}
+const A_PILL = { done: ["Done", "pill--done"], "in-progress": ["In progress", "pill--now"], todo: ["To do", ""], check: ["Check with instructor", "pill--warn"], quiz: ["Team quiz", ""] };
+function assignmentPill(a) {
+  if (assignmentDone(a)) return `<span class="pill pill--done">Done</span>`;
+  const [t, c] = A_PILL[a.status] || ["To do", ""];
+  return `<span class="pill ${c}">${t}</span>`;
+}
+
+function renderOpenWork(today) {
+  const d = state.data;
+  const week = (dayByDate(today) || nextClassDay(today) || { week: 1 }).week;
+  const open = d.assignments.filter((a) => !assignmentDone(a) && a.status !== "quiz" && a.week <= week + 1);
+  const rows = open.map((a) => `<li class="row">
+      <span class="mark">${a.status === "in-progress" ? ICON.half : a.status === "check" ? ICON.missed : ICON.todo}</span>
+      <div><p class="row__title">${esc(a.title)}</p>${a.notes ? `<p class="row__sub">${esc(a.notes)}</p>` : ""}</div>
+      <div class="row__end">${assignmentPill(a)}<span class="row__sub">Week ${a.week}</span></div>
+    </li>`).join("");
+  return `<section class="section" aria-labelledby="open-h">
+    <h2 class="section-title" id="open-h">Open work <span class="count num">${open.length}</span></h2>
+    ${open.length ? `<ul class="rows">${rows}</ul>` : `<p class="empty">Nothing open. Check <a href="#assignments">Assignments</a> for what's coming.</p>`}
+  </section>`;
+}
+
+function renderWeekList(week, today) {
+  const days = state.data.days.filter((x) => x.week === week);
+  const rows = days.map((day) => {
+    const lecs = [...new Set(day.items.filter((i) => i.lectureId).map((i) => i.lectureId))].map(lectureById).filter(Boolean);
+    const other = day.items.filter((i) => !i.lectureId && ["career", "milestone", "noclass"].includes(i.kind));
+    const isToday = day.date === today;
+    const content = day.noClass ? `<span class="muted">No class</span>` :
+      lecs.map((l) => `<a href="#lecture-${esc(l.id)}">${l.code ? `<span class="mono">${esc(l.code)}</span> ` : ""}${esc(l.title)}</a>`).join(" · ") || `<span class="muted">${esc(other.map((o) => cleanTitle(o.title)).join(" · ") || "Work time")}</span>`;
+    return `<li class="row"><span class="row__sub num" style="min-width:76px">${fmtShort(day.date)}</span><div class="row__title" style="font-weight:500">${content}</div><div class="row__end">${isToday ? '<span class="pill pill--now">Today</span>' : ""}</div></li>`;
+  }).join("");
+  return `<section class="section" aria-labelledby="wk-h"><h2 class="section-title" id="wk-h">Week ${week} at a glance</h2><ul class="rows">${rows}</ul></section>`;
+}
+
+function renderProgressPanel(today) {
+  const d = state.data;
+  const taught = L().filter((l) => l.guide && l.date <= today);
+  const doneLecs = taught.filter((l) => lectureStatus(l, today) === "done").length;
+  const released = L().filter((l) => l.guide && l.guide.status === "full");
+  let sDone = 0, sTotal = 0;
+  released.forEach((l) => { const p = lectureProgress(l); sDone += p.done; sTotal += p.total; });
+  const classDays = d.days.filter((x) => !x.noClass);
+  const elapsed = classDays.filter((x) => x.date <= today).length;
+  return `<section class="panel" aria-labelledby="prog-h">
+    <div class="panel__head"><h2 id="prog-h">Progress</h2></div>
+    <div class="meter">
+      <div class="meter__top"><span>Guide steps done</span><span class="meter__value num">${pct(sDone, sTotal)}%</span></div>
+      <div class="meter__track"><div class="meter__fill" style="--w:${pct(sDone, sTotal)}%"></div></div>
+      <p class="meter__note num">${sDone} of ${sTotal} steps across ${released.length} full guides</p>
+    </div>
+    <div class="meter">
+      <div class="meter__top"><span>Lectures finished</span><span class="meter__value num">${doneLecs}/${taught.length}</span></div>
+      <div class="meter__track"><div class="meter__fill" style="--w:${pct(doneLecs, taught.length)}%"></div></div>
+      <p class="meter__note">Of lectures taught so far</p>
+    </div>
+    <div class="meter">
+      <div class="meter__top"><span>Bootcamp elapsed</span><span class="meter__value num">${pct(elapsed, classDays.length)}%</span></div>
+      <div class="meter__track"><div class="meter__fill meter__fill--time" style="--w:${pct(elapsed, classDays.length)}%"></div></div>
+      <p class="meter__note num">Class day ${elapsed} of ${classDays.length}</p>
+    </div>
+  </section>`;
+}
+
+function weekDates(today) {
+  const dow = (parseD(today).getUTCDay() + 6) % 7; // Monday = 0
+  const monday = addDays(today, -dow);
+  return Array.from({ length: 7 }, (_, i) => addDays(monday, i));
+}
+function streak(today) {
+  const days = state.activity.days || {};
+  let n = 0, cur = days[today] ? today : addDays(today, -1);
+  while (days[cur]) { n++; cur = addDays(cur, -1); }
+  return n;
+}
+function renderGoalPanel(today) {
+  const days = state.activity.days || {};
+  const target = state.goal.weeklyTarget || 4;
+  const wk = weekDates(today);
+  const hit = wk.filter((x) => days[x]).length;
+  const dots = wk.map((x, i) => `<span class="wd" data-on="${!!days[x]}" data-today="${x === today}"><i>${days[x] ? '<svg width="12" height="12" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>' : ""}</i>${["M", "T", "W", "T", "F", "S", "S"][i]}<span class="sr-only">${fmtShort(x)}: ${days[x] ? "studied" : "no study logged"}</span></span>`).join("");
+  const s = streak(today);
+  const studied = !!days[today];
+  return `<section class="panel" aria-labelledby="goal-h">
+    <div class="panel__head"><h2 id="goal-h">Weekly goal</h2><span class="meter__value num" style="font-size:18px">${hit}/${target}</span></div>
+    <div class="goal-picker" role="group" aria-label="Study days per week">
+      ${[3, 4, 5, 6, 7].map((n) => `<button type="button" data-goal="${n}" aria-pressed="${n === target}" aria-label="${n} days a week">${n}</button>`).join("")}
+    </div>
+    <div class="week-dots">${dots}</div>
+    <div class="goal-line">
+      <span class="num">${s ? `${s}-day streak` : "Start a streak today"}${hit >= target ? " · goal met" : ""}</span>
+      <button type="button" class="toggle" data-studied aria-pressed="${studied}">${studied ? ICON.check + " Studied today" : "Log today"}</button>
+    </div>
+    <p class="meter__note">Ticking a step, rating a lecture or writing notes logs the day for you.</p>
+  </section>`;
+}
+
+function renderReviewPanel(today) {
+  const low = L().filter((l) => { const c = lectureState(l.id).confidence; return c && c <= 2; });
+  const unrated = L().filter((l) => l.guide && l.guide.status === "full" && l.date <= today && !lectureState(l.id).confidence);
+  const list = low.map((l) => `<li class="row" style="grid-template-columns:minmax(0,1fr) auto"><div><p class="row__title"><a href="#lecture-${esc(l.id)}">${esc(l.title)}</a></p><p class="row__sub">${l.code ? esc(l.code) + " · " : ""}rated ${CONFIDENCE[lectureState(l.id).confidence - 1]}</p></div></li>`).join("");
+  return `<section class="panel" aria-labelledby="rev-h">
+    <div class="panel__head"><h2 id="rev-h">Review next</h2></div>
+    ${low.length ? `<ul class="rows">${list}</ul><p class="meter__note" style="margin-top:10px">Ask the tutor agent to quiz you, or run <code>/teach</code> on one of these.</p>`
+      : `<p class="empty">Lectures you rate <em>Lost</em> or <em>Shaky</em> show up here.${unrated.length ? ` ${unrated.length} taught lecture${unrated.length > 1 ? "s" : ""} still unrated.` : ""}</p>`}
+  </section>`;
+}
+
+// Course map
+function viewMap() {
+  const { today } = etNow();
+  const d = state.data;
+  const mods = d.modules.filter((m) => L().some((l) => l.module === m.id));
+  const filter = state.mapFilter;
+  const weeks = [...new Set(d.days.map((x) => x.week))];
+  const curWeek = (dayByDate(today) || nextClassDay(today) || { week: 0 }).week;
+  const html = weeks.map((w) => {
+    const days = d.days.filter((x) => x.week === w);
+    let lecs = L().filter((l) => l.week === w);
+    if (filter !== "all") lecs = lecs.filter((l) => l.module === filter);
+    if (filter !== "all" && !lecs.length) return "";
+    const wmods = [...new Set(L().filter((l) => l.week === w).map((l) => l.module).filter(Boolean))];
+    const events = days.flatMap((day) => day.items.filter((i) => i.kind === "noclass" || i.kind === "milestone" || /deadline|presentations/i.test(i.title)).map((i) => ({ ...i, date: day.date })));
+    const evHtml = [...new Map(events.map((e) => [e.date + e.title, e])).values()].map((e) => `<span class="pill ${e.kind === "milestone" ? "pill--now" : e.kind === "noclass" ? "" : "pill--warn"}">${fmtMonthDay(e.date)} · ${esc(e.kind === "noclass" ? "No class" : cleanTitle(e.title))}</span>`).join("");
+    const rows = lecs.map((l) => {
+      const st = lectureStatus(l, today);
+      const p = lectureProgress(l);
+      const conf = lectureState(l.id).confidence;
+      return `<a class="lec-row" href="#lecture-${esc(l.id)}">
+        <span class="mark" title="${STATUS_TEXT[st]}">${STATUS_ICON[st]}<span class="sr-only">${STATUS_TEXT[st]}</span></span>
+        <span class="code-chip">${esc(l.code || "Day 1")}</span>
+        <span class="lec-row__title">${esc(l.title)}${l.guide && l.guide.status === "outline" ? ' <span class="muted" style="font-size:12px">· prep outline</span>' : ""}</span>
+        <span class="lec-row__end">
+          ${conf ? `<span class="row__sub">${CONFIDENCE[conf - 1]}</span>` : ""}
+          ${p.total ? `<span class="mini-bar" title="${p.done} of ${p.total} steps"><span style="--w:${pct(p.done, p.total)}%"></span></span>` : ""}
+          <span class="lec-row__date num">${fmtShort(l.date)}</span>
+        </span>
+      </a>`;
+    }).join("");
+    return `<section class="week" data-current="${w === curWeek}" aria-labelledby="w${w}">
+      <div class="week__label"><strong id="w${w}">Week ${w}</strong><span class="num">${fmtMonthDay(days[0].date)} – ${fmtMonthDay(days[days.length - 1].date)}</span>${w === curWeek ? '<br><span class="pill pill--now">This week</span>' : ""}</div>
+      <div>
+        ${wmods.length ? `<div class="week__mods">${wmods.map((m) => `<span class="pill">${esc(moduleLabel(m))}</span>`).join("")}</div>` : ""}
+        ${rows || '<p class="empty">Project work time.</p>'}
+        ${evHtml ? `<div class="week__events">${evHtml}</div>` : ""}
+      </div>
+    </section>`;
+  }).join("");
+  return `<h1 class="briefing__date">Course map</h1>
+    <p class="briefing__meta"><span>15 weeks · ${L().length} lectures and projects · Graduation ${fmtLong(d.cohort.graduation)}</span></p>
+    <div class="filters" role="group" aria-label="Filter by module">
+      <button type="button" class="chip" data-filter="all" aria-pressed="${filter === "all"}">All</button>
+      ${mods.map((m) => `<button type="button" class="chip" data-filter="${m.id}" aria-pressed="${filter === m.id}">${m.number ? m.number + " · " : ""}${esc(m.name)}</button>`).join("")}
+    </div>
+    <div class="legend"><span>${ICON.done} Done</span><span>${ICON.half} In progress</span><span>${ICON.now} Today</span><span>${ICON.missed} Not started</span><span>${ICON.todo} Upcoming</span></div>
+    ${html}`;
+}
+
+// Lecture
+function viewLecture(id) {
+  const { today } = etNow();
+  const lec = lectureById(id);
+  if (!lec) return `<p class="empty">That lecture isn't on the schedule. <a href="#map">Back to the course map</a>.</p>`;
+  const g = lec.guide;
+  const st = lectureState(lec.id);
+  const idx = L().indexOf(lec);
+  const prev = L()[idx - 1], next = L()[idx + 1];
+  const status = lectureStatus(lec, today);
+  const { done, total } = lectureProgress(lec);
+  const conf = st.confidence || 0;
+  const linked = state.data.assignments.filter((a) => (a.lectures || []).includes(lec.id));
+
+  const steps = g ? stepsOf(lec).map((s, i) => {
+    const on = !!(st.steps || {})[s.id];
+    return `<li class="step" data-done="${on}">
+      <button type="button" class="check" role="checkbox" aria-checked="${on}" data-step="${esc(s.id)}" aria-label="Step ${i + 1}: ${esc(s.title)}">${ICON.check}</button>
+      <div>
+        <p class="step__num num">Step ${i + 1} of ${total}</p>
+        <h3 class="step__title">${esc(s.title)}</h3>
+        ${s.detail ? `<p class="step__detail">${esc(s.detail)}</p>` : ""}
+        ${s.code ? `<div class="codeblock"><div class="codeblock__bar"><span>${esc(s.codeLabel || "Code")}</span><button type="button" data-copy="${esc(s.id)}">Copy</button></div><pre><code>${esc(s.code)}</code></pre></div>` : ""}
+        ${s.doneWhen ? `<p class="step__done"><b>Done when</b><span>${esc(s.doneWhen)}</span></p>` : ""}
+      </div>
+    </li>`;
+  }).join("") : "";
+
+  const ring = (() => {
+    const r = 26, c = 2 * Math.PI * r, p = total ? done / total : 0;
+    return `<div class="ring"><svg width="64" height="64" viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--surface-2)" stroke-width="7"/><circle cx="32" cy="32" r="${r}" fill="none" stroke="var(--teal)" stroke-width="7" stroke-linecap="round" stroke-dasharray="${(c * p).toFixed(1)} ${c.toFixed(1)}" transform="rotate(-90 32 32)"/></svg>
+      <div><p class="ring__value num">${done}/${total}</p><p class="muted" style="font-size:13px">steps done · ${STATUS_TEXT[status]}</p></div></div>`;
+  })();
+
+  return `<nav class="crumbs" aria-label="Breadcrumb"><a href="#map">Course map</a><span aria-hidden="true">/</span><span>Week ${lec.week}</span><span aria-hidden="true">/</span><span>${esc(moduleLabel(lec.module))}</span></nav>
+  <div class="split" style="margin-top:8px">
+    <article aria-labelledby="lec-h">
+      <header class="lec-head">
+        ${lec.code ? `<p class="lec-head__code">${esc(lec.code)}</p>` : ""}
+        <h1 id="lec-h">${esc(lec.title)}</h1>
+        <p class="lec-head__meta">
+          <span class="num">${lec.dates.map(fmtShort).join(", ")}${lec.time ? ` · ${fmtTime(lec.time)} ET` : ""}</span>
+          <span class="pill ${status === "done" ? "pill--done" : status === "now" ? "pill--now" : status === "missed" ? "pill--warn" : ""}">${STATUS_TEXT[status]}</span>
+          ${g && g.estMinutes ? `<span class="num">About ${g.estMinutes >= 90 ? (Math.round(g.estMinutes / 30) / 2) + " hrs" : g.estMinutes + " min"}</span>` : ""}
+        </p>
+      </header>
+      ${g ? `
+        ${g.summary ? `<p class="lec-summary">${esc(g.summary)}</p>` : ""}
+        ${g.goal ? `<p class="goal"><b>Goal:</b> ${esc(g.goal)}</p>` : ""}
+        ${g.status === "outline" ? `<p class="outline-note">This is a prep outline. The full step-by-step guide gets added after the lecture's material is published (run <code>/sync</code> in Claude Code).</p>` : ""}
+        ${(g.required || []).length ? `<section class="section" aria-labelledby="req-h"><h2 class="section-title" id="req-h">What's required</h2><ul class="required">${g.required.map((r) => `<li><span>${esc(r)}</span></li>`).join("")}</ul></section>` : ""}
+        ${total ? `<section class="section" aria-labelledby="steps-h"><h2 class="section-title" id="steps-h">${g.status === "outline" ? "Prep steps" : "Step by step"} <span class="count num">${done} of ${total} done</span></h2><ol class="steps">${steps}</ol></section>` : ""}
+        ${(g.concepts || []).length ? `<section class="section" aria-labelledby="con-h"><h2 class="section-title" id="con-h">Key terms</h2><dl class="concepts">${g.concepts.map((c) => `<div><dt>${esc(c.term)}</dt><dd>${esc(c.meaning)}</dd></div>`).join("")}</dl></section>` : ""}
+      ` : `<p class="outline-note">No guide for this one yet. Run <code>/sync</code> in Claude Code after the lecture's material is published.</p>`}
+      <nav class="pager" aria-label="Other lectures">
+        ${prev ? `<a href="#lecture-${esc(prev.id)}"><small>Previous</small>${esc(prev.title)}</a>` : "<span></span>"}
+        ${next ? `<a class="next-link" href="#lecture-${esc(next.id)}"><small>Next</small>${esc(next.title)}</a>` : "<span></span>"}
+      </nav>
+    </article>
+    <aside class="aside" aria-label="Your progress on this lecture">
+      ${total ? `<section class="panel">${ring}</section>` : ""}
+      <section class="panel" aria-labelledby="conf-h">
+        <div class="panel__head"><h2 id="conf-h">How well do you get it?</h2></div>
+        <div class="rating" role="group" aria-labelledby="conf-h">
+          ${CONFIDENCE.map((label, i) => `<button type="button" data-conf="${i + 1}" aria-pressed="${conf === i + 1}" aria-label="${i + 1} of 5, ${label}"><b>${i + 1}</b>${label.split(" ")[0]}</button>`).join("")}
+        </div>
+        <p class="rating-label">${conf ? `You picked: ${CONFIDENCE[conf - 1]}` : "Rate it after class. 1–2 puts it on your review list."}</p>
+      </section>
+      <section class="panel" aria-labelledby="notes-h">
+        <div class="panel__head"><h2 id="notes-h"><label for="notes-${esc(lec.id)}">My notes</label></h2></div>
+        <textarea class="notes" id="notes-${esc(lec.id)}" data-notes="${esc(lec.id)}" placeholder="What clicked, what didn't, questions for #eagle_questions…">${esc(st.notes || "")}</textarea>
+        <p class="notes-status" id="notes-status" aria-live="polite"></p>
+      </section>
+      ${(linked.length || (g && (g.resources || []).length)) ? `<section class="panel" aria-labelledby="res-h">
+        <div class="panel__head"><h2 id="res-h">Links</h2></div>
+        <ul class="links">
+          ${linked.map((a) => `<li>${assignmentPill(a)} ${a.repo ? `<a href="${esc(a.repo)}" target="_blank" rel="noopener">${esc(a.title)} ${ICON.ext}</a>` : esc(a.title)}</li>`).join("")}
+          ${g ? (g.resources || []).map((r) => `<li><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.label)} ${ICON.ext}</a></li>`).join("") : ""}
+        </ul>
+      </section>` : ""}
+    </aside>
+  </div>`;
+}
+
+// Assignments
+function viewAssignments() {
+  const d = state.data;
+  const weeks = [...new Set(d.assignments.map((a) => a.week))].sort((a, b) => a - b);
+  const doneCount = d.assignments.filter(assignmentDone).length;
+  const html = weeks.map((w) => {
+    const rows = d.assignments.filter((a) => a.week === w).map((a) => {
+      const on = assignmentDone(a);
+      const lecs = (a.lectures || []).map(lectureById).filter(Boolean);
+      return `<li class="row">
+        <button type="button" class="check" role="checkbox" aria-checked="${on}" data-assign="${esc(a.id)}" aria-label="Mark ${esc(a.title)} done">${ICON.check}</button>
+        <div>
+          <p class="row__title">${a.repo ? `<a href="${esc(a.repo)}" target="_blank" rel="noopener">${esc(a.title)}</a>` : esc(a.title)}</p>
+          <p class="row__sub">${[a.notes, a.local].filter(Boolean).map(esc).join(" · ")}</p>
+        </div>
+        <div class="row__end">${lecs.map((l) => `<a class="code-chip" href="#lecture-${esc(l.id)}" style="text-decoration:none">${esc(l.code || l.title)}</a>`).join("")}${assignmentPill(a)}</div>
+      </li>`;
+    }).join("");
+    return `<section class="section" aria-labelledby="aw${w}"><h2 class="section-title" id="aw${w}">Week ${w}</h2><ul class="rows">${rows}</ul></section>`;
+  }).join("");
+  const assess = d.assessments.map((a) => `<li class="row"><span class="mark">${ICON.todo}</span><div><p class="row__title">${esc(a.title)}</p><p class="row__sub">${esc(a.covers)}</p></div><div class="row__end">${a.status === "done" ? '<span class="pill pill--done">Done</span>' : '<span class="pill">Date not posted yet</span>'}</div></li>`).join("");
+  return `<h1 class="briefing__date">Assignments</h1>
+    <p class="briefing__meta"><span class="num"><strong>${doneCount}</strong> of ${d.assignments.length} done</span><span>Tick one off here, or let <code>/sync</code> update it from GitHub</span></p>
+    ${html}
+    <section class="section" aria-labelledby="as-h"><h2 class="section-title" id="as-h">Assessments</h2><ul class="rows">${assess}</ul></section>`;
+}
+
+// My work
+function viewWork() {
+  const { today } = etNow();
+  const d = state.data;
+  const commitsByDay = {};
+  d.commits.forEach((c) => { commitsByDay[c.date] = (commitsByDay[c.date] || 0) + 1; });
+  const act = state.activity.days || {};
+  const rowsLabel = ["Mon", "Tue", "Wed", "Thu", "Fri"];
+  let grid = "";
+  for (let r = 0; r < 5; r++) {
+    grid += `<span>${rowsLabel[r]}</span>`;
+    for (let w = 1; w <= 15; w++) {
+      const day = d.days.find((x) => x.week === w && (parseD(x.date).getUTCDay() + 6) % 7 === r);
+      if (!day) { grid += `<i class="heat__cell" aria-hidden="true"></i>`; continue; }
+      const n = (commitsByDay[day.date] || 0) + (act[day.date] ? 1 : 0);
+      const l = day.date > today ? 0 : n >= 4 ? 3 : n >= 2 ? 2 : n >= 1 ? 1 : 0;
+      grid += `<i class="heat__cell" data-l="${l}" data-off="${day.noClass}" data-today="${day.date === today}" title="${fmtShort(day.date)}: ${commitsByDay[day.date] || 0} commits${act[day.date] ? ", studied" : ""}${day.noClass ? " (no class)" : ""}"></i>`;
+    }
+  }
+  const head = `<span></span>${Array.from({ length: 15 }, (_, i) => `<span class="num" style="text-align:center">${i + 1}</span>`).join("")}`;
+  const logs = d.workLogs.map((w) => `<article class="log"><p class="row__sub num">${fmtShort(w.date)}</p><h3>${esc(w.title.replace(/\s*\((Sun|Mon|Tue|Wed|Thu|Fri|Sat)[^)]*\)\s*$/, ""))}</h3>${w.summary ? `<p>${esc(w.summary)}</p>` : ""}<p class="log__path"><span>In Obsidian:</span><code>${esc(w.file)}</code><button type="button" class="btn btn--small" data-copytext="${esc(w.file)}">Copy path</button></p></article>`).join("");
+  const commits = d.commits.slice(0, 20).map((c) => `<div class="commit"><time class="num" datetime="${esc(c.date)}">${fmtMonthDay(c.date)}</time><div><span class="code-chip">${esc(c.repo)}</span> ${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.message)}</a>` : esc(c.message)}</div></div>`).join("");
+  const repos = d.repos.map((r) => `<li class="row" style="grid-template-columns:minmax(0,1fr) auto"><div><p class="row__title"><a href="${esc(r.url)}" target="_blank" rel="noopener">${esc(r.name)}</a></p>${r.description ? `<p class="row__sub">${esc(r.description)}</p>` : ""}</div><span class="row__sub num">${r.pushedAt ? "pushed " + fmtMonthDay(r.pushedAt.slice(0, 10)) : ""}</span></li>`).join("");
+  return `<h1 class="briefing__date">My work</h1>
+    <p class="briefing__meta"><span class="num"><strong>${d.commits.length}</strong> commits since Oct 5</span><span class="num"><strong>${d.repos.length}</strong> repos</span><span class="num"><strong>${d.workLogs.length}</strong> work logs</span></p>
+    <section class="section" aria-labelledby="heat-h"><h2 class="section-title" id="heat-h">Activity by class day</h2>
+      <div class="heat"><div class="heat__grid" role="img" aria-label="Commits and study days per class day across 15 weeks">${head}${grid}</div></div>
+      <div class="legend"><span>Week number across the top</span><span><i style="background:color-mix(in srgb,var(--teal) 35%,var(--surface-2))"></i>1 commit or study day</span><span><i></i>4+</span><span><i style="background:repeating-linear-gradient(45deg,var(--surface-2),var(--surface-2) 3px,transparent 3px,transparent 6px)"></i>No class</span></div>
+    </section>
+    <div class="split section">
+      <section aria-labelledby="logs-h"><h2 class="section-title" id="logs-h">Work logs <span class="count">written with Claude, in plain English</span></h2><div class="logs">${logs || '<p class="empty">No work logs yet.</p>'}</div></section>
+      <aside aria-label="GitHub" style="display:grid;gap:28px;align-content:start">
+        <section aria-labelledby="cm-h"><h2 class="section-title" id="cm-h">Recent commits</h2>${commits || '<p class="empty">No commits yet.</p>'}</section>
+        <section aria-labelledby="rp-h"><h2 class="section-title" id="rp-h">Repos</h2><ul class="rows">${repos}</ul></section>
+      </aside>
+    </div>`;
+}
+
+// ---------- router + render ----------
+function currentRoute() {
+  const h = (location.hash || "#today").slice(1);
+  if (h.startsWith("lecture-")) return { view: "lecture", id: h.slice(8) };
+  return { view: ["today", "map", "assignments", "work"].includes(h) ? h : "today" };
+}
+let lastRouteKey = "";
+function render() {
+  if (!state.data) return;
+  const route = currentRoute();
+  const key = route.view + (route.id || "");
+  const active = document.activeElement;
+  const keepNotes = active && active.matches && active.matches("textarea.notes") ? { id: active.id, start: active.selectionStart, end: active.selectionEnd, value: active.value } : null;
+  const scroll = window.scrollY;
+  const html = route.view === "lecture" ? viewLecture(route.id) : route.view === "map" ? viewMap() : route.view === "assignments" ? viewAssignments() : route.view === "work" ? viewWork() : viewToday();
+  $("#view").innerHTML = html;
+  document.querySelectorAll(".tab").forEach((t) => t.setAttribute("aria-current", t.dataset.view === (route.view === "lecture" ? "map" : route.view) ? "page" : "false"));
+  if (keepNotes) {
+    const el = document.getElementById(keepNotes.id);
+    if (el) { el.value = keepNotes.value; el.focus(); el.setSelectionRange(keepNotes.start, keepNotes.end); }
+  }
+  if (key !== lastRouteKey) { window.scrollTo(0, 0); lastRouteKey = key; } else { window.scrollTo(0, scroll); }
+  const { today } = etNow();
+  const left = dayDiff(today, state.data.cohort.graduation);
+  $("#countdown").textContent = left > 0 ? `${left} days to graduation` : left === 0 ? "Graduation day" : "Graduated";
+}
+let pending = false;
+function rerender() { if (pending) return; pending = true; requestAnimationFrame(() => { pending = false; render(); }); }
+
+// ---------- events ----------
+let notesTimer = null;
+document.addEventListener("click", (e) => {
+  const t = e.target.closest("button");
+  if (!t) return;
+  if (t.dataset.step) {
+    const lid = currentRoute().id, sid = t.dataset.step;
+    const st = lectureState(lid);
+    putLecture(lid, { steps: { ...(st.steps || {}), [sid]: !(st.steps || {})[sid] } });
+    render();
+  } else if (t.dataset.assign) {
+    const a = state.data.assignments.find((x) => x.id === t.dataset.assign);
+    putAssignment(a.id, { done: !assignmentDone(a) });
+    render();
+  } else if (t.dataset.conf) {
+    const lid = currentRoute().id, n = Number(t.dataset.conf);
+    putLecture(lid, { confidence: lectureState(lid).confidence === n ? 0 : n });
+    render();
+  } else if (t.dataset.goal) {
+    state.goal = { weeklyTarget: Number(t.dataset.goal) };
+    writeDoc("meta/goal", state.goal);
+    render();
+  } else if ("studied" in t.dataset) {
+    const { today } = etNow();
+    markActive(!(state.activity.days || {})[today]);
+    render();
+  } else if (t.dataset.filter) {
+    state.mapFilter = t.dataset.filter; render();
+  } else if (t.dataset.copy || t.dataset.copytext) {
+    let text = t.dataset.copytext;
+    if (!text) { const lec = lectureById(currentRoute().id); const s = stepsOf(lec).find((x) => x.id === t.dataset.copy); text = s && s.code; }
+    copyText(text, t);
+  }
+});
+document.addEventListener("input", (e) => {
+  const ta = e.target.closest("textarea.notes");
+  if (!ta) return;
+  const lid = ta.dataset.notes;
+  $("#notes-status").textContent = "Typing…";
+  clearTimeout(notesTimer);
+  notesTimer = setTimeout(() => {
+    putLecture(lid, { notes: ta.value });
+    const s = $("#notes-status"); if (s) s.textContent = state.mode === "cloud" ? "Saved" : "Saved in this browser";
+  }, 900);
+});
+async function copyText(text, btn) {
+  const label = btn.textContent;
+  try { await navigator.clipboard.writeText(text); btn.textContent = "Copied"; }
+  catch {
+    const pre = btn.closest(".codeblock") && btn.closest(".codeblock").querySelector("pre");
+    if (pre) { const r = document.createRange(); r.selectNodeContents(pre); const s = getSelection(); s.removeAllRanges(); s.addRange(r); btn.textContent = "Selected: press ⌘C"; }
+    else btn.textContent = "Copy failed";
+  }
+  setTimeout(() => { btn.textContent = label; }, 1600);
+}
+window.addEventListener("hashchange", render);
+setInterval(() => { if (currentRoute().view === "today" && !document.activeElement.matches("textarea")) render(); }, 60000);
+
+// ---------- boot ----------
+loadLocal();
+fetch("hub-data.json").then((r) => { if (!r.ok) throw new Error(r.status); return r.json(); }).then((data) => {
+  state.data = data;
+  render();
+  connectDb();
+}).catch(() => {
+  $("#view").innerHTML = `<p class="loading">Couldn't load the course data. Reload the page; if it keeps happening, run <code>/sync</code> in Claude Code to republish it.</p>`;
+});
+})();
+</script>

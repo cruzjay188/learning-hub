@@ -1,0 +1,29 @@
+<!-- @dsCard group="Actions" height=90 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>SegmentedControl — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="toolbar" style="margin:0">
+  <div class="segc" role="group" aria-label="Show"><span class="segc__thumb" aria-hidden="true"></span>
+    <button type="button" class="segc__i" aria-pressed="true">All</button>
+    <button type="button" class="segc__i" aria-pressed="false">This week</button>
+    <button type="button" class="segc__i" aria-pressed="false">Needs review <span class="n">2</span></button>
+    <button type="button" class="segc__i" aria-pressed="false">Not checked off <span class="n">9</span></button>
+  </div>
+  <select class="select" aria-label="Module"><option>All modules</option><option>3 · Beyond Building</option></select>
+</div>
+<script>
+var g = document.querySelector('.segc'), th = g.querySelector('.segc__thumb');
+function place(sel, anim) { var w = g.clientWidth - 6, l = sel.offsetLeft - 3, r = w - l - sel.offsetWidth; th.dataset.ready = anim ? 'true' : 'false'; th.style.setProperty('--tl', l + 'px'); th.style.setProperty('--tr', r + 'px'); }
+g.querySelectorAll('.segc__i').forEach(function (b) { b.addEventListener('click', function () { g.querySelectorAll('.segc__i').forEach(function (x) { x.setAttribute('aria-pressed', x === b); }); place(b, true); }); });
+place(g.querySelector('[aria-pressed=true]'), false);
+</script>
+</body>
+</html>

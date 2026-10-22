@@ -1,0 +1,180 @@
+{
+  "id": "ai-5",
+  "code": "AI-5",
+  "title": "Single Page Applications",
+  "status": "full",
+  "summary": "Plan an app on paper first (the 8 questions, a user journey, TLDraw wireframes, one user story per page). Then Claude Code builds it as a React + Vite single page app using design skills, MCPs and phases you approve.",
+  "goal": "Turn a planned app_outline/ folder into a working React SPA that Claude builds in phases you approve and save to GitHub.",
+  "required": [
+    "Homework Part I, priority 1: your own app – pick an idea, open TLDraw, answer the 8 questions, write your user journey/stories, sketch every screen",
+    "Homework Part I, priority 2: FreeCodeCamp – 50 steps of the Python certification",
+    "Homework Part I, priority 3: Netflix clone – same planning process: 8 questions, journey, wireframes",
+    "Homework Part I, set up for next lecture: save your .tldr file, export one PNG per screen plus one of the whole app, write one short user story per page",
+    "Homework Part II, priority 1: build your app – turn your Part I planning into an app_outline/ and build the front-end SPA",
+    "Homework Part II, priority 2: FreeCodeCamp – 100 steps of the JavaScript certification",
+    "Homework Part II, priority 3: Netflix clone – use Claude Code, skills, context, and MCPs to build your SPA (agentic-netflix-clone-i)",
+    "Part II checklist: skills folder ✓ · MCPs connected ✓ · app_outline ✓ · phases approved ✓ · pushed to GitHub ✓"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Pick your own app; answer the 8 questions",
+      "detail": "Priority 1 is your own app, and no personal project exists yet, so start here. Answer the lecture's 8-question template in a note. The exit-ticket version is one sentence: what app, and what problem does it solve?",
+      "code": "1. What problem does the app solve?\n2. Who are the users?\n3. What are their primary goals?\n4. What information do they need?\n5. What actions can they perform?\n6. What pages are required?\n7. What data must be collected?\n8. What permissions exist?",
+      "codeLabel": "File",
+      "doneWhen": "All 8 questions have an answer for your app idea."
+    },
+    {
+      "id": "s2",
+      "title": "Write the user journey and page stories",
+      "detail": "Write the step-by-step story of using the app: first visit, signing up, doing the main task, and making a mistake (the most-skipped part). Then write one user story per page in the form \"As a…, I want to…, so that…\".",
+      "doneWhen": "You have user_journey.md and one user story per page, including at least one error or empty state."
+    },
+    {
+      "id": "s3",
+      "title": "Sketch every screen in TLDraw",
+      "detail": "Use boxes and labels only, with no colors or fonts. Draw arrows between screens for navigation, and write error and empty states right onto the wireframe. Save the .tldr file and export one PNG per screen plus one of the whole app.",
+      "codeLabel": "Browser",
+      "doneWhen": "Your .tldr is saved, with a PNG for each screen and an app.png for the whole app."
+    },
+    {
+      "id": "s4",
+      "title": "Plan Myflix the same way",
+      "detail": "Priority 3. Myflix (assignments/week-02/netflix) is built, but it has no planning files and no Home page yet. Answer the 8 questions for it, then create app_outline/ with the class layout: user_journey.md, app.png, style_guide.md, and pages/<page>/user_story.md with a wireframe PNG.",
+      "doneWhen": "assignments/week-02/netflix/app_outline/ exists, with a folder per page, including a Home page."
+    },
+    {
+      "id": "s5",
+      "title": "Install the design skills and three MCPs",
+      "detail": "Skills install into the folder you run this in, so run the one-liner inside your own app's project folder. Myflix already has the four skills, and Playwright, Context7 and Chrome DevTools are already at user scope, so for those just verify with /skills and claude mcp list.",
+      "code": "curl -fsSL https://kabeier.github.io/SPAs-and-Claude/lecture-2-building-spas/demo-kit/setup-skills.sh | bash\nclaude mcp add --scope user playwright -- npx -y @playwright/mcp@latest\nclaude mcp add --scope user context7 -- npx -y @upstash/context7-mcp\nclaude mcp add --scope user chrome-devtools -- npx -y chrome-devtools-mcp@latest",
+      "codeLabel": "Terminal",
+      "doneWhen": "/skills shows four skills (Taste appears as design-taste-frontend), and claude mcp list shows all three as Connected."
+    },
+    {
+      "id": "s6",
+      "title": "Paste the build prompt and approve phases",
+      "detail": "For your own app, put app_outline/ in the project root, start claude, and paste the class prompt. Read Claude's summary and phase plan before you approve: you're the architect. Myflix already talks to Supabase, so its \"no API\" line doesn't fit. For the missing Myflix Home page, use plan mode with @app_outline/pages/home instead.",
+      "code": "I would like you to build a Front-End Single Page Application from the wire frames and user stories I have mapped out.\n\nThe tech-stack for this application will be as follows:\n- React.js + Vite\n- React Router DOM with Browser Router\n\nSkills necessary for this application are as follows:\n- Front-End Design\n- UI UX Pro Max\n- Taste\n- Design Motion Principles\n\nThere will be no API interactions and all data should be retained only at the browser level, meaning if I refresh/rerender my site all of the data should reset.\n\nI have created a series of documents and images as a reference for what I would like this application to look like and isolated everything by pages. Take a look at this folder @./app_outline and read the `user_journey.md` file to get context for the users journey through the application. Then look at the `app.png` to visualize the entire application. Finally under pages, you'll find a wire-frame corresponding to each page along with a detailed user story for how a user would interact with this page. Additionally, when it comes to design style, you can read the `style_guide.md` and apply its guidelines as you see fit.\n\nUse the Context7 MCP to gather all relevant documentation for our tech stack.\n\nEnsure to utilize the `playwright` & `Chrome Dev Tools` MCP servers to supervise the development of this Application. After each page is built, use Playwright to screenshot it and compare against the wireframe before moving on and ensuring it's output matches the desired outcome from the wire-frames and user stories.\n\nFinally the execution of this app should happen in phases, phases should correspond roughly to pages or major feature areas. I'll leave it to you to declare the number of phases and what their independent passing conditions are, but these conditions should be approved by me and allow me to provide you feedback before moving on into the next phase.\n\nBefore writing any code, please confirm your understanding of the application by summarizing the user journey and listing the pages you plan to build.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "Claude listed your pages and phases with pass conditions, and you approved phase 1."
+    },
+    {
+      "id": "s7",
+      "title": "Check each phase against its wireframe",
+      "detail": "Open localhost:5173 next to that page's PNG and compare the layout, any missing elements and the empty states. Give Claude one or two pieces of feedback before you approve the next phase.",
+      "codeLabel": "Browser",
+      "doneWhen": "Every page matches its wireframe closely enough that you approved every phase."
+    },
+    {
+      "id": "s8",
+      "title": "Save every approved phase to GitHub",
+      "detail": "Each approved phase is a save point. Run /init so the next session has a CLAUDE.md, then commit. Use your app's name instead of liftlog. In this workspace, /save-project also does the commit and push.",
+      "code": "/init\n\ngit init\ngit add -A\ngit commit -m \"Phase 1: app shell + Home\"\ngh repo create liftlog --public --source=. --push",
+      "codeLabel": "Terminal",
+      "doneWhen": "Your app's repo is on github.com/cruzjay188 with one commit per approved phase."
+    },
+    {
+      "id": "s9",
+      "title": "Add the front-end-agent to your app",
+      "detail": "This is a reusable front-end subagent that preloads the four skills and three MCPs. Myflix already has it, so copy that file into your own app's .claude/agents/.",
+      "code": "mkdir -p .claude/agents && cp ~/Desktop/codeplatoon/assignments/week-02/netflix/.claude/agents/front-end-agent.md .claude/agents/",
+      "codeLabel": "Terminal",
+      "doneWhen": "/agents in your app's folder lists front-end-agent."
+    },
+    {
+      "id": "s10",
+      "title": "FreeCodeCamp steps",
+      "detail": "Part I: 50 Python steps. Part II: 100 JavaScript steps. The slides rank these second, after your own app and before the Netflix clone.",
+      "doneWhen": "FreeCodeCamp shows 50 new Python steps and 100 new JavaScript steps."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "SPA (single page application)",
+      "meaning": "A site that loads one page and swaps content with JavaScript, instead of loading a new page per click."
+    },
+    {
+      "term": "User journey",
+      "meaning": "The step-by-step story of someone using your app, including their mistakes."
+    },
+    {
+      "term": "User story",
+      "meaning": "One line per need: \"As a…, I want to…, so that…\"."
+    },
+    {
+      "term": "Wireframe",
+      "meaning": "A plain boxes-and-labels sketch of a screen, with no colors or fonts."
+    },
+    {
+      "term": "app_outline/",
+      "meaning": "The folder of journey, wireframes, stories and style guide that Claude builds from, one subfolder per page."
+    },
+    {
+      "term": "React Router",
+      "meaning": "The library that maps URLs like /history to React pages without reloading."
+    },
+    {
+      "term": "Vite",
+      "meaning": "The dev server and build tool that runs your React app at localhost:5173."
+    },
+    {
+      "term": "Skill vs MCP",
+      "meaning": "A skill is a folder of instructions Claude follows; an MCP is a tool server Claude can call."
+    },
+    {
+      "term": "Phase",
+      "meaning": "One approved chunk of the build (about a page), each saved as its own commit."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Lecture site: SPAs and Claude",
+      "url": "https://kabeier.github.io/SPAs-and-Claude/"
+    },
+    {
+      "label": "Slides: UI Fundamentals",
+      "url": "https://kabeier.github.io/SPAs-and-Claude/lecture-1-ui-fundamentals/slides.html"
+    },
+    {
+      "label": "Slides: Building Your SPA",
+      "url": "https://kabeier.github.io/SPAs-and-Claude/lecture-2-building-spas/slides.html"
+    },
+    {
+      "label": "Skills manual install guide",
+      "url": "https://kabeier.github.io/SPAs-and-Claude/setup-guide.html"
+    },
+    {
+      "label": "The build prompt",
+      "url": "https://github.com/kabeier/SPAs-and-Claude/blob/main/lecture-2-building-spas/demo-kit/prompt.md"
+    },
+    {
+      "label": "Example app_outline (Liftlog)",
+      "url": "https://github.com/kabeier/SPAs-and-Claude/tree/main/lecture-2-building-spas/demo-kit/app_outline"
+    },
+    {
+      "label": "front-end-agent.md",
+      "url": "https://github.com/kabeier/SPAs-and-Claude/blob/main/lecture-2-building-spas/demo-kit/.claude/agents/front-end-agent.md"
+    },
+    {
+      "label": "TLDraw",
+      "url": "https://www.tldraw.com"
+    },
+    {
+      "label": "Assignment: agentic-netflix-clone-i",
+      "url": "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-i"
+    }
+  ],
+  "assignments": [
+    "agentic-netflix-clone-i"
+  ],
+  "estMinutes": 480,
+  "sources": [
+    "https://kabeier.github.io/SPAs-and-Claude/ (index.html: Set up Claude Code for the homework – skills one-liner, three MCP commands)",
+    "https://kabeier.github.io/SPAs-and-Claude/lecture-1-ui-fundamentals/slides.html (Homework, Part I; 8-question template diagram L1-04)",
+    "https://kabeier.github.io/SPAs-and-Claude/lecture-2-building-spas/slides.html (Homework, Part II; version control slide; front-end-agent slide)",
+    "https://github.com/kabeier/SPAs-and-Claude/blob/main/lecture-2-building-spas/demo-kit/prompt.md (build prompt, word for word)",
+    "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-i README",
+    "~/Desktop/codeplatoon/hub/guides/README.md and progress.md (Myflix state: no Home page, no planning files, no own app)"
+  ]
+}

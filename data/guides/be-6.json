@@ -1,0 +1,70 @@
+{
+  "id": "be-6",
+  "code": "BE 6",
+  "title": "CRUD",
+  "status": "outline",
+  "summary": "CRUD (Create, Read, Update, Delete) and RESTful API design while building a Pokedex-style API: POST, PUT/PATCH and DELETE methods in class-based views, and the right HTTP response for each one. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Add create, update and delete methods to DRF class-based views that follow REST conventions.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Map Netflix actions to HTTP methods",
+      "detail": "Your Netflix app already does full CRUD; the Supabase client just hid the HTTP part. Add to My List is a create (POST), showing the list is a read (GET), changing a rating is an update (PATCH), removing a title is a delete (DELETE).",
+      "doneWhen": "Your notes have a 4-row table: action, HTTP method, expected status code."
+    },
+    {
+      "id": "s2",
+      "title": "Read MDN's HTTP request methods",
+      "detail": "Skim GET, POST, PUT, PATCH and DELETE on MDN.",
+      "doneWhen": "You can explain the difference between PUT and PATCH."
+    },
+    {
+      "id": "s3",
+      "title": "Read DRF tutorial part 3",
+      "detail": "The class-based views tutorial shows `get`, `put` and `delete` methods side by side on one view.",
+      "doneWhen": "You can find the status code the tutorial returns after a delete (204)."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "CRUD",
+      "meaning": "Create, Read, Update, Delete: the four basic things an app does with data."
+    },
+    {
+      "term": "REST",
+      "meaning": "A style of API where URLs name resources and HTTP methods say what to do to them."
+    },
+    {
+      "term": "PUT vs PATCH",
+      "meaning": "PUT replaces the whole record; PATCH changes only the fields you send."
+    },
+    {
+      "term": "201 Created",
+      "meaning": "The status code for a successful create."
+    },
+    {
+      "term": "204 No Content",
+      "meaning": "The status code for success with nothing to send back, common after a delete."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: CRUD",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/6-create-read-update-delete/"
+    },
+    {
+      "label": "MDN: HTTP request methods",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Methods"
+    },
+    {
+      "label": "DRF tutorial: Class-based views",
+      "url": "https://www.django-rest-framework.org/tutorial/3-class-based-views/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/6-create-read-update-delete/"
+  ]
+}

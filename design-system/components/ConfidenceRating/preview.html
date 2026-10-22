@@ -1,0 +1,32 @@
+<!-- @dsCard group="Inputs" height=190 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ConfidenceRating — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div style="max-width:320px">
+  <div class="rating__top"><h2>How well do you get it?</h2><span class="rating__word">Shaky</span></div>
+  <div class="rating" role="radiogroup" aria-label="Confidence, 1 to 5" style="--c:2" data-on="true"><span class="rating__thumb" aria-hidden="true"></span>
+    <button type="button" role="radio" aria-checked="false" aria-label="1 of 5, Lost">1</button>
+    <button type="button" role="radio" aria-checked="true" aria-label="2 of 5, Shaky">2</button>
+    <button type="button" role="radio" aria-checked="false" aria-label="3 of 5, Getting it">3</button>
+    <button type="button" role="radio" aria-checked="false" aria-label="4 of 5, Solid">4</button>
+    <button type="button" role="radio" aria-checked="false" aria-label="5 of 5, Could teach it">5</button>
+  </div>
+  <div class="rating__ends"><span>Lost</span><span>Could teach it</span></div>
+  <p class="rating__help" aria-live="polite">Comes back for review on Thu Oct 22.</p>
+</div>
+<script>
+var L = ['Lost', 'Shaky', 'Getting it', 'Solid', 'Could teach it'], A = ['tomorrow, Tue Oct 20', 'on Wed Oct 21', 'on Fri Oct 23', 'on Thu Oct 29'];
+var g = document.querySelector('.rating'), w = document.querySelector('.rating__word'), h = document.querySelector('.rating__help');
+function swap(el, t) { el.textContent = t; el.classList.remove('is-swapping'); void el.offsetWidth; el.classList.add('is-swapping'); }
+document.querySelectorAll('[role=radio]').forEach(function (b, i) { b.addEventListener('click', function () { document.querySelectorAll('[role=radio]').forEach(function (x) { x.setAttribute('aria-checked', x === b); }); g.style.setProperty('--c', i + 1); g.dataset.on = 'true'; swap(w, L[i]); swap(h, i === 4 ? "It won't come back for review." : 'Comes back for review ' + A[i] + '.'); }); });
+</script>
+</body>
+</html>

@@ -1,0 +1,81 @@
+{
+  "id": "fe-9",
+  "code": "FE 9",
+  "title": "GH Pages CI/CD",
+  "status": "outline",
+  "summary": "Ships a React + Vite app as a static site on GitHub Pages: build to dist/, set Vite's base path to the repo name, use HashRouter in production (GitHub Pages can't route /about), and deploy with the gh-pages package. Then GitHub Actions runs Cypress on every push and pull request (CI) and deploys automatically (CD). Step-by-step guide arrives when the lecture is published.",
+  "goal": "Deploy a React app to GitHub Pages and set up a GitHub Actions workflow that runs tests before deploying.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read both lessons",
+      "detail": "Read 'GitHub Pages for Static Sites' and 'GitHub Actions CI/CD', especially 'BrowserRouter Is Not Suitable for GitHub Pages'.",
+      "doneWhen": "You can explain why a refresh on /about gives a 404 on GitHub Pages."
+    },
+    {
+      "id": "s2",
+      "title": "Build Myflix and look at dist/",
+      "detail": "A production build turns your JSX into plain static files. Run this in the Myflix folder and open the preview URL.",
+      "code": "cd ~/Desktop/codeplatoon/assignments/week-02/netflix\nnpm run build\nnpm run preview",
+      "codeLabel": "Terminal",
+      "doneWhen": "A dist/ folder appears with index.html and an assets/ folder, and the preview works."
+    },
+    {
+      "id": "s3",
+      "title": "Read the deploy settings you'll need",
+      "detail": "The lesson adds \"predeploy\": \"npm run build\" and \"deploy\": \"gh-pages -d dist\" to package.json and sets base: \"/YOUR_REPOSITORY_NAME\" in vite.config.js. For cruzjay188/netflix that would be \"/netflix\". Myflix also needs its Supabase settings at build time; keep .env out of git and ask in #eagle_questions how they want env vars handled in Actions.",
+      "doneWhen": "You can name the three changes Myflix would need to deploy."
+    },
+    {
+      "id": "s4",
+      "title": "Walk through the Cypress workflow",
+      "detail": "Read the lesson's .github/workflows/cypress.yml and label each part: on (when it runs), jobs (what machine), steps (checkout, install, run tests).",
+      "doneWhen": "You can say in plain English what triggers the workflow and what it does."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Static site",
+      "meaning": "Plain HTML, CSS and JS files served as-is, with no server code."
+    },
+    {
+      "term": "dist/",
+      "meaning": "The folder npm run build creates with the files you actually deploy."
+    },
+    {
+      "term": "HashRouter",
+      "meaning": "A router that keeps the page path after a #, so static hosts never see it."
+    },
+    {
+      "term": "Continuous Integration (CI)",
+      "meaning": "Automatically running tests on every push or pull request."
+    },
+    {
+      "term": "Continuous Deployment (CD)",
+      "meaning": "Automatically publishing the app when tests pass."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: CI/CD with GitHub Pages",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/"
+    },
+    {
+      "label": "GitHub Docs: What is GitHub Pages?",
+      "url": "https://docs.github.com/en/pages/getting-started-with-github-pages/what-is-github-pages"
+    },
+    {
+      "label": "Vite: Deploying a static site",
+      "url": "https://vite.dev/guide/static-deploy"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/1-gh-pages/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/2-gh-actions/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/9-ci-cd/assignments/"
+  ]
+}

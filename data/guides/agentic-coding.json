@@ -1,0 +1,68 @@
+{
+  "id": "agentic-coding",
+  "code": "Agentic",
+  "title": "Agentic Coding as an Engineer",
+  "status": "outline",
+  "summary": "Three mornings (Dec 28–30) on working with coding agents like a professional engineer. Neither the curriculum site nor the syllabus describes this block yet, so the exact topics are unconfirmed. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Work with a coding agent the way an engineer does: plan first, review every change, and stay in control of the code.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Review the Prompting Life Cycle",
+      "detail": "Reread the Phase III Prompt Life Cycle lesson from your first week. The course builds on Define → Explore → Plan → Code → Review → Commit.",
+      "doneWhen": "You can list the six stages from memory and say what you do in each."
+    },
+    {
+      "id": "s2",
+      "title": "Log what went wrong with Claude during your personal project",
+      "detail": "From Dec 4 to Dec 22 you'll build a lot with Claude Code. Each time it went off track (wrong file, skipped a test, too much code), write one line in your daily notes. That gives you real cases to bring to these mornings.",
+      "doneWhen": "Your notes list at least 3 real moments with what you'd do differently."
+    },
+    {
+      "id": "s3",
+      "title": "Read Anthropic's Claude Code best practices",
+      "detail": "Pick one practice you haven't tried yet (for example, having Claude write a plan before coding, or using a subagent for review) and try it once.",
+      "doneWhen": "You've tried one new practice and written a sentence about how it went."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Agentic coding",
+      "meaning": "Letting an AI agent read files, run commands and make changes while you direct and review."
+    },
+    {
+      "term": "Prompting Life Cycle",
+      "meaning": "The course's loop: Define, Explore, Plan, Code, Review, Commit."
+    },
+    {
+      "term": "Context window",
+      "meaning": "How much text the model can keep in mind at once; long sessions push old details out."
+    },
+    {
+      "term": "Subagent",
+      "meaning": "A separate agent Claude starts for one focused job, like a review or a search."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Prompt Life Cycle",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/1-prompt-life-cycle/"
+    },
+    {
+      "label": "Claude Code docs",
+      "url": "https://code.claude.com/docs/en/overview"
+    },
+    {
+      "label": "Anthropic: Claude Code best practices",
+      "url": "https://www.anthropic.com/engineering/claude-code-best-practices"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "schedule/syllabus.md (Agentic Coding as an Engineer, 3 days, Dec 28–30; no description)",
+    "schedule/schedule.md (Dec 28–30 mornings)",
+    "Curriculum site: no Agentic Coding page found"
+  ]
+}

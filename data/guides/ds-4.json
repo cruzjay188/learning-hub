@@ -1,0 +1,80 @@
+{
+  "id": "ds-4",
+  "code": "DS 4",
+  "title": "Recursion",
+  "status": "outline",
+  "summary": "Recursion is a function solving a problem by calling itself on a smaller version of it. Every recursive function needs a base case (when to stop) and a step that shrinks the problem. The lesson compares recursion with while loops, explains the call stack, and rewrites binary search recursively. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Write a recursive function with a correct base case and trace how its calls stack up and return.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the lesson",
+      "detail": "Read the Recursion page, focusing on 'Identifying the Stopping Condition' and 'The Call Stack'.",
+      "doneWhen": "You can point to the base case and the shrinking step in any recursive function."
+    },
+    {
+      "id": "s2",
+      "title": "Run factorial both ways",
+      "detail": "Run the lesson's loop and recursive versions side by side, then try factorial(-1) on the recursive one to see what a missing base case does.",
+      "code": "def factorial_loop(n):\n    answer = 1\n    while n:\n        answer *= n\n        n -= 1\n    return answer\n\ndef factorial(n):\n    if n == 0:\n        return 1\n    return n * factorial(n - 1)\n\nprint(factorial_loop(5), factorial(5))",
+      "codeLabel": "File",
+      "doneWhen": "Both print 120, and the negative input ends in a RecursionError."
+    },
+    {
+      "id": "s3",
+      "title": "Watch the call stack in Python Tutor",
+      "detail": "One assignment asks you to step through a recursive function in Python Tutor. Paste factorial(3) there and step forward. Note: the lesson's recursive binary search calls binary_search2 inside binary_search, so rename it to one name if you try it.",
+      "doneWhen": "You saw three factorial frames stack up and then return 6."
+    },
+    {
+      "id": "s4",
+      "title": "Talk through Flatten List first",
+      "detail": "Flatten List is one of the assignments. Before coding, say the base case (an item that isn't a list) and the recursive case (flatten each sub-list), then the Big-O: time O(n) over all items, space O(d) for nesting depth d.",
+      "doneWhen": "You can explain the approach and its Big-O out loud."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Recursion",
+      "meaning": "A function that calls itself on a smaller piece of the problem."
+    },
+    {
+      "term": "Base case",
+      "meaning": "The condition where the function stops calling itself and returns a value."
+    },
+    {
+      "term": "Recursive case",
+      "meaning": "The part that calls the function again with a smaller input."
+    },
+    {
+      "term": "Call stack",
+      "meaning": "Python's list of function calls still waiting to finish."
+    },
+    {
+      "term": "RecursionError",
+      "meaning": "Python's error when the call stack gets too deep, usually from a missing base case."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Recursion",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/04-recursion/"
+    },
+    {
+      "label": "Python Tutor (step-through visualizer)",
+      "url": "https://pythontutor.com/"
+    },
+    {
+      "label": "Curriculum: Technical Interviews (whiteboarding)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/04-recursion/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/04-recursion/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

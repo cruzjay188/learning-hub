@@ -1,0 +1,69 @@
+{
+  "id": "be-8",
+  "code": "BE 8",
+  "title": "Server Side APIs",
+  "status": "outline",
+  "summary": "Calling third-party APIs from Django with Python's requests library, keeping API keys in .env files with python-dotenv, OAuth1 for APIs that need it, formatting results for your front end, and mocking API calls in unit tests. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Call a third-party API from a Django view with its key loaded from a .env file, and test it with a mocked request.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Make a request from Python",
+      "detail": "requests is the standard Python library for calling other APIs. Try it in your practice venv.",
+      "code": "cd ~/Desktop/django-practice && source .venv/bin/activate\npip install requests python-dotenv\npython -c \"import requests; print(requests.get('https://api.github.com').status_code)\"",
+      "codeLabel": "Terminal",
+      "doneWhen": "The command prints 200."
+    },
+    {
+      "id": "s2",
+      "title": "Review where your Netflix keys live",
+      "detail": "Netflix keeps keys in assignments/week-02/netflix/.env.local, and .gitignore lists `.env` and `.env.local`. Anything with a VITE_ prefix gets shipped to the browser, so only public keys belong there. A Django server keeps truly secret keys in its own .env, loaded with python-dotenv, and the browser never sees them. Module 3 (3rd-party APIs, Oct 19–22) covers the same idea with serverless functions.",
+      "doneWhen": "You can explain why a secret API key belongs in Django's .env and never in a VITE_ variable."
+    },
+    {
+      "id": "s3",
+      "title": "Read about mocking",
+      "detail": "Read the `patch` section of Python's unittest.mock docs. Mocking means your tests never call the real API, so they stay fast and free.",
+      "doneWhen": "You can explain what `@patch('requests.get')` swaps out during a test."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Third-party API",
+      "meaning": "Someone else's service your server calls for data, like weather or movies."
+    },
+    {
+      "term": ".env / python-dotenv",
+      "meaning": "A file of secret settings kept out of git, loaded into environment variables at startup."
+    },
+    {
+      "term": "OAuth1",
+      "meaning": "An older sign-the-request scheme some APIs require for authentication."
+    },
+    {
+      "term": "Mock",
+      "meaning": "A fake stand-in for a real function (like an API call) during tests."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Server-Side APIs",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/8-server-side-apis/"
+    },
+    {
+      "label": "Requests quickstart",
+      "url": "https://requests.readthedocs.io/en/latest/user/quickstart/"
+    },
+    {
+      "label": "Python docs: unittest.mock",
+      "url": "https://docs.python.org/3/library/unittest.mock.html"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/8-server-side-apis/",
+    "assignments/week-02/netflix/.gitignore"
+  ]
+}

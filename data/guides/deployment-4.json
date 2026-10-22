@@ -1,0 +1,74 @@
+{
+  "id": "deployment-4",
+  "code": "Deploy 4",
+  "title": "JWT & Interceptors",
+  "status": "outline",
+  "summary": "Replacing DRF's database-stored tokens with JSON Web Tokens (a short-lived access token plus a long-lived refresh token, both in cookies), then adding an Axios response interceptor that catches a 401, quietly refreshes the token and retries the request. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Switch an app to JWT log-in and add an Axios interceptor so users stay logged in when their access token expires.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Look inside a JWT you already use",
+      "detail": "Supabase sessions are JWTs. With your Netflix app open, paste this into the DevTools Console to decode the middle part (the payload) of your own access token. Do this only on your own machine and never paste a token into a website.",
+      "code": "const key = Object.keys(localStorage).find(k => k.endsWith('-auth-token'));\nconst token = JSON.parse(localStorage.getItem(key)).access_token;\nJSON.parse(atob(token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/')));",
+      "codeLabel": "Browser",
+      "doneWhen": "You see a payload with fields like `sub` (your user id) and `exp` (expiry time)."
+    },
+    {
+      "id": "s2",
+      "title": "Read the Simple JWT docs",
+      "detail": "The lesson uses Simple JWT for DRF. Read Getting started and skim the settings for access and refresh token lifetimes.",
+      "doneWhen": "You can explain why the access token is short-lived and the refresh token is long-lived."
+    },
+    {
+      "id": "s3",
+      "title": "Read the Axios interceptors page",
+      "detail": "It's a short page. An interceptor is a function that runs on every request or response.",
+      "doneWhen": "You can explain what a response interceptor does when it gets a 401."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "JWT",
+      "meaning": "A signed token (header.payload.signature) the server can check without a database lookup."
+    },
+    {
+      "term": "Access vs refresh token",
+      "meaning": "The access token proves who you are for minutes; the refresh token gets a new one."
+    },
+    {
+      "term": "Stateless auth",
+      "meaning": "The server keeps no session record; the token carries everything needed."
+    },
+    {
+      "term": "Axios interceptor",
+      "meaning": "Code that runs on every request or response, like middleware for your HTTP client."
+    },
+    {
+      "term": "401 Unauthorized",
+      "meaning": "The status code for a missing, invalid or expired login."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: DRF JSON Web Tokens",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-IV/4-jwt-interceptors/1-drf-jwt/"
+    },
+    {
+      "label": "Simple JWT docs",
+      "url": "https://django-rest-framework-simplejwt.readthedocs.io/en/latest/"
+    },
+    {
+      "label": "Axios: Interceptors",
+      "url": "https://axios-http.com/docs/interceptors"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/4-jwt-interceptors/1-drf-jwt/",
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/4-jwt-interceptors/2-axios-interceptors/",
+    "Note: the module overview page (phase-IV/4-jwt-interceptors/) is still empty; content came from its two lesson pages"
+  ]
+}

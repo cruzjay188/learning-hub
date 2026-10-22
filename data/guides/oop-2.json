@@ -1,0 +1,83 @@
+{
+  "id": "oop-2",
+  "code": "OOP 2",
+  "title": "Encapsulation & Abstraction",
+  "status": "outline",
+  "summary": "Teaches the difference between class attributes (shared by every object) and instance attributes (unique to one object), and the three kinds of methods: instance methods (self), class methods (@classmethod, cls) and static methods (@staticmethod). Step-by-step guide arrives when the lecture is published.",
+  "goal": "Decide whether data belongs on the class or on each instance, and pick the right method type for a behavior.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the two lecture pages",
+      "detail": "Read 'Class vs Instance Attributes' and 'Class, Instance, and Static Methods' on the curriculum page. Pay attention to the 'attribute shadowing' gotcha.",
+      "doneWhen": "You can explain class attribute, instance attribute and attribute shadowing in one sentence each."
+    },
+    {
+      "id": "s2",
+      "title": "Run the shared counter example",
+      "detail": "Save this as oop2_practice.py in a scratch folder (not inside an assignment repo) and run it with python3. It is the curriculum's population counter plus the shadowing gotcha.",
+      "code": "class Person:\n    species = \"Human\"\n    population = 0\n\n    def __init__(self, name, age):\n        self.name = name\n        self.age = age\n        Person.population += 1\n\np1 = Person(\"Alice\", 25)\np2 = Person(\"Bob\", 30)\nprint(Person.population)\n\np1.species = \"Mutant\"   # creates an instance attribute\nprint(p1.species)\nprint(Person.species)",
+      "codeLabel": "File",
+      "doneWhen": "It prints 2, then Mutant, then Human."
+    },
+    {
+      "id": "s3",
+      "title": "Try a class method and a static method",
+      "detail": "Add these two methods inside the Person class (indented under it, above the p1 = line). A class method builds a new object from a string; a static method is a plain helper that lives in the class.",
+      "code": "    @classmethod\n    def from_string(cls, data_str):\n        name, age = data_str.split(\",\")\n        return cls(name.strip(), int(age))\n\n    @staticmethod\n    def greet(name):\n        return f\"Hello {name}\"",
+      "codeLabel": "File",
+      "doneWhen": "Person.from_string(\"Alice, 25\").age prints 25 and Person.greet(\"Bob\") prints Hello Bob."
+    },
+    {
+      "id": "s4",
+      "title": "Preview the assignment list",
+      "detail": "The curriculum lists Car Management (Part I), then App Users II, Contact List, POODR Chapter 2 and School Interface II (Part II), with Caesar Cipher as a stretch. Confirm in #eagle which ones Eagle Platoon is actually assigning.",
+      "doneWhen": "You know which assignments to expect on Nov 2."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Instance attribute",
+      "meaning": "Data stored on one object through self, like self.name."
+    },
+    {
+      "term": "Class attribute",
+      "meaning": "Data defined on the class itself and shared by every object, like a counter."
+    },
+    {
+      "term": "Attribute shadowing",
+      "meaning": "Assigning self.x when the class has x creates a new instance copy instead of changing the shared one."
+    },
+    {
+      "term": "Class method",
+      "meaning": "A method marked @classmethod that receives the class (cls), often used to build new objects."
+    },
+    {
+      "term": "Static method",
+      "meaning": "A method marked @staticmethod that gets neither self nor cls; a helper grouped with the class."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Abstraction and Encapsulation",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/2-abstraction-encapsulation/"
+    },
+    {
+      "label": "Python tutorial: Classes",
+      "url": "https://docs.python.org/3/tutorial/classes.html"
+    },
+    {
+      "label": "Python docs: classmethod",
+      "url": "https://docs.python.org/3/library/functions.html#classmethod"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 40,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/2-abstraction-encapsulation/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/2-abstraction-encapsulation/1-attributes-cls-vs-self/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/2-abstraction-encapsulation/2-methods-static-cls-self/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/2-abstraction-encapsulation/assignments/"
+  ]
+}

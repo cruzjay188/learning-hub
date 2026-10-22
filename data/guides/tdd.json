@@ -1,0 +1,97 @@
+{
+  "id": "tdd",
+  "code": "",
+  "title": "TDD with Jest and Pytest",
+  "status": "outline",
+  "summary": "Test-Driven Development: write a failing test first, make it pass, then clean up (Red → Green → Refactor), using Pytest for Python and Jest for JavaScript, and running tests in Docker. The step-by-step arrives when the lecture is published.",
+  "goal": "Write a failing test, make it pass, and refactor, in both Pytest and Jest, and read test output to fix a failure.",
+  "required": [],
+  "steps": [
+    {
+      "title": "Read both lessons",
+      "detail": "Skim Intro to TDD with PyTest and TDD with Jest. Note how each finds test files (test_*.py vs *.test.js) and how assertions look (assert x == y vs expect(x).toBe(y)).",
+      "doneWhen": "You can describe Red → Green → Refactor and name each tool's test-file pattern.",
+      "id": "s1"
+    },
+    {
+      "title": "See tests you already have",
+      "detail": "Myflix already has tests: Vitest, which uses the same describe/it/expect style as Jest. Run them to see a passing suite's output.",
+      "code": "cd ~/Desktop/codeplatoon/assignments/week-02/netflix\nnpm test",
+      "codeLabel": "Terminal",
+      "doneWhen": "You see the passing test count and can open one file in src/test/ and read what it checks.",
+      "id": "s2"
+    },
+    {
+      "title": "Set up pytest in a throwaway folder",
+      "detail": "Use a virtual environment so pytest doesn't touch the system Python. Write one test that fails, then make it pass.",
+      "code": "mkdir -p ~/tmp-tdd && cd ~/tmp-tdd\npython3 -m venv .venv && source .venv/bin/activate\npip install pytest\nprintf 'def add(a, b):\\n    return 0\\n\\ndef test_add():\\n    assert add(2, 3) == 5\\n' > test_add.py\npytest   # red: fix add() and run again for green",
+      "codeLabel": "Terminal",
+      "doneWhen": "pytest shows 1 failed, then 1 passed after your fix.",
+      "id": "s3"
+    },
+    {
+      "title": "Note the listed assignments",
+      "detail": "The curriculum lists Part I: Roman Numerals (Python) and Linear Search (Python). Part II: Fibonacci, Linear Search (JS) and Test my Calculator (intro-to-pytest). Wait for Slack to confirm. The /tdd skill can coach you through red-green-refactor.",
+      "doneWhen": "You know which repos to expect.",
+      "id": "s4"
+    }
+  ],
+  "concepts": [
+    {
+      "term": "TDD",
+      "meaning": "Write the test before the code, so the test describes what \"done\" means."
+    },
+    {
+      "term": "Red → Green → Refactor",
+      "meaning": "See the test fail, write just enough code to pass, then tidy up while tests stay green."
+    },
+    {
+      "term": "Assertion",
+      "meaning": "A line that checks a result and fails the test if it's wrong."
+    },
+    {
+      "term": "Pytest / Jest",
+      "meaning": "The test runners for Python / JavaScript."
+    },
+    {
+      "term": "Exit code",
+      "meaning": "The number a command returns: 0 means all tests passed. CI uses it to pass or fail a build."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: TDD",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/4-tdd/"
+    },
+    {
+      "label": "Curriculum: Intro to TDD with PyTest",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/4-tdd/1-intro-to-tdd-w-pytest/"
+    },
+    {
+      "label": "Curriculum: TDD with Jest",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/4-tdd/2-tdd-w-jest/"
+    },
+    {
+      "label": "Curriculum: TDD assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/4-tdd/assignments/"
+    },
+    {
+      "label": "Assignment: intro-to-pytest",
+      "url": "https://github.com/Code-Platoon-Assignments/intro-to-pytest"
+    }
+  ],
+  "assignments": [
+    "algo-roman-numeral-py",
+    "algo-linear-search-py",
+    "algo-fibonacci",
+    "algo-linear-search",
+    "intro-to-pytest"
+  ],
+  "estMinutes": 75,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/4-tdd/ (overview, ELOs/TLOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/4-tdd/assignments/ (Part I, Part II and their repo links)",
+    "Code-Platoon-Assignments/intro-to-pytest README",
+    "Local repo assignments/week-02/netflix/package.json (\"test\": \"vitest run\")"
+  ]
+}

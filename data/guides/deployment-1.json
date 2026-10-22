@@ -1,0 +1,74 @@
+{
+  "id": "deployment-1",
+  "code": "Deploy 1",
+  "title": "Simple Deployment",
+  "status": "outline",
+  "summary": "Moving a Dockerized full-stack app from your laptop to a real AWS EC2 server: how IP addresses and DNS route traffic, launching an Ubuntu instance with a key pair and security group, connecting over SSH, installing Docker, then `docker compose up -d` and running migrations on the live server. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Deploy a Dockerized full-stack app to an AWS EC2 instance and open it from any browser.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Get an AWS account ready safely",
+      "detail": "The lesson secures the root user with MFA, creates an IAM admin user for daily work, and sets billing alerts. Before signing up or entering a card, confirm in #eagle_questions whether the course provides AWS accounts or credits.",
+      "doneWhen": "You know which AWS account you'll use, and (if it's yours) MFA is on and a billing alert exists."
+    },
+    {
+      "id": "s2",
+      "title": "Check SSH on your Mac",
+      "detail": "SSH is how you'll control the server from your terminal. AWS gives you a .pem key file, and SSH refuses to use it unless only you can read it.",
+      "code": "ssh -V",
+      "codeLabel": "Terminal",
+      "doneWhen": "`ssh -V` prints a version, and you can explain why `chmod 600 key.pem` is needed."
+    },
+    {
+      "id": "s3",
+      "title": "Have a Compose app running locally",
+      "detail": "Deploying is repeating what works locally on a remote machine. Your FS 1 / FS 2 app should start with one command.",
+      "doneWhen": "`docker compose up -d` then `docker compose ps` shows every service as running on your Mac."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "IPv4 address",
+      "meaning": "A server's numeric address on the internet, like 3.91.20.15."
+    },
+    {
+      "term": "DNS",
+      "meaning": "The internet's phone book that turns a domain name into an IP address."
+    },
+    {
+      "term": "EC2 instance",
+      "meaning": "A virtual computer you rent from AWS."
+    },
+    {
+      "term": "Security group",
+      "meaning": "AWS's firewall rules: which ports (22, 80, 443) are open to whom."
+    },
+    {
+      "term": "SSH",
+      "meaning": "A secure way to open a terminal on a remote computer."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Simple Deployment",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-IV/1-simple-deployment/"
+    },
+    {
+      "label": "AWS docs: Get started with EC2",
+      "url": "https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EC2_GetStarted.html"
+    },
+    {
+      "label": "Docker docs: Install on Ubuntu",
+      "url": "https://docs.docker.com/engine/install/ubuntu/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/1-simple-deployment/",
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/1-simple-deployment/1-internet-and-aws/",
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/1-simple-deployment/assignments/"
+  ]
+}

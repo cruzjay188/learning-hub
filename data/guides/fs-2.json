@@ -1,0 +1,67 @@
+{
+  "id": "fs-2",
+  "code": "FS 2",
+  "title": "FS Workflows",
+  "status": "outline",
+  "summary": "Connecting React and Django end to end: Axios calls to DRF, token log-in that survives a page refresh (localStorage), protected pages and DRF permissions, and full CRUD from the front end with every record scoped to the logged-in user. Same day as the Personal Project kickoff. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Log a user in from React, keep them logged in across refreshes, and let them create, read, update and delete only their own data through the Django API.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Trace a logged-in request in Netflix",
+      "detail": "Run your Netflix app, open Chrome DevTools, go to the Network tab, and add a title to My List. Click the request and look at its headers. Supabase sends your session token in an Authorization header; with DRF the idea is the same, only the token type changes.",
+      "doneWhen": "You find the Authorization header on one request (don't copy the token anywhere)."
+    },
+    {
+      "id": "s2",
+      "title": "Read DRF permissions",
+      "detail": "Read the IsAuthenticated part of the DRF permissions guide.",
+      "doneWhen": "You can say what happens when a logged-out user calls an IsAuthenticated view (a 401 or 403)."
+    },
+    {
+      "id": "s3",
+      "title": "Read MDN's Authorization header page",
+      "detail": "Read how the browser sends credentials with each request. This is the header your Axios calls will set.",
+      "doneWhen": "You can write the header for a DRF token and for a Bearer token."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Axios",
+      "meaning": "A JavaScript library for HTTP requests; you can preset its base URL and headers."
+    },
+    {
+      "term": "localStorage",
+      "meaning": "Browser storage that survives a refresh; used here to keep the token."
+    },
+    {
+      "term": "Protected route",
+      "meaning": "A page that only shows when the user is logged in."
+    },
+    {
+      "term": "User-scoped data",
+      "meaning": "Each query returns only the rows that belong to the current user."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Full-Stack Workflow",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/2-full-stack-workflow/"
+    },
+    {
+      "label": "DRF: Permissions",
+      "url": "https://www.django-rest-framework.org/api-guide/permissions/"
+    },
+    {
+      "label": "MDN: Authorization header",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/Authorization"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/06-Full-Stack/2-full-stack-workflow/",
+    "schedule/schedule.md (Fri Dec 4: Personal Project Kickoff + FS 2)"
+  ]
+}

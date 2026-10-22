@@ -1,0 +1,81 @@
+{
+  "id": "fe-1",
+  "code": "FE 1",
+  "title": "HTML/CSS/JS DOM",
+  "status": "outline",
+  "summary": "Framework-free web basics: semantic HTML for structure, external CSS for styling (selectors, specificity, the box model), and JavaScript that changes the page through the DOM: selecting elements, creating new ones, listening for events and stopping a form's default reload with preventDefault(). Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build a small page that responds to clicks and form submits using plain HTML, CSS and JavaScript.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the two lessons",
+      "detail": "Read 'HTML & CSS' and 'JavaScript DOM' on the curriculum page. React does this DOM work for you in Myflix; this lecture shows what happens underneath.",
+      "doneWhen": "You can explain what the DOM is and why scripts use defer."
+    },
+    {
+      "id": "s2",
+      "title": "Build a tiny to-do page",
+      "detail": "Make a scratch folder with index.html and app.js, then open index.html with Live Server. This uses the lesson's ideas: defer, addEventListener, createElement and preventDefault.",
+      "code": "<!-- index.html -->\n<form id=\"todo-form\">\n  <input name=\"task\" required />\n  <button>Add</button>\n</form>\n<ul id=\"list\"></ul>\n<script src=\"app.js\" defer></script>\n\n// app.js\nconst form = document.querySelector(\"#todo-form\");\nform.addEventListener(\"submit\", (event) => {\n  event.preventDefault();\n  const li = document.createElement(\"li\");\n  li.textContent = form.task.value;\n  document.querySelector(\"#list\").appendChild(li);\n  form.reset();\n});",
+      "codeLabel": "File",
+      "doneWhen": "Typing a task and pressing Add puts it in the list without the page reloading."
+    },
+    {
+      "id": "s3",
+      "title": "Do the MDN events reading",
+      "detail": "Part II assigns MDN's Introduction to Events. Read: What is an event, addEventListener(), other listener mechanisms, event objects, preventing default behavior, and event bubbling.",
+      "doneWhen": "You can explain event bubbling in one sentence."
+    },
+    {
+      "id": "s4",
+      "title": "Peek at Myflix's real DOM",
+      "detail": "Run Myflix (assignments/week-02/netflix, npm run dev), open Chrome DevTools > Elements and find a ShowCard. That HTML is what React built from your JSX.",
+      "doneWhen": "You found the HTML for one show card in the Elements panel."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "DOM",
+      "meaning": "The browser's tree of objects built from your HTML, which JavaScript can read and change."
+    },
+    {
+      "term": "Semantic HTML",
+      "meaning": "Tags that describe meaning, like <nav>, <main> and <article>, not just looks."
+    },
+    {
+      "term": "CSS specificity",
+      "meaning": "The rule for which style wins when several match: ID beats class beats element."
+    },
+    {
+      "term": "Event listener",
+      "meaning": "A function that runs when something happens, like a click or a submit."
+    },
+    {
+      "term": "preventDefault()",
+      "meaning": "Stops the browser's built-in action, like reloading the page on form submit."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Vanilla Development",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/1-vanilla-development/"
+    },
+    {
+      "label": "MDN: Introduction to events",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Core/Scripting/Events"
+    },
+    {
+      "label": "MDN: Introduction to the DOM",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Document_Object_Model/Introduction"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 50,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/1-vanilla-development/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/1-vanilla-development/1-html-css/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/1-vanilla-development/2-js-dom/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/1-vanilla-development/assignments/"
+  ]
+}

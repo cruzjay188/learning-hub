@@ -1,0 +1,71 @@
+{
+  "id": "be-7",
+  "code": "BE 7",
+  "title": "User Authentication",
+  "status": "outline",
+  "summary": "Django authentication: a custom User model built on AbstractUser, DRF token authentication, sign-up, log-in, user-info and log-out endpoints, connecting Axios requests from React to protected views, and linking users to the rest of your models. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Create a custom Django user model with token log-in and log-out, and protect API views so each user reaches only their own data.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Compare Netflix's RLS to Django's approach",
+      "detail": "In Netflix, anonymous Supabase sign-in gives each visitor a user id, and RLS policies like `(select auth.uid()) = user_id` make the database itself hide other users' rows. Django has no RLS by default: the view reads `request.user` and filters, for example `ListEntry.objects.filter(user=request.user)`.",
+      "doneWhen": "You can explain in two sentences where \"only my rows\" is enforced in Supabase (a database policy) and in Django (view code)."
+    },
+    {
+      "id": "s2",
+      "title": "Read about custom user models",
+      "detail": "Read \"Substituting a custom User model\" in Django's auth docs. It explains why you set AUTH_USER_MODEL at the very start of a project.",
+      "doneWhen": "You can say why the docs want a custom user model from day one."
+    },
+    {
+      "id": "s3",
+      "title": "Read DRF token authentication",
+      "detail": "Read the TokenAuthentication section of the DRF authentication guide.",
+      "doneWhen": "You can write the header a client sends: `Authorization: Token <key>`."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "AbstractUser",
+      "meaning": "Django's base user class you extend to make your own User model."
+    },
+    {
+      "term": "Token authentication",
+      "meaning": "The server gives the user a random key at log-in; the client sends it with every request."
+    },
+    {
+      "term": "request.user",
+      "meaning": "The logged-in user Django attaches to each request (or AnonymousUser)."
+    },
+    {
+      "term": "Authentication vs authorization",
+      "meaning": "Authentication is who you are; authorization is what you're allowed to do."
+    },
+    {
+      "term": "Permission class",
+      "meaning": "A DRF rule, like IsAuthenticated, that decides whether a request may reach a view."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: User Authentication",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/7-user-authentication/"
+    },
+    {
+      "label": "Django docs: Customizing authentication",
+      "url": "https://docs.djangoproject.com/en/stable/topics/auth/customizing/"
+    },
+    {
+      "label": "DRF: Authentication",
+      "url": "https://www.django-rest-framework.org/api-guide/authentication/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/7-user-authentication/",
+    "hub/guides/README.md (Netflix uses anonymous sign-in with RLS)"
+  ]
+}

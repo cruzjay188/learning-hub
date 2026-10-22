@@ -1,0 +1,73 @@
+{
+  "id": "fe-4",
+  "code": "FE 4",
+  "title": "React Components & Props",
+  "status": "outline",
+  "summary": "Breaks a React app into small, reusable components. Parents pass data down to children with props (one-way data flow), props can be destructured for cleaner code, and state can live in a child (just that card) or be lifted to a parent when several children need it. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Split UI into components, pass data with props, and decide whether state belongs in the parent or the child.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read both lessons",
+      "detail": "Read 'Components and Props' and 'Component Level State', especially 'When should a state live at parent vs child'.",
+      "doneWhen": "You can explain the difference between props and state."
+    },
+    {
+      "id": "s2",
+      "title": "Trace a prop in Myflix",
+      "detail": "Myflix already does this. In assignments/week-02/netflix/src/views/MyList.jsx the parent renders <ShowCard key={entry.show.id} entry={entry} onOpen={setOpenId} />, and ShowCard.jsx destructures ({ entry, onOpen }). onOpen is a function prop: the child calls it, the parent's state changes.",
+      "doneWhen": "You can say which component owns openId and how the card changes it."
+    },
+    {
+      "id": "s3",
+      "title": "Classify Myflix state",
+      "detail": "Pick three pieces of state in Myflix (for example openId, a star rating, a comment draft) and decide for each: child-level or parent-level? Use the lesson's rule of thumb: if several components need it, lift it up.",
+      "doneWhen": "You have a three-line list with a reason for each choice."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Component",
+      "meaning": "A function that returns a piece of UI and can be reused."
+    },
+    {
+      "term": "Props",
+      "meaning": "Inputs a parent passes to a child component, read-only inside the child."
+    },
+    {
+      "term": "Destructuring props",
+      "meaning": "Writing ({ entry, onOpen }) to pull props out by name."
+    },
+    {
+      "term": "One-way data flow",
+      "meaning": "Data moves down from parent to child; children report up by calling functions."
+    },
+    {
+      "term": "Lifting state up",
+      "meaning": "Moving state to the nearest shared parent so several children can use it."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: React Components",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-components/"
+    },
+    {
+      "label": "react.dev: Passing props to a component",
+      "url": "https://react.dev/learn/passing-props-to-a-component"
+    },
+    {
+      "label": "react.dev: Sharing state between components",
+      "url": "https://react.dev/learn/sharing-state-between-components"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 30,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-components/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-components/1-components-props/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-components/2-component-lvl-state/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/4-react-components/assignments/"
+  ]
+}

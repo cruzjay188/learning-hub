@@ -1,0 +1,156 @@
+{
+  "id": "ai-9",
+  "code": "AI-9",
+  "title": "3rd Party APIs",
+  "status": "full",
+  "summary": "Serverless functions (Supabase Edge Functions) let your app call outside services and keep secret keys off the browser. You learn CORS, how to read an API's docs, and how to store keys in .env and Supabase Secrets, then pull real movie and TV data from TMDB into Myflix.",
+  "goal": "Deploy your first Edge Functions, then connect Myflix to the TMDB API through an Edge Function that keeps your TMDB key secret.",
+  "required": [
+    "Part I: Edge Functions Everywhere: at minimum, a function that returns {\"message\":\"Hello World\"} and a function that accepts two numeric parameters (6, 6) and returns their multiplicative value in {\"result\":36}",
+    "Part II: Netflix Clone V: implement the TMDB API into your application"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Finish AI-8 first",
+      "detail": "The lesson assumes the AI-8 layout: front-end/ + supabase/ in the root, real logins, and RLS with auth.uid(). If Myflix isn't there yet, finish the Authentication guide first. The functions you build here go in supabase/functions/.",
+      "doneWhen": "Myflix has front-end/ and supabase/ folders and email login works."
+    },
+    {
+      "id": "s2",
+      "title": "Install and link the Supabase CLI",
+      "detail": "The lecture assumes the CLI is \"installed, authenticated, and linked\". Ticked's handoff notes give these commands, run from the repo root. init adds supabase/config.toml next to your schema. Your project ref is the id in your Supabase URL (https://YOUR_PROJECT_REF.supabase.co).",
+      "code": "npx supabase login\nnpx supabase init\nnpx supabase link --project-ref YOUR_PROJECT_REF",
+      "codeLabel": "Terminal",
+      "doneWhen": "supabase/config.toml exists and the link command finishes with no error."
+    },
+    {
+      "id": "s3",
+      "title": "Build the Hello World function",
+      "detail": "Part I. Instructor prompt from the Serverless Functions lecture, word for word. The homework asks for {\"message\":\"Hello World\"} and the prompt says \"Hello, World!\". Match the homework, or ask in #eagle_questions if it matters.",
+      "code": "Create a Supabase Edge Function called `hello-world`.\n\nThe function should return a JSON response: { \"message\": \"Hello, World!\" }\n\nInclude proper CORS headers so the function can be called from a browser.\n\nAfter creating the function, deploy it using the Supabase CLI and show me the \ncurl command to test it, using my project's deployed function URL.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "The curl command Claude gives you returns the JSON message from your deployed function URL."
+    },
+    {
+      "id": "s4",
+      "title": "Build the multiply function",
+      "detail": "Part I asks for multiplication: (6, 6) returns {\"result\":36}. The lecture's prompt (below, word for word) adds the numbers instead. Before you paste it, change the name to `multiply-numbers` and \"add them together\" to \"multiply them\", and say <product> instead of <sum>. Keep the 400 error handling.",
+      "code": "Create a Supabase Edge Function called `add-numbers`.\n\nThe function should read two query parameters, `a` and `b`, add them together \nas numbers, and return a JSON response in the shape: { \"result\": <sum> }\n\nRequirements:\n- Include CORS headers\n- Handle the case where `a` or `b` are missing or not valid numbers — return a \n  400 status with a JSON error message explaining what went wrong\n- Deploy the function when complete and give me curl commands that test both the \n  happy path and each error case",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "curl with ?a=6&b=6 returns {\"result\":36}, and a missing or non-number value returns a 400 with a JSON error."
+    },
+    {
+      "id": "s5",
+      "title": "Get a TMDB key and read the docs",
+      "detail": "Make a free account at themoviedb.org and request an API key (Settings → API). Run TMDB through the lecture's checklist: docs, cost, authentication, maintenance, reliability, rate limits, support, format. Find the endpoints you'd use (e.g. trending TV, search, one show) and the response fields Myflix needs. Optional practice first: the lecture's get-pokemon and get-dog-breeds prompts.",
+      "doneWhen": "You have a TMDB key saved somewhere private, and you can name 2–3 endpoints and the fields you'll keep."
+    },
+    {
+      "id": "s6",
+      "title": "Keep the TMDB key secret",
+      "detail": "From the Connecting an API lecture: locally the key lives in a root .env (gitignored), deployed it lives in Supabase Secrets, and in source code never. Your .gitignore already lists .env and .env.local. Check it before you save the key, then set the secret. Never put the TMDB key in a VITE_ variable: those are shipped to the browser.",
+      "code": "echo 'TMDB_API_KEY=YOUR_TMDB_KEY' >> .env\ngit status   # .env must NOT be listed\nnpx supabase secrets set TMDB_API_KEY=YOUR_TMDB_KEY",
+      "codeLabel": "Terminal",
+      "doneWhen": "git status doesn't show .env, and npx supabase secrets list shows TMDB_API_KEY."
+    },
+    {
+      "id": "s7",
+      "title": "Build the TMDB Edge Function",
+      "detail": "Suggested prompt (not from the lecture): it follows the lecture's get-dog-breeds pattern (key from Deno.env.get, CORS, error codes, curl tests). TMDB's newer \"API Read Access Token\" goes in an Authorization: Bearer header; Claude can check TMDB's docs with Context7. Change the endpoints and fields to what you picked in s5.",
+      "code": "Create a Supabase Edge Function called `tmdb`.\n\nThe TMDB API base URL is https://api.themoviedb.org/3. The function should:\n- Accept a `path` query parameter for the TMDB endpoint to call (only allow /trending/tv/week, /search/tv and /tv/{id}) and pass through `query` for search\n- Return a trimmed JSON response with only what my app shows: id, name, overview, first_air_date and a full poster URL (https://image.tmdb.org/t/p/w500 + poster_path)\n\nRead the key from an environment variable called TMDB_API_KEY using Deno.env.get(\"TMDB_API_KEY\"). It must never be hardcoded or sent to the browser.\n\nRequirements:\n- Include proper CORS headers so the function can be called from a browser\n- Return a 400 for a missing or not-allowed path, and a 502 with a descriptive message if TMDB returns a non-OK response\n- Deploy the function when complete and give me curl commands for the happy path and each error case\n\nShow me the plan first.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "curl to /functions/v1/tmdb?path=/trending/tv/week returns trimmed shows with poster URLs, and the bad-path curl returns 400."
+    },
+    {
+      "id": "s8",
+      "title": "Show TMDB data in Myflix",
+      "detail": "Netflix Clone V. Ask Claude (front-end-agent) to call the function from your service files in front-end/src/lib/ with supabase.functions.invoke('tmdb', …), which sends the user's login token for you. The assignment says it's fine to add, change or remove features. For example: browse trending, search TMDB, and add a TMDB show to My List. Ask for the plan first, and have it check the result with Playwright.",
+      "doneWhen": "Myflix shows real TMDB titles and posters, adding one to My List works, and DevTools → Network shows no TMDB key."
+    },
+    {
+      "id": "s9",
+      "title": "Commit, push, and log it",
+      "detail": "Check that no key went in: git status shows no .env, and a search of front-end/ for your key finds nothing. Then commit and push, and update the Netflix V row in progress.md (or run /save-project).",
+      "code": "git status\ngit add -A && git commit -m \"Add Edge Functions and TMDB API (Netflix Clone V)\"\ngit push",
+      "codeLabel": "Terminal",
+      "doneWhen": "The commit is on GitHub with supabase/functions/ and no .env, and progress.md shows Netflix V done."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Serverless function",
+      "meaning": "A small piece of backend code that runs only when a request comes in, then shuts down. You don't manage a server."
+    },
+    {
+      "term": "Edge Function",
+      "meaning": "Supabase's serverless functions. They run on Deno (a Node.js alternative) and live in supabase/functions/<name>/."
+    },
+    {
+      "term": "CORS",
+      "meaning": "A browser rule: a page may only read a response from another origin if the server sends headers that allow it."
+    },
+    {
+      "term": "Origin",
+      "meaning": "Protocol + domain + port, like http://localhost:5173. Change any one of them and it's a different origin."
+    },
+    {
+      "term": "Preflight (OPTIONS)",
+      "meaning": "The browser's \"may I?\" request before the real one. Your function must answer it with CORS headers."
+    },
+    {
+      "term": "Query parameter vs body",
+      "meaning": "Input in the URL (?a=6&b=6) vs input as JSON in a POST request."
+    },
+    {
+      "term": "Supabase Secrets",
+      "meaning": "Where a deployed function reads its keys, set with npx supabase secrets set and read with Deno.env.get."
+    },
+    {
+      "term": "TMDB",
+      "meaning": "The Movie Database: a free API with movie and TV data and posters."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Serverless Functions",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/1-3rd_party_apis/1-serverless-funcs/"
+    },
+    {
+      "label": "Curriculum: Connecting an API",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/1-3rd_party_apis/2-connecting-api/"
+    },
+    {
+      "label": "Curriculum: 3rd Party APIs assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/1-3rd_party_apis/assignments/"
+    },
+    {
+      "label": "Netflix Clone V assignment",
+      "url": "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-V"
+    },
+    {
+      "label": "TMDB API: getting started",
+      "url": "https://developer.themoviedb.org/reference/getting-started"
+    },
+    {
+      "label": "Supabase docs: Edge Functions",
+      "url": "https://supabase.com/docs/guides/functions"
+    },
+    {
+      "label": "Public APIs list",
+      "url": "https://github.com/public-apis/public-apis"
+    }
+  ],
+  "assignments": [
+    "agentic-netflix-clone-V"
+  ],
+  "estMinutes": 300,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/1-3rd_party_apis/assignments/ (Part I, Part II)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/1-3rd_party_apis/1-serverless-funcs/ (hello-world and add-numbers prompts quoted)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/1-3rd_party_apis/2-connecting-api/ (API checklist, secrets: .env, .gitignore, supabase secrets set)",
+    "Code-Platoon-Assignments/agentic-netflix-clone-V README",
+    "github.com/kabeier/Claude-and-auth: demo-kit/backup-ticked-auth/README.md (\"What every student project should look like now\" + \"Ticked vs. what the Beyond Building lessons expect\") (Supabase CLI login/init/link; supabase.functions.invoke)",
+    "Step s7's TMDB prompt is a suggestion modeled on the lecture's get-dog-breeds prompt, not an instructor prompt"
+  ]
+}

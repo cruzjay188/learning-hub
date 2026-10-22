@@ -1,0 +1,76 @@
+{
+  "id": "ds-9",
+  "code": "DS 9",
+  "title": "Binary Trees",
+  "status": "outline",
+  "summary": "Trees store data in a hierarchy instead of a line. In a binary tree each node has at most two children (left and right), starting from a root. The lesson covers full, complete, perfect and skewed trees, and the Binary Search Tree rule (smaller values left, larger right) that gives O(log n) search when the tree is balanced. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build a Binary Search Tree with recursive insert and explain why balance matters for speed.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the lesson",
+      "detail": "Read the Binary Trees page, especially 'Types of Binary Trees' and 'Binary Search Trees (BST)'.",
+      "doneWhen": "You can sketch a full, a complete and a skewed tree."
+    },
+    {
+      "id": "s2",
+      "title": "Run the curriculum's BST insert",
+      "detail": "Save and run this. It is the lesson's add_node with a small helper that prints the tree sideways.",
+      "code": "class TreeNode:\n    def __init__(self, value):\n        self.value = value\n        self.left = None\n        self.right = None\n\nclass BinarySearchTree:\n    def __init__(self, root=None):\n        self.root = root\n\n    def add_node(self, value):\n        new_node = TreeNode(value)\n        if not self.root:\n            self.root = new_node\n            return\n        def _insert(current, new_node):\n            if new_node.value < current.value:\n                if current.left is None:\n                    current.left = new_node\n                else:\n                    _insert(current.left, new_node)\n            else:\n                if current.right is None:\n                    current.right = new_node\n                else:\n                    _insert(current.right, new_node)\n        _insert(self.root, new_node)\n\ndef show(node, depth=0):\n    if node:\n        show(node.right, depth + 1)\n        print(\"    \" * depth + str(node.value))\n        show(node.left, depth + 1)\n\nbst = BinarySearchTree()\nfor v in [8, 3, 10, 1, 6]:\n    bst.add_node(v)\nshow(bst.root)",
+      "codeLabel": "File",
+      "doneWhen": "8 prints at the left edge, with 10 indented above it (its right child) and 3 indented below it (its left child)."
+    },
+    {
+      "id": "s3",
+      "title": "Make a skewed tree on purpose",
+      "detail": "Insert [1, 2, 3, 4, 5] into a fresh tree and print it. Sorted input makes every node go right, so the tree turns into a linked list and search drops to O(n).",
+      "doneWhen": "The printout is a single diagonal line."
+    },
+    {
+      "id": "s4",
+      "title": "Talk through Invert a Binary Tree",
+      "detail": "Invert a Binary Tree is this lesson's assignment and a well-known interview question. Before coding, say the plan (base case: empty node; otherwise swap left and right, then invert each side) and its Big-O: time O(n), space O(h) for tree height h.",
+      "doneWhen": "You can explain the recursive plan and its Big-O out loud."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Binary tree",
+      "meaning": "A tree where each node has at most two children."
+    },
+    {
+      "term": "Root",
+      "meaning": "The top node, where every search or insert starts."
+    },
+    {
+      "term": "Binary Search Tree",
+      "meaning": "A binary tree where every left value is smaller and every right value is larger."
+    },
+    {
+      "term": "Balanced vs skewed",
+      "meaning": "Balanced trees stay short (fast); skewed trees lean one way and act like a linked list (slow)."
+    },
+    {
+      "term": "Height",
+      "meaning": "The number of levels from the root to the deepest leaf."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Binary Trees in Python",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/09-binary-trees/"
+    },
+    {
+      "label": "Curriculum: Technical Interviews (whiteboarding)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 50,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/09-binary-trees/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/09-binary-trees/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

@@ -1,0 +1,78 @@
+{
+  "id": "oop-4",
+  "code": "OOP 4",
+  "title": "Review",
+  "status": "outline",
+  "summary": "Review day for the OOP module: classes and instances, getters and setters with @property, class vs instance data, the three method types, inheritance, composition and polymorphism. The curriculum has no separate review page; its OOP module page says Assessment #1 comes at the end of the week, so confirm the date and rules in #eagle. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Explain and use every OOP idea from the week without notes.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Re-read the OOP module pages",
+      "detail": "Skim the three OOP lessons (Intro, Abstraction and Encapsulation, Inheritance and Polymorphism). Write one line plus one tiny example per idea in a topic note in notes/topics/.",
+      "doneWhen": "Your note covers encapsulation, abstraction, inheritance, polymorphism and composition, each with an example."
+    },
+    {
+      "id": "s2",
+      "title": "Get quizzed by the tutor",
+      "detail": "Use the tutor agent from the workspace root to find gaps. It asks questions; you answer before it explains.",
+      "code": "Use the tutor agent to quiz me on Python OOP: class vs instance attributes, @property getters and setters, @classmethod vs @staticmethod, super(), composition vs inheritance, and polymorphism. One question at a time, and don't tell me the answer until I've tried.",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You answered at least 8 questions and wrote down the ones you missed."
+    },
+    {
+      "id": "s3",
+      "title": "Confirm the assessment rules",
+      "detail": "Ask in #eagle_questions when Assessment #1 is, what format it takes, and which resources (including AI) are allowed. Follow those rules exactly.",
+      "doneWhen": "You know the assessment date, format and allowed resources."
+    },
+    {
+      "id": "s4",
+      "title": "Close out the week's OOP assignments",
+      "detail": "Check progress.md for any OOP 2 or OOP 3 assignments still open and push what you have with /save-project.",
+      "doneWhen": "Every OOP assignment row in progress.md is up to date."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Encapsulation",
+      "meaning": "Keeping an object's data behind methods (like getters and setters) so it can't be changed carelessly."
+    },
+    {
+      "term": "Abstraction",
+      "meaning": "Showing only what a user of the class needs and hiding the details."
+    },
+    {
+      "term": "Inheritance",
+      "meaning": "A child class reuses and extends a parent class."
+    },
+    {
+      "term": "Polymorphism",
+      "meaning": "Same method name, different behavior depending on the object."
+    },
+    {
+      "term": "Composition",
+      "meaning": "An object built from other objects it holds, instead of inheriting from them."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Intro to OOP with Python (module page)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/"
+    },
+    {
+      "label": "Python tutorial: Classes",
+      "url": "https://docs.python.org/3/tutorial/classes.html"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/1-oop-intro/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/2-abstraction-encapsulation/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/3-inheritance-polymorphism/",
+    "No dedicated curriculum page for the OOP review day; built from the module page and its three lessons."
+  ]
+}

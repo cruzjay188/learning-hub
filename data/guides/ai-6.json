@@ -1,0 +1,181 @@
+{
+  "id": "ai-6",
+  "code": "AI-6",
+  "title": "Databases & Supabase",
+  "status": "full",
+  "summary": "Turn user stories into a database design (tables, columns, types, relationships) in DrawSQL. Then Claude Code builds it on Supabase one table at a time through the Supabase MCP, while you check every step.",
+  "goal": "Design a relational schema from your user stories and build it on Supabase with Claude, checking each table in the dashboard.",
+  "required": [
+    "Homework Part I, priority 1: Netflix Clone II – think through what data it needs. A users table is fine; no login yet.",
+    "Homework Part I, priority 2: your own app – map your database: nouns → tables, details → columns, pick types, decide relationships, draw it in DrawSQL",
+    "Homework Part I, priority 3: FreeCodeCamp – 50 steps of the Python certification",
+    "Bring to next lecture: a screenshot of your DrawSQL diagram and user_stories.md (optional: a free Supabase account)",
+    "Homework Part II, priority 1: Netflix Clone II – build its schema on Supabase. A users table is fine; no login yet.",
+    "Homework Part II, priority 2: your own app – put your database on Supabase: new project, Supabase MCP, the skill, your stories and diagram, one table at a time",
+    "Homework Part II, priority 3: FreeCodeCamp – 100 steps of the JavaScript certification",
+    "Part II setup: one folder per database; screenshot your Schema Visualizer when done",
+    "agentic-netflix-clone-II: at minimum a user can add movies and create lists of their favorite movies"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Write user_stories.md for Myflix",
+      "detail": "Myflix's data work is done (custom titles and named lists, Oct 18), but the class's planning file is missing. Go through your page stories and write one line per thing the app must remember. Skip anything only about the screen. Aim for 5 to 10 lines, and save it in assignments/week-02/netflix for now (it moves into supabase/ in AI-7).",
+      "code": "As a user, I want … so that …",
+      "codeLabel": "File",
+      "doneWhen": "assignments/week-02/netflix/user_stories.md has 5–10 \"As a user…\" lines covering titles, lists, ratings and comments."
+    },
+    {
+      "id": "s2",
+      "title": "Draw the database in DrawSQL",
+      "detail": "At drawsql.app/draw, pick PostgreSQL and start a blank canvas. Make one table per noun and one column per detail, give every column a type, and drag a foreign key onto the column it points to. Exporting costs money, so take a screenshot (Cmd+Shift+4). Myflix's docs/SCHEMA.md already has a diagram; ask in #eagle_questions whether that counts or they want the DrawSQL screenshot.",
+      "codeLabel": "Browser",
+      "doneWhen": "A screenshot of your diagram is saved in the project folder."
+    },
+    {
+      "id": "s3",
+      "title": "Run Myflix's pending migration",
+      "detail": "progress.md and the Netflix hub both flag this: the custom titles and lists won't work until 20261018000000_custom_shows_and_lists.sql (in supabase/migrations/) runs on your project. Paste it into Supabase → SQL Editor → Run.",
+      "codeLabel": "SQL",
+      "doneWhen": "The new tables show in the Table Editor, and adding a custom title in Myflix saves without errors."
+    },
+    {
+      "id": "s4",
+      "title": "Re-approve the Supabase MCP for netflix",
+      "detail": "Myflix's .mcp.json already lists the Supabase server, but it needs approving again in that folder. Start claude there and choose \"Use this MCP server\". Then type /mcp → supabase → Authenticate, and approve in the browser tab that opens.",
+      "code": "cd ~/Desktop/codeplatoon/assignments/week-02/netflix\nclaude\n/mcp",
+      "codeLabel": "Terminal",
+      "doneWhen": "/mcp shows supabase as connected and authenticated."
+    },
+    {
+      "id": "s5",
+      "title": "Create a Supabase project for your app",
+      "detail": "Priority 2. The free tier allows 2 projects: one for Myflix, one for your app. Click Generate a password and save it in a password manager, never in your repo. Pick the region closest to you (US East). Keep Enable Data API and Automatically expose new tables ticked, and turn Enable automatic RLS on. Then make a supabase folder in your app.",
+      "code": "cd ~/path/to/my-app\nmkdir supabase\ncd supabase",
+      "codeLabel": "Terminal",
+      "doneWhen": "The project shows in your Supabase dashboard, and your app has a supabase/ folder holding the diagram screenshot and user_stories.md."
+    },
+    {
+      "id": "s6",
+      "title": "Connect the MCP, skill and supabase-agent",
+      "detail": "Copy your own MCP command from Supabase → Connect → MCP → Claude Code (YOUR_REF is your project ref). Run it in a normal terminal, not inside Claude. Then add the database design skill and the supabase-agent. Myflix already has both; this is for your app's folder.",
+      "code": "claude mcp add --scope project --transport http supabase \"https://mcp.supabase.com/mcp?project_ref=YOUR_REF\"\ncurl -fsSL https://kabeier.github.io/Databases-and-Supabase/demo-kit/setup-db-skill.sh | bash\nmkdir -p .claude/agents && curl -fsSL https://raw.githubusercontent.com/kabeier/Databases-and-Supabase/main/demo-kit/.claude/agents/supabase-agent.md -o .claude/agents/supabase-agent.md",
+      "codeLabel": "Terminal",
+      "doneWhen": "/mcp shows supabase authenticated, /skills lists postgresql-table-design, and /agents lists supabase-agent."
+    },
+    {
+      "id": "s7",
+      "title": "Paste the database prompt, review schema.sql",
+      "detail": "Start from the class prompt. Change the first sentence to describe your app, and change the file names to yours. Read schema.sql before approving: Row Level Security must be on for every table. Claude should build ONE table at a time and pause after each.",
+      "code": "I'm building a task management application where people create projects and tasks, and label tasks with tags. There's no login screen yet; that comes later. I have some resources I'd like you to look at and supervise:\n\nHere is my DrawSQL schema diagram (a screenshot):\n@task-manager-erd.png\n\nHere are my user stories:\n@user_stories.md\n\nMy Supabase project is already connected in this directory through the supabase MCP.\n\nPlease:\n1. Use the `postgresql-table-design` skill and the Context7 MCP to update your context on the documentation for Supabase and PostgreSQL.\n2. Write the SQL schema for my diagram into `schema.sql`. Confirm it matches the diagram and the user stories, and list anything you'd change to follow database best practices, including Supabase's Row Level Security. Don't change my design on your own: tell me, and I'll decide. Then stop so I can review it.\n3. After I approve, create the tables in my Supabase project **ONE AT A TIME**.\n4. After each table, pause and tell me what you did so I can verify it in the dashboard before you continue.\n\nIs there any additional information you may need from me?",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "schema.sql exists, you approved it, and Claude paused after the first table."
+    },
+    {
+      "id": "s8",
+      "title": "Verify every table, then screenshot",
+      "detail": "After each table, check it in the Table Editor before saying continue. At the end, the Schema Visualizer should match your diagram. The secret (service_role) key never goes in front-end code; add &read_only=true to the MCP URL if you only want Claude to look.",
+      "codeLabel": "Browser",
+      "doneWhen": "The Schema Visualizer matches your DrawSQL diagram, and you saved a screenshot of it."
+    },
+    {
+      "id": "s9",
+      "title": "FreeCodeCamp steps",
+      "detail": "Part I: 50 Python steps. Part II: 100 JavaScript steps. These come third, after the Netflix clone and your own app.",
+      "doneWhen": "FreeCodeCamp shows the new Python and JavaScript steps."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Relational database",
+      "meaning": "Data stored in tables of rows and columns that point to each other through keys."
+    },
+    {
+      "term": "Table / column / row",
+      "meaning": "A table is one kind of thing (titles), a column is one detail (year), a row is one item."
+    },
+    {
+      "term": "Primary key / foreign key",
+      "meaning": "A primary key uniquely identifies a row; a foreign key in another table points to it."
+    },
+    {
+      "term": "One-to-many / many-to-many",
+      "meaning": "One list has many titles; many titles can sit in many lists (which needs a join table)."
+    },
+    {
+      "term": "Schema",
+      "meaning": "The design of your database: its tables, columns, types and relationships."
+    },
+    {
+      "term": "Supabase",
+      "meaning": "A hosted PostgreSQL database with a dashboard and an automatic API."
+    },
+    {
+      "term": "RLS (Row Level Security)",
+      "meaning": "Database rules that decide which rows each request may read or change."
+    },
+    {
+      "term": "Migration",
+      "meaning": "A saved SQL file that changes the database's structure, run once and in order."
+    },
+    {
+      "term": "service_role key",
+      "meaning": "Supabase's all-powerful secret key. Never put it in front-end code or a repo."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Lecture site: Databases and Supabase",
+      "url": "https://kabeier.github.io/Databases-and-Supabase/"
+    },
+    {
+      "label": "Slides: Relational Databases",
+      "url": "https://kabeier.github.io/Databases-and-Supabase/lecture-1-relational-databases/slides.html"
+    },
+    {
+      "label": "Slides: Databases on the Cloud",
+      "url": "https://kabeier.github.io/Databases-and-Supabase/lecture-2-databases-on-the-cloud/slides.html"
+    },
+    {
+      "label": "The database prompt",
+      "url": "https://github.com/kabeier/Databases-and-Supabase/blob/main/demo-kit/prompt.md"
+    },
+    {
+      "label": "Example user_stories.md (Ticked)",
+      "url": "https://github.com/kabeier/Databases-and-Supabase/blob/main/demo-kit/user_stories.md"
+    },
+    {
+      "label": "Example schema.sql (Ticked)",
+      "url": "https://github.com/kabeier/Databases-and-Supabase/blob/main/demo-kit/schema.sql"
+    },
+    {
+      "label": "supabase-agent.md",
+      "url": "https://github.com/kabeier/Databases-and-Supabase/blob/main/demo-kit/.claude/agents/supabase-agent.md"
+    },
+    {
+      "label": "DrawSQL",
+      "url": "https://drawsql.app/draw"
+    },
+    {
+      "label": "Supabase sign-up",
+      "url": "https://supabase.com/dashboard/sign-up"
+    },
+    {
+      "label": "Assignment: agentic-netflix-clone-II",
+      "url": "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-II"
+    }
+  ],
+  "assignments": [
+    "agentic-netflix-clone-II"
+  ],
+  "estMinutes": 420,
+  "sources": [
+    "https://kabeier.github.io/Databases-and-Supabase/ (index.html: Homework setup steps 1–6, commands, prompt link)",
+    "https://kabeier.github.io/Databases-and-Supabase/lecture-1-relational-databases/slides.html (Homework, Part I; Bring to next lecture)",
+    "https://kabeier.github.io/Databases-and-Supabase/lecture-2-databases-on-the-cloud/slides.html (Homework, Part II; Setup steps; read_only and service_role notes)",
+    "https://github.com/kabeier/Databases-and-Supabase/blob/main/demo-kit/prompt.md (database prompt, word for word)",
+    "https://github.com/Code-Platoon-Assignments/agentic-netflix-clone-II README (minimum: add movies, create favorite lists)",
+    "~/Desktop/codeplatoon/progress.md and notes/projects/Netflix Clone.md (pending migration, MCP re-approval)",
+    "~/Desktop/codeplatoon/hub/guides/README.md (Supabase MCP needs re-approval; planning files missing)"
+  ]
+}

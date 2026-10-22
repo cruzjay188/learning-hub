@@ -1,0 +1,80 @@
+{
+  "id": "ds-8",
+  "code": "DS 8",
+  "title": "Doubly Linked Lists",
+  "status": "outline",
+  "summary": "Extends singly linked lists two ways: circular lists connect the tail back to the head (good for round-robin and repeat playlists), and doubly linked lists give each node a prev pointer as well as next, so you can move backward (good for undo/redo and browser history). Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build a doubly linked list that can walk both directions, and choose between singly, circular and doubly linked lists.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the lesson",
+      "detail": "Read the Doubly & Circular Linked Lists page, including the 'Conventional Uses' table.",
+      "doneWhen": "You can name one use case for each of the three list types."
+    },
+    {
+      "id": "s2",
+      "title": "Run a doubly linked list backward",
+      "detail": "This uses the lesson's DNode and add_node, plus a short backward walk from the tail.",
+      "code": "class DNode:\n    def __init__(self, value):\n        self.value = value\n        self.next = None\n        self.prev = None\n\nclass DoublyLinkedList:\n    def __init__(self):\n        self.head = None\n\n    def add_node(self, value):\n        new_node = DNode(value)\n        if not self.head:\n            self.head = new_node\n            return\n        current = self.head\n        while current.next:\n            current = current.next\n        current.next = new_node\n        new_node.prev = current\n\ndll = DoublyLinkedList()\nfor v in [1, 2, 3]:\n    dll.add_node(v)\n\ntail = dll.head\nwhile tail.next:\n    tail = tail.next\nwhile tail:\n    print(tail.value)\n    tail = tail.prev",
+      "codeLabel": "File",
+      "doneWhen": "It prints 3, 2, 1."
+    },
+    {
+      "id": "s3",
+      "title": "Understand the circular loop check",
+      "detail": "In the lesson's circular add_node, the loop is while current.next != self.head instead of while current.next. Explain to yourself why the normal check would loop forever.",
+      "doneWhen": "You can say why a circular list never reaches None."
+    },
+    {
+      "id": "s4",
+      "title": "Talk through Browser History",
+      "detail": "One assignment is a Browser History program with a doubly linked list. Before coding, describe visit, back and forward in plain English and give each one's Big-O (moving back or forward one step is O(1)).",
+      "doneWhen": "You can explain the design and Big-O out loud."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Doubly linked list",
+      "meaning": "Each node points both to the next node and the previous one."
+    },
+    {
+      "term": "prev pointer",
+      "meaning": "The link back to the node before this one."
+    },
+    {
+      "term": "Circular linked list",
+      "meaning": "The last node points back to the head, forming a loop."
+    },
+    {
+      "term": "Tail",
+      "meaning": "The last node in the list."
+    },
+    {
+      "term": "Round-robin",
+      "meaning": "Taking turns in a repeating cycle, like a playlist on repeat."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Doubly & Circular Linked Lists",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/08-circular-doubly-linked-lists/"
+    },
+    {
+      "label": "Python docs: collections.deque",
+      "url": "https://docs.python.org/3/library/collections.html#collections.deque"
+    },
+    {
+      "label": "Curriculum: Technical Interviews (whiteboarding)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/08-circular-doubly-linked-lists/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/08-circular-doubly-linked-lists/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

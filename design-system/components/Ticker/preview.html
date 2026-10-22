@@ -1,0 +1,18 @@
+<!-- @dsCard group="Status" height=96 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Ticker — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="ds-row" style="font:600 28px var(--font-mono);color:var(--ink);gap:16px"><span>Step <span class="tick" aria-hidden="true"><span class="d" style="--d:2"><i>0</i><i>1</i><i>2</i><i>3</i><i>4</i><i>5</i><i>6</i><i>7</i><i>8</i><i>9</i></span></span><span class="sr-only">2</span> of 10</span><button type="button" class="btn btn--sm" id="up">+1</button></div>
+<script>
+var n = 2; document.getElementById('up').addEventListener('click', function () { n = n >= 9 ? 1 : n + 1; document.querySelector('.tick .d').style.setProperty('--d', n); document.querySelector('.tick + .sr-only').textContent = n; });
+</script>
+</body>
+</html>

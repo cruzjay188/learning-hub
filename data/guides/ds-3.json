@@ -1,0 +1,80 @@
+{
+  "id": "ds-3",
+  "code": "DS 3",
+  "title": "Stacks & Queues",
+  "status": "outline",
+  "summary": "Stacks and queues control the order data is processed. A stack is last in, first out (like undo or a pile of plates); a queue is first in, first out (like a line at a coffee shop). The lesson builds both as Python classes with add, remove and peek methods. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build a Stack and a Queue class in Python and pick the right one for a problem.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the lesson",
+      "detail": "Read the Stacks and Queues page, including the addTop/removeTop/peek and addRight/removeLeft/peek methods.",
+      "doneWhen": "You can give one real-world example of a stack and one of a queue."
+    },
+    {
+      "id": "s2",
+      "title": "Run the curriculum's Stack and Queue",
+      "detail": "Save and run this condensed version of the lesson's classes.",
+      "code": "class Stack:\n    def __init__(self):\n        self._items = []\n    def addTop(self, item):\n        self._items.append(item)\n    def removeTop(self):\n        if not self._items:\n            raise Exception(\"Stack is empty\")\n        return self._items.pop()\n\nclass Queue:\n    def __init__(self):\n        self._items = []\n    def addRight(self, item):\n        self._items.append(item)\n    def removeLeft(self):\n        if not self._items:\n            raise Exception(\"Queue is empty\")\n        return self._items.pop(0)\n\ns, q = Stack(), Queue()\nfor n in [1, 2, 3]:\n    s.addTop(n)\n    q.addRight(n)\nprint(s.removeTop(), q.removeLeft())",
+      "codeLabel": "File",
+      "doneWhen": "It prints 3 (the newest) for the stack and 1 (the oldest) for the queue."
+    },
+    {
+      "id": "s3",
+      "title": "Spot the hidden cost",
+      "detail": "list.pop(0) moves every other item over, so it is O(n). Python's collections.deque has popleft(), which is O(1). Rewrite the Queue with deque and keep the same method names.",
+      "doneWhen": "Your deque version prints the same output as before."
+    },
+    {
+      "id": "s4",
+      "title": "Talk through Valid Parentheses first",
+      "detail": "Valid Parentheses is one of this lesson's assignments and a classic interview question. Before coding, say the approach out loud (push openers, pop and match on closers, stack must be empty at the end) and its Big-O (time O(n), space O(n)).",
+      "doneWhen": "You can explain the approach and its Big-O without looking at code."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Stack",
+      "meaning": "Last in, first out: the newest item is removed first."
+    },
+    {
+      "term": "Queue",
+      "meaning": "First in, first out: the oldest item is removed first."
+    },
+    {
+      "term": "Push / pop",
+      "meaning": "Add to and remove from the top of a stack."
+    },
+    {
+      "term": "Peek",
+      "meaning": "Look at the next item without removing it."
+    },
+    {
+      "term": "deque",
+      "meaning": "Python's double-ended queue; adding or removing at either end is O(1)."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Stacks and Queues",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/03-stacks-and-queues/"
+    },
+    {
+      "label": "Python tutorial: Using lists as stacks and queues",
+      "url": "https://docs.python.org/3/tutorial/datastructures.html#using-lists-as-stacks"
+    },
+    {
+      "label": "Python docs: collections.deque",
+      "url": "https://docs.python.org/3/library/collections.html#collections.deque"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 40,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/03-stacks-and-queues/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/03-stacks-and-queues/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

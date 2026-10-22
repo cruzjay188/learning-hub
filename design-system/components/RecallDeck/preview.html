@@ -1,0 +1,29 @@
+<!-- @dsCard group="Content" height=330 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>RecallDeck — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div style="max-width:560px">
+  <div class="section__head" style="margin:0"><h2 class="section__title">Check yourself <span class="count">9 key terms</span></h2><span class="deck__meta"><span class="x">✕ 1</span><span class="v">✓ 3</span></span></div>
+  <div class="deck__segs" style="--n:9" aria-hidden="true"><i data-s="got"></i><i data-s="got"></i><i data-s="missed"></i><i data-s="got"></i><i data-s="now"></i><i></i><i></i><i></i><i></i></div>
+  <div class="deck"><span class="deck__back" aria-hidden="true"></span>
+    <div class="flip" data-flipped="false" role="button" tabindex="0" aria-label="Show the meaning">
+      <div class="face"><p class="row__sub">Term 5 of 9</p><p class="face__term">JWT</p><p class="face__hint">Say it out loud, then flip <span class="kbd">Space</span></p></div>
+      <div class="face face--back"><p class="row__sub">JWT</p><p class="face__meaning">A signed token that proves who you are on every request, so the server doesn't need to look you up.</p></div>
+    </div></div>
+  <div class="deck__acts" data-show="false"><button type="button" class="btn"><kbd>←</kbd> Not yet</button><button type="button" class="btn btn--primary">Got it <kbd>→</kbd></button></div>
+</div>
+<script>
+var f = document.querySelector('.flip'), a = document.querySelector('.deck__acts');
+f.addEventListener('click', function () { var on = f.dataset.flipped !== 'true'; f.dataset.flipped = on; a.dataset.show = on; });
+a.querySelectorAll('button').forEach(function (b, i) { b.addEventListener('click', function () { f.classList.add(i ? 'is-got' : 'is-missed'); a.dataset.show = 'false'; setTimeout(function () { f.classList.remove('is-got', 'is-missed'); f.dataset.flipped = 'false'; f.classList.remove('is-next'); void f.offsetWidth; f.classList.add('is-next'); }, 220); }); });
+</script>
+</body>
+</html>

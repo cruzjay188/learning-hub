@@ -1,0 +1,170 @@
+{
+  "id": "ai-2",
+  "code": "AI-2",
+  "title": "Coding Assistants",
+  "status": "full",
+  "summary": "A coding agent is an LLM inside a loop that can use tools (read files, run commands) connected through MCP. You then install Claude Code and learn to pick a model, effort level and output style with cost in mind.",
+  "goal": "Set up Claude Code (Sonnet, Low effort, Default output style, voice, status line) and explain the agent loop and MCP.",
+  "required": [
+    "Part I: Knowledge Check 3 – Intro to Coding Agents (team quiz)",
+    "Part I: Get caught up – make sure all assignments from previous lectures are done",
+    "Part I: FreeCodeCamp Python Certification – complete 50 steps",
+    "Part II: Knowledge Check 4 – Installing Claude Code (team quiz)",
+    "Part II: Claude Code Preparation Checklist (claude-code-checklist)",
+    "Part II: Get caught up – make sure all assignments from previous lectures are done",
+    "Part II: FreeCodeCamp JavaScript Certification – complete 100 steps"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read Intro to Coding Agents",
+      "detail": "A coding agent wraps an LLM in a loop: build context, ask the LLM, run any tool call it returns, feed the result back, and repeat until the LLM answers with plain text. Learn its four parts (the agent, MCP, tools, the LLM) and why swapping the LLM doesn't change the loop.",
+      "doneWhen": "You can draw the agent loop from task to final answer and say what MCP standardizes (\"USB for AI tools\")."
+    },
+    {
+      "id": "s2",
+      "title": "Install Claude Code and log in",
+      "detail": "Checklist items 1–3. You already use Claude Code, so this is the verify pass: open a new terminal, check the version, then check your account inside Claude.",
+      "code": "curl -fsSL https://claude.ai/install.sh | bash\nclaude --version\nclaude\n/status",
+      "codeLabel": "Terminal",
+      "doneWhen": "claude --version prints a version, /status shows your account, and relaunching asks for no setup screens."
+    },
+    {
+      "id": "s3",
+      "title": "Make Sonnet your default model",
+      "detail": "Checklist item 4. In the /model picker, press Enter to save it as the default (pressing s only changes this session). Know the other aliases too: Opus or Fable for hard problems, Haiku for quick lookups, and opusplan, which plans with Opus and then builds with Sonnet.",
+      "code": "/model sonnet",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "After relaunching `claude`, the model shown is Sonnet."
+    },
+    {
+      "id": "s4",
+      "title": "Set effort Low and output style Default",
+      "detail": "Checklist items 5–6. Higher effort means more tool calls and more tokens, so it costs more. The checklist wants Low as your default; raise it on purpose for hard tasks, then set it back. For output style, run /config, arrow to output-style and pick Default (Learning mode explains more if you want it later).",
+      "code": "/config",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "After a relaunch, effort is still Low and /config shows output-style = Default."
+    },
+    {
+      "id": "s5",
+      "title": "Turn on voice and build a status line",
+      "detail": "Checklist items 7–8. Run /voice, then hold the spacebar to talk and release to transcribe. Then paste the checklist's example status line prompt, which shows repo, branch, context use, cost and model under your prompt.",
+      "code": "/voice\n/statusline single line, fully color-coded with truecolor RGB gradient: repo name bold yellow, 🌿 leaf icon + git branch in bold cyan with parentheses, 20-block context bar using 24-bit RGB gradient from green(0,200,80) through yellow(220,200,0) to red(220,40,20) with dark gray(60,60,60) empty blocks, dynamic emoji that changes with usage (🟢 under 20%, ⚡ 20-69%, 🔥 70-89%, 🚨 90%+), percentage colored by usage level, session cost in yellow, code velocity showing +lines in green and -lines in red, 🤖 robot icon + model name in magenta, dim gray pipe separators between all elements",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "Holding the spacebar transcribes your speech, and a status line shows repo, branch, a context bar, cost and model."
+    },
+    {
+      "id": "s6",
+      "title": "Understand tokens and cost",
+      "detail": "A token is about 4 characters (about ¾ of a word). Every turn resends the whole conversation, so long chats cost more. Prompt caching and the Batch API (50% off) bring that down. Compare the lecture's price table (per million tokens): Fable $10/$50, Opus $4/$20, Sonnet $2/$10, Haiku $1/$5.",
+      "doneWhen": "You can explain why a long session costs more than a short one, and when you'd pick Haiku, Sonnet, Opus or Fable."
+    },
+    {
+      "id": "s7",
+      "title": "Take Knowledge Checks 3 and 4",
+      "detail": "Team quizzes with Live Server: assignments/week-01/Knowledge-Check-3-Intro-to-Coding-Agents (agent loop, MCP, tool categories, Claude Code vs Cursor vs Copilot) and Knowledge-Check-4-Installing-Claude-Code (aliases and pricing, context and tokens, effort, output styles, Batch API, local models). progress.md shows both done.",
+      "codeLabel": "Browser",
+      "doneWhen": "Both quizzes finished, and you can explain any answer you missed."
+    },
+    {
+      "id": "s8",
+      "title": "Optional: run a free local model",
+      "detail": "Optional checklist item 9. Don't do this during class: it's a big download and uses a lot of RAM and CPU. Check you have at least 8 GB of RAM (16 GB recommended) and 4 GB of free disk. Suggested models: qwen3-coder, devstral, deepseek-r1, llama3.1.",
+      "code": "curl -fsSL https://ollama.com/install.sh | sh\nollama --version\nollama launch claude --model <model name>",
+      "codeLabel": "Terminal",
+      "doneWhen": "ollama --version prints a version (or you've decided to skip this optional item)."
+    },
+    {
+      "id": "s9",
+      "title": "Tick the checklist and do FreeCodeCamp",
+      "detail": "progress.md lists claude-code-checklist as \"verify all boxes done\", so walk its Final Check list from top to bottom. Then do 50 Python steps (Part I) and 100 JavaScript steps (Part II) on FreeCodeCamp.",
+      "doneWhen": "Every required Final Check box is ticked, and FreeCodeCamp shows the new Python and JavaScript steps."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Coding agent",
+      "meaning": "Software that wraps an LLM in a loop with tools, so it can read files, run commands and edit code until the task is done."
+    },
+    {
+      "term": "Agent loop",
+      "meaning": "Ask the LLM, run the tool it requests, feed back the result, and repeat until it answers with plain text."
+    },
+    {
+      "term": "MCP (Model Context Protocol)",
+      "meaning": "An open standard for plugging tools into AI agents: one plug shape for every tool."
+    },
+    {
+      "term": "Tool call",
+      "meaning": "The LLM's request to do something, such as read_file(\"src/App.jsx\"), which the agent then carries out."
+    },
+    {
+      "term": "Token",
+      "meaning": "The small chunk of text an LLM reads and writes; you're billed per token, both input and output."
+    },
+    {
+      "term": "Context window",
+      "meaning": "The most tokens a model can consider at once, covering your whole conversation plus the files it read."
+    },
+    {
+      "term": "Effort level",
+      "meaning": "How hard Claude Code works before answering. Higher effort means more tool calls and more cost."
+    },
+    {
+      "term": "Prompt caching",
+      "meaning": "Reusing the already-sent part of a conversation at a big discount, which makes long sessions cheaper."
+    },
+    {
+      "term": "Local model (Ollama)",
+      "meaning": "An open-source model running on your own computer: free, but weaker than Claude."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Coding Assistants",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/2-coding-assistants/"
+    },
+    {
+      "label": "Lecture: Intro to Coding Agents",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/2-coding-assistants/1-intro-to-coding-assistants/"
+    },
+    {
+      "label": "Lecture: Installing Claude Code",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/2-coding-assistants/2-installing-claude/"
+    },
+    {
+      "label": "Claude Code Setup Checklist",
+      "url": "https://github.com/Code-Platoon-Assignments/claude-code-checklist"
+    },
+    {
+      "label": "Knowledge Check 3",
+      "url": "https://github.com/Code-Platoon-Assignments/Knowledge-Check-3-Intro-to-Coding-Agents"
+    },
+    {
+      "label": "Knowledge Check 4",
+      "url": "https://github.com/Code-Platoon-Assignments/Knowledge-Check-4-Installing-Claude-Code"
+    },
+    {
+      "label": "Claude pricing",
+      "url": "https://platform.claude.com/docs/en/about-claude/pricing"
+    },
+    {
+      "label": "Claude Code model configuration",
+      "url": "https://code.claude.com/docs/en/model-config"
+    }
+  ],
+  "assignments": [
+    "Knowledge-Check-3-Intro-to-Coding-Agents",
+    "Knowledge-Check-4-Installing-Claude-Code",
+    "claude-code-checklist"
+  ],
+  "estMinutes": 240,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/2-coding-assistants/ (goals, TLO, ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/2-coding-assistants/assignments/ (Part I and Part II list)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/2-coding-assistants/1-intro-to-coding-assistants/ and 2-installing-claude/",
+    "https://github.com/Code-Platoon-Assignments/claude-code-checklist README (items 1–9, status line prompt, Final Check)",
+    "https://github.com/Code-Platoon-Assignments/Knowledge-Check-3 and Knowledge-Check-4 READMEs (topics)",
+    "~/Desktop/codeplatoon/progress.md (KC3/KC4 done, checklist to verify)"
+  ]
+}

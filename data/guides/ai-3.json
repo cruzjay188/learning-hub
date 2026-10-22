@@ -1,0 +1,173 @@
+{
+  "id": "ai-3",
+  "code": "AI-3",
+  "title": "Claude in Action",
+  "status": "full",
+  "summary": "Run a real project through the Prompt Life Cycle (Define → Explore → Plan → Code → Review → Commit). Keep Claude's context small with CLAUDE.md and subagents, and have a QA subagent check your app in a real browser through the Playwright MCP.",
+  "goal": "Take one feature through the Prompt Life Cycle using plan mode, @-references, a project-mapper subagent and a Playwright-powered qa-agent.",
+  "required": [
+    "Part I: Knowledge Check 5 – Prompt Life Cycle (team quiz)",
+    "Part I: Anthropic – Introduction to Subagents",
+    "Part I: FreeCodeCamp Python Certification – complete 50 steps",
+    "Part II: Knowledge Check 6 – More out of Claude Code (team quiz)",
+    "Part II: Anthropic – Claude 101",
+    "Part II: Anthropic – Claude Code 101",
+    "Part II: FreeCodeCamp JavaScript Certification – complete 100 steps"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the Prompt Life Cycle lecture",
+      "detail": "Learn the stages: Define (goal plus acceptance criteria), Explore (you find the relevant files), Plan (Claude plans in plan mode), Code, Review (a read-only subagent, ideally a stronger model), Document, Commit. The tic-tac-toe experiment shows why planning beats \"Build a tic tac toe game\".",
+      "doneWhen": "You can list the stages in order and say what you (not Claude) do in each one."
+    },
+    {
+      "id": "s2",
+      "title": "Give each project a CLAUDE.md",
+      "detail": "Run /init in a project's root and Claude writes a CLAUDE.md that it reads first in every session; then edit it yourself. Know the three scopes: ~/.claude/CLAUDE.md (all your projects), CLAUDE.md (this project, committed) and .claude/CLAUDE.local.md (just you, not committed). Your netflix and hangman folders already have one.",
+      "code": "/init\n/context",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "/context lists your CLAUDE.md under Memory Files."
+    },
+    {
+      "id": "s3",
+      "title": "Document a project with project-mapper",
+      "detail": "A subagent works in its own context, so only its report lands in your main session. assignments/week-02/netflix/.claude/agents/project-mapper.md already exists. For any other project, create .claude/agents/project-mapper.md with the lecture's file, then run the lecture's prompt.",
+      "code": "---\nname: project-mapper\ndescription: Scans files and generates a roadmap of documentation explaining where features are found within sections of files and how they connect to other pieces. Applying the Single Responsibility Principle to efficiently document a project.\ntools: Read, Grep, Glob\nmodel: sonnet\n---\n\nYou are Technical Lead in charge of this project. It is your task to scan through this codebase and return documentation explaining how the code base is laid out, how components speak to eachother, and create analogies that could be understood by team members with no technical background.\n\n--- then, in Claude:\nWrite a README.md file along with a documentation directory holding the findings of the project-mapper agent.",
+      "codeLabel": "File",
+      "doneWhen": "/agents lists project-mapper, and the project has a README.md plus a documentation folder written from its findings."
+    },
+    {
+      "id": "s4",
+      "title": "Keep long sessions lean",
+      "detail": "Check usage with /context and /cost. The lecture's rule of thumb: /compact (summarize the history) at 60–70% full, and /clear or a new session above 80%. CLAUDE.md stays loaded after /clear.",
+      "code": "/context\n/cost\n/compact\n/clear",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "You've watched the context bar drop after a /compact in a real session."
+    },
+    {
+      "id": "s5",
+      "title": "Plan a feature in plan mode with @-files",
+      "detail": "Read your docs first to find the files a feature touches. Then press Shift+Tab until \"plan\" shows, and reference those files with @ so Claude doesn't search the whole codebase. Ask side questions with /btw so they don't clutter the main chat. Here is the lecture's prompt; write your own version for a Myflix feature.",
+      "code": "I want to add a feature to this DBZ themed Tic Tac Toe game. Currently when someone wins the game they have to manually click `restart` in order to play the next game and there's no real signal that someone won the game.\n\nI would like you to make it, where when a player wins the game a DBZ themed pop up in the center of the screen populates announcing the winner. Upon the modal closing the game should restart and be ready to start a new round.\n\nFrom reading the documentation I believe you'll need to interact with these files:\n- @index.html\n- @script.js\n\nDo you have any questions?",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "Claude answered your questions in plan mode and saved a plan you approved before any code changed."
+    },
+    {
+      "id": "s6",
+      "title": "Check the Playwright MCP is connected",
+      "detail": "Playwright lets Claude open a real browser, click and take screenshots. You already added it at user scope, so just confirm. The lecture's install command is below in case you ever need it on another machine. `claude -c` reopens your last session.",
+      "code": "claude mcp add playwright npx @playwright/mcp@latest\nclaude -c\n/mcp",
+      "codeLabel": "Terminal",
+      "doneWhen": "/mcp shows playwright as connected."
+    },
+    {
+      "id": "s7",
+      "title": "Review your app with the qa-agent",
+      "detail": "The qa-agent (Opus, Playwright tools only) tests a feature list on desktop and mobile. assignments/week-02/netflix/.claude/agents/qa-agent.md already exists. Run the lecture's prompt in a project whose README lists its features, then play with the app yourself too.",
+      "code": "I need to ensure this project is working well, open this project in a local browser. Once the project is open use the qa-agent by giving it the location of the project and the list of features from @README.md.\n\nOnce the agent comes back with it's findings update the code base and ensure to update the documentation to reflect the new state of the project.\n\nDo you have any questions?",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "The qa-agent's findings are fixed and the docs are updated, while your main session's context stays low."
+    },
+    {
+      "id": "s8",
+      "title": "Take Knowledge Checks 5 and 6",
+      "detail": "KC5 (Prompt Life Cycle, CLAUDE.md scopes, subagents, /context /compact /clear) is done per progress.md. KC6 (plan mode, @ references, /btw, auto mode, Playwright MCP, the qa-agent) isn't forked yet. Run /start-assignment Knowledge-Check-6-More-out-of-Claude-Code, then take it with your team in Live Server.",
+      "code": "/start-assignment Knowledge-Check-6-More-out-of-Claude-Code",
+      "codeLabel": "Claude prompt",
+      "doneWhen": "KC6 is cloned under assignments/ (progress.md lists it in Week 2), and both quizzes are finished with your team."
+    },
+    {
+      "id": "s9",
+      "title": "Anthropic courses and FreeCodeCamp",
+      "detail": "Part I: Introduction to Subagents plus 50 Python steps. Part II: Claude 101, Claude Code 101 plus 100 JavaScript steps. The page also suggests exploring the Claude Code docs as you go.",
+      "doneWhen": "All three Anthropic courses are complete and FreeCodeCamp shows the new steps."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Prompt Life Cycle",
+      "meaning": "Define → Explore → Plan → Code → Review → Commit: the course's routine for every feature."
+    },
+    {
+      "term": "CLAUDE.md",
+      "meaning": "A Markdown file Claude reads automatically at the start of a session: the project's onboarding doc."
+    },
+    {
+      "term": "Subagent",
+      "meaning": "A helper Claude starts with its own context, instructions, tools and model; only its result comes back to you."
+    },
+    {
+      "term": "Plan mode",
+      "meaning": "A read-only mode (Shift+Tab) where Claude asks questions and writes a plan before touching code."
+    },
+    {
+      "term": "@-reference",
+      "meaning": "Typing @file to hand Claude that exact file, so it doesn't search the whole project."
+    },
+    {
+      "term": "/btw",
+      "meaning": "Ask a side question without adding it to the main conversation's context."
+    },
+    {
+      "term": "/compact vs /clear",
+      "meaning": "/compact summarizes the history to free space; /clear wipes it and starts fresh."
+    },
+    {
+      "term": "Playwright MCP",
+      "meaning": "An MCP server that gives Claude a real browser to open pages, click and take screenshots."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Claude in Action",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/"
+    },
+    {
+      "label": "Lecture: Prompt Life Cycle",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/1-prompt-life-cycle/"
+    },
+    {
+      "label": "Lecture: Review Process (More out of Claude Code)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/2-review-process/"
+    },
+    {
+      "label": "Instructor demo: Rebels vs Empire tic-tac-toe (prompt, CLAUDE.md, docs)",
+      "url": "https://github.com/Code-Platoon-Assignments/eagle_demos_and_notes/tree/main/phase-III/1-Agents-As-Tools/3-claude-in-action"
+    },
+    {
+      "label": "Knowledge Check 5",
+      "url": "https://github.com/Code-Platoon-Assignments/Knowledge-Check-5-Prompt-Life-Cycle"
+    },
+    {
+      "label": "Knowledge Check 6",
+      "url": "https://github.com/Code-Platoon-Assignments/Knowledge-Check-6-More-out-of-Claude-Code"
+    },
+    {
+      "label": "Anthropic: Introduction to Subagents",
+      "url": "https://anthropic.skilljar.com/introduction-to-subagents"
+    },
+    {
+      "label": "Anthropic: Claude Code 101",
+      "url": "https://anthropic.skilljar.com/claude-code-101"
+    },
+    {
+      "label": "Subagent frontmatter reference",
+      "url": "https://code.claude.com/docs/en/sub-agents#supported-frontmatter-fields"
+    }
+  ],
+  "assignments": [
+    "Knowledge-Check-5-Prompt-Life-Cycle",
+    "Knowledge-Check-6-More-out-of-Claude-Code"
+  ],
+  "estMinutes": 300,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/ (goals, TLOs, ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/assignments/ (Part I and Part II list)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/1-prompt-life-cycle/ (stages, /init, scopes, project-mapper, context commands)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/08-Agents-as-Tools/3-claude-in-action/2-review-process/ (plan mode prompt, @, /btw, Playwright install, qa-agent prompt)",
+    "~/Desktop/codeplatoon/cohort-notes/phase-III/1-Agents-As-Tools/3-claude-in-action/ (instructor demo)",
+    "https://github.com/Code-Platoon-Assignments/Knowledge-Check-5 and Knowledge-Check-6 READMEs (topics)",
+    "~/Desktop/codeplatoon/progress.md (KC5 done, KC6 not forked) and hub/guides/README.md (agents installed in netflix)"
+  ]
+}
