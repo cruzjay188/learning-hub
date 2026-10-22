@@ -1,0 +1,5 @@
+# front end only: ignore everything except the site files
+*
+!.gitignore
+!index.html
+!hub-data.json
