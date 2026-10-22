@@ -19,7 +19,8 @@ const cache = `${homedir()}/Library/Caches/ms-playwright`;
 const cr = readdirSync(cache).filter((d) => /^chromium-\d+$/.test(d)).sort().pop();
 const exe = `${cache}/${cr}/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`;
 
-const URL = "http://127.0.0.1:4180/index.html";
+// HUB_URL tests another copy, e.g. the live site: HUB_URL=https://eagle-learning-hub.vercel.app/ node qa/accounts.mjs
+const URL = process.env.HUB_URL || "http://127.0.0.1:4180/index.html";
 const stamp = Date.now();
 const results = [];
 const check = (name, ok, info = "") => { results.push(ok); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${info ? `  (${info})` : ""}`); };
