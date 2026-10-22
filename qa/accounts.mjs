@@ -19,7 +19,8 @@ const cache = `${homedir()}/Library/Caches/ms-playwright`;
 const cr = readdirSync(cache).filter((d) => /^chromium-\d+$/.test(d)).sort().pop();
 const exe = `${cache}/${cr}/chrome-mac-arm64/Google Chrome for Testing.app/Contents/MacOS/Google Chrome for Testing`;
 
-const URL = "http://127.0.0.1:4180/index.html";
+// HUB_URL tests another copy, e.g. the live site: HUB_URL=https://eagle-learning-hub.vercel.app/ node qa/accounts.mjs
+const URL = process.env.HUB_URL || "http://127.0.0.1:4180/index.html";
 const stamp = Date.now();
 const results = [];
 const check = (name, ok, info = "") => { results.push(ok); console.log(`${ok ? "PASS" : "FAIL"}  ${name}${info ? `  (${info})` : ""}`); };
@@ -32,10 +33,10 @@ async function student(tag) {
   page.on("pageerror", (e) => page.errors.push(e.message));
   await page.addInitScript(() => { try { localStorage.setItem("hub:debug-now", "2026-10-19T11:15"); } catch {} });
   await page.goto(`${URL}#today`, { waitUntil: "networkidle" });
-  await page.click(".auth__switch .link-btn"); // Create an account
-  await page.fill('input[autocomplete="name"]', `Test ${tag.toUpperCase()}`);
-  await page.fill('input[type="email"]', `hubtest+${stamp}-${tag}@example.com`);
-  await page.fill('input[type="password"]', `pw-${stamp}`);
+  await page.click(".auth__switch"); // Create an account
+  await page.fill("#auth-name", `Test ${tag.toUpperCase()}`);
+  await page.fill("#auth-email", `hubtest+${stamp}-${tag}@example.com`);
+  await page.fill("#auth-password", `pw-${stamp}`);
   await page.click(".auth__submit");
   await page.waitForSelector("#save[data-mode='cloud']", { timeout: 15000 }).catch(() => {});
   return { ctx, page };
@@ -44,7 +45,7 @@ const saveMode = (page) => page.evaluate(() => document.querySelector("#save")?.
 
 // 1. A registers and does some work
 const A = await student("a");
-const errA = await A.page.$eval(".auth__error", (e) => e.textContent).catch(() => null);
+const errA = await A.page.$eval(".auth__alert, .field__msg--err", (e) => e.textContent).catch(() => null);
 check("A can create an account and lands in the hub", (await saveMode(A.page)) === "cloud", errA || `save badge: ${await saveMode(A.page)}`);
 await A.page.goto(`${URL}#lecture-ai-8`, { waitUntil: "networkidle" });
 await A.page.click("#step-s1 .marker");
@@ -75,11 +76,12 @@ const bView = await B.page.evaluate(() => ({
 }));
 check("B sees none of A's progress", bView.ticked === "false" && bView.rating === "0" && bView.notes === "", JSON.stringify(bView));
 
-// 4. log out
+// 4. log out from the account menu
 await A.page.click(".account-btn");
-const loggedOut = await A.page.waitForSelector(".auth__card", { timeout: 10000 }).then(() => true, () => false);
+await A.page.click("[data-action='logout']");
+const loggedOut = await A.page.waitForSelector(".auth__note", { timeout: 10000 }).then(() => true, () => false);
 const leftovers = await A.page.evaluate(() => Object.keys(localStorage).filter((k) => k.startsWith("eagle-hub:v1:")).length);
-check("Log out returns to the Log in screen and removes the browser copy", loggedOut && leftovers === 0, `leftover copies: ${leftovers}`);
+check("Log out (account menu) returns to Log in, says so, and removes the browser copy", loggedOut && leftovers === 0, `leftover copies: ${leftovers}`);
 check("no page errors", !A.page.errors.length && !B.page.errors.length, [...A.page.errors, ...B.page.errors].join(" | "));
 
 await browser.close();

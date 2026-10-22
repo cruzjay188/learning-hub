@@ -5,7 +5,8 @@ My study app for the Code Platoon bootcamp: today's class, a step-by-step guide 
 > [!warning] Test copy
 > This folder is a **reorganized test copy** of `hub/`, made on Oct 22, 2026. The live hub still runs from `hub/`, and `/sync` still updates `hub/`. Nothing here is published yet.
 
-- **Live page:** https://claude.ai/artifact/MtGWwvJQRsSXyC7YqFozf9 (private; still built from `hub/`)
+- **Live site (Vercel):** https://eagle-learning-hub.vercel.app (anyone can create an account)
+- **claude.ai artifact:** https://claude.ai/artifact/MtGWwvJQRsSXyC7YqFozf9 (private; still built from `hub/`)
 - **Design system:** https://claude.ai/artifact/HZUBEYey53MBnWwo1CXsiG
 - **Case study:** https://claude.ai/artifact/XFRFRsucVKspAeFKQBQ6vG
 - **GitHub (front end only):** https://github.com/cruzjay188/learning-hub (still the single-file version)
@@ -30,6 +31,14 @@ Students create an account (email + password) and their checkmarks, ratings, not
 - **The course itself** (lectures, guides, schedule) still ships in `hub-data.json`, not the database.
 - **Keys:** `front-end/.env.local` (not committed; template in `.env.example`) holds the project URL and the *publishable* key. Without it the hub runs with no accounts and saves to this browser.
 - **QA:** `npm run build:qa` builds without accounts (for `motion.mjs` and `compare.mjs`); `node qa/accounts.mjs` tests accounts end to end against the normal build.
+
+## Deploying (Vercel)
+
+Vercel project `eagle-learning-hub` (team `cruzjay188s-projects`), **Root Directory `front-end`**, framework Vite. `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are set in Vercel for Production and Preview (the publishable key, same as `front-end/.env.local`).
+
+- Once GitHub is connected in Vercel: merging into `main` deploys the live site, and every pull request gets its own preview URL.
+- From this computer: `vercel deploy --prod` in `learning-hub/` (`.vercelignore` keeps `.env.local` files and builds out of the upload).
+- Check the live site end to end: `HUB_URL=https://eagle-learning-hub.vercel.app/ node qa/accounts.mjs`, then delete the test accounts (see CLAUDE.md).
 
 ## How it works
 

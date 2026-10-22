@@ -35,8 +35,8 @@
   },
   "lastChange": {
     "by": "Jeffrey",
-    "at": "2026-10-20T10:39:10Z",
+    "at": "2026-10-22T20:35:48Z",
     "via": "Claude Code",
-    "note": "v3 premium: elevation, ring, track and radius tokens; button system; new Ring, Ticker, SegmentedControl, RecallDeck and FloatingBar; Chip and RecallCard replaced; motion v3 (from hub/index.html)"
+    "note": "Accounts: Field and AuthForm cards, the Banner warn variant, auth motion and icons (from front-end/src/styles/)"
   }
 }

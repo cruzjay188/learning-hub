@@ -1,5 +1,6 @@
 import { useEffect, useLayoutEffect, useRef } from 'react'
 import { useHub } from '../hooks/useHub.js'
+import AccountMenu from './AccountMenu.jsx'
 import { etDateOf, fMD } from '../utils/dates.js'
 
 const TABS = [['today', 'Today'], ['course', 'Course'], ['review', 'Review'], ['work', 'Work']]
@@ -69,11 +70,7 @@ export default function TopBar({ tab, title, due }) {
           >
             <span className="save__dot" aria-hidden="true" /><span className="save__text" id="save-text">{text}</span>
           </button>
-          {auth && auth.status === 'signedIn' && (
-            <button type="button" className="btn btn--quiet btn--sm account-btn" title={`Logged in as ${auth.user.email}`} onClick={auth.logOut}>
-              <span className="account-btn__name">{auth.name} · </span>Log out
-            </button>
-          )}
+          {auth && auth.status === 'signedIn' && <AccountMenu auth={auth} />}
         </div>
       </div>
     </header>

@@ -364,7 +364,8 @@ A one-time or situational message above the main content: the catch-up offer, or
 **The consumer provides** one or two sentences and, for `.banner`, the actions.
 
 - Say what to do and why in plain words: "Mark what you've already finished so Up next points at the right step."
-- Never stack more than one banner. Never use orange or warn colors here.
+- Never stack more than one banner. Never use orange here.
+- **Warn variant** (`.auth__alert`: `warn-soft` fill, `ink` text, `warn-mark` alert icon, `role="alert"`) is only for a problem the reader must act on, such as a failed log in, with the next step as a link-button.
 """, f'''<div class="ds-stack" style="max-width:720px">
   <div class="banner" style="margin:0"><p>You've had 9 lectures with guides so far. Mark what you've already finished so <b>Up next</b> points at the right step.</p><div class="banner__actions"><button type="button" class="btn btn--primary btn--sm">Catch up · 2 min</button><button type="button" class="btn btn--quiet btn--sm">Not now</button></div></div>
   <p class="notice" style="margin:0">{INFO}<span>No class today. Next class: <strong>Monday, October 19</strong> · AI-8 Authentication.</span></p>
@@ -516,6 +517,7 @@ document.getElementById('replay').addEventListener('click', play);
 setTimeout(play, 400);"""))
 
 exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ds_cards_v3.py")).read())
+exec(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "ds_cards_auth.py")).read())
 
 for name, group, height, readme, body, style, script in C:
     w(f"components/{name}/README.md", readme.strip() + "\n")
@@ -607,7 +609,7 @@ w("README.md", """The Eagle Learning Hub is a bootcamp student's daily home base
 - Empty parts of bars, rings, rails and segment strips use `track` (teal at low alpha), so value and track read as one hue.
 - **Teal means progress and done**: checks, done icons, progress bars, the primary button, links (`teal-strong`), focus.
 - **Orange means now / next only**: the Up next rule, the now-line, the current step ring, today's tick (`now` for marks, `now-ink` for text). Never for actions, saving, focus, warnings or deadlines.
-- **Warn (amber) means a real problem**: "Ask instructor", save errors, the Weak strength dash. Never for "past and not ticked".
+- **Warn (amber) means a real problem**: "Ask instructor", save errors, the Weak strength dash, and form errors (field and server). Never for "past and not ticked".
 - Controls carry a `control` border (3.2:1 or better). `line` is decoration only.
 - Code sits on `code-bg` in both themes with `code-ink` text and a `code-meta` label.
 - Both themes are first-class; every pair is checked in light and dark (see each token's note).
@@ -636,7 +638,7 @@ IBM Plex in three widths, loaded from Google Fonts:
 
 Motion explains what changed: feedback for a tick, where a lecture came from, what replaced Up next. It never decorates. Rules (after Emil Kowalski and Jakub Krehel): under 300ms in the UI, `transform`, `opacity`, `clip-path` and small blurs only, exits faster and smaller than entrances, nothing on keyboard shortcuts, and `prefers-reduced-motion: reduce` turns all of it off.
 
-**Curves and times** (CSS variables lifted from `hub/index.html` into `bundle.css`):
+**Curves and times** (CSS variables from `front-end/src/styles/`, copied into `bundle.css`):
 
 | Variable | Value | Use |
 |---|---|---|
@@ -658,6 +660,8 @@ Motion explains what changed: feedback for a tick, where a lecture came from, wh
 | Lecture complete | the header ring closes into the done disc, the finished panel rises, the rating segments rise 30ms apart, focus moves to the rating | about 560ms, once |
 | Ring and bar fills | `stroke-dashoffset` / `clip-path`, only when the value changes (including when you come back) | 280ms |
 | Ticker | digits roll, right-most first, 30ms apart | 220ms |
+| Auth mode switch | view transition: the card's height glides, content cross-fades | 120ms out, 160ms in, 220ms glide |
+| Field error | the message rises 2px into place; the edge turns `warn-mark` | 160ms, edge 120ms |
 | Rating | the thumb slides to the choice; the word swaps with a rise | 200ms / 160ms |
 | Recall deck | flip `rotateY`; answer tilts away ±48px ±3°; the next card comes forward | 280 / 200 / 220ms |
 | Segmented control | the thumb slides (`clip-path`) | 220ms `--spring-soft` |
@@ -676,7 +680,7 @@ Browsers without View Transitions (or `@starting-style`) just switch instantly; 
 
 ## Iconography
 
-Inline SVG on a 16px or 20px grid, 1.5–1.7px strokes, round caps, colored with `currentColor` or a token. No emoji anywhere, including text that comes from data. The seven state icons are in StatusIcon; utility icons are check, chevron, copy, external (↗ for links that leave the hub), undo, search, info, close, flag (milestones), calendar-check and notes. The brand mark (teal square, two orange chevrons) is in Assets › Logos.
+Inline SVG on a 16px or 20px grid, 1.5–1.7px strokes, round caps, colored with `currentColor` or a token. No emoji anywhere, including text that comes from data. The seven state icons are in StatusIcon; utility icons are check, chevron, copy, external (↗ for links that leave the hub), undo, search, info, close, flag (milestones), calendar-check and notes. The brand mark (teal square, two orange chevrons) is in Assets › Logos. Accounts add `alert` (circle with !), `caps lock` (an up arrow on a bar) and `envelope` (Check your email).
 
 ## Accessibility floor
 
@@ -689,7 +693,7 @@ Inline SVG on a 16px or 20px grid, 1.5–1.7px strokes, round caps, colored with
 
 ## Components
 
-Actions: Button, SegmentedControl. Inputs: Checkbox, ConfidenceRating, WeekGoal. Content: UpNext, StepList, CodeBlock, Row, RecallDeck. Status: StatusIcon, StrengthMeter, Ring, Ticker. Time: DayTimeline, CourseRuler, Heatmap. Feedback: Banner, Toast, EmptyState. Navigation: Navigation, FloatingBar. Overlays: CommandPalette, Sheet, Menu. Each card's guidelines say what to provide and when to use it.
+Actions: Button, SegmentedControl. Inputs: Field, Checkbox, ConfidenceRating, WeekGoal. Content: UpNext, StepList, CodeBlock, Row, RecallDeck, AuthForm. Status: StatusIcon, StrengthMeter, Ring, Ticker. Time: DayTimeline, CourseRuler, Heatmap. Feedback: Banner, Toast, EmptyState. Navigation: Navigation, FloatingBar. Overlays: CommandPalette, Sheet, Menu. Each card's guidelines say what to provide and when to use it.
 
 ## Do and don't
 
@@ -709,7 +713,7 @@ index = {
     "assetGroups": {"Logos": {"name": "Logos", "tile": "l", "order": ["eagle-mark.svg"],
                               "files": {"eagle-mark.svg": {"name": "eagle-mark.svg", "blob": LOGO_BLOB, "size": 307, "type": "image/svg+xml"}}}},
     "blobs": {}, "docs": {"sections": []},
-    "lastChange": {"by": "Jeffrey", "at": now, "via": "Claude Code", "note": "v3 premium: elevation, radius and ring tokens; button system; Ring, Ticker, SegmentedControl, RecallDeck and FloatingBar; motion v3 (from hub/index.html)"},
+    "lastChange": {"by": "Jeffrey", "at": now, "via": "Claude Code", "note": "Accounts: Field and AuthForm cards, the Banner warn variant, auth motion and icons (from front-end/src/styles/)"},
 }
 w("design-system.json", json.dumps(index, indent=2) + "\n")
 files = []

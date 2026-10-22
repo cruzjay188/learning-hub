@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { lectureRow, rowsToState } from '../lib/supabaseSync.js'
-import { authErrorMessage, authFormError, userStorageKey } from '../utils/authUtils.js'
+import { authErrorAction, authErrorMessage, authErrorTarget, authFieldErrors, authFormError, userStorageKey } from '../utils/authUtils.js'
 
 describe('Supabase rows ⇄ the progress store', () => {
   it('turns a student’s rows into the shape the hub uses', () => {
@@ -30,15 +30,28 @@ describe('Supabase rows ⇄ the progress store', () => {
 })
 
 describe('account forms', () => {
-  it('checks the form before sending it', () => {
+  it('lists every problem at once, field by field', () => {
+    expect(authFieldErrors({ name: '', email: '', password: '' }, 'register')).toEqual({
+      name: 'Enter your name.', email: 'Enter your email address.', password: 'Enter your password.',
+    })
+    expect(authFieldErrors({ name: 'J', email: 'nope', password: '123' }, 'register')).toEqual({
+      email: 'Enter an email address like name@example.com.', password: 'Use at least 6 characters.',
+    })
+    // log in doesn't check the name or the password's length
+    expect(authFieldErrors({ name: '', email: 'a@b.co', password: '123' }, 'login')).toEqual({})
     expect(authFormError({ name: '', email: 'a@b.co', password: 'secret1' }, 'register')).toBe('Enter your name.')
-    expect(authFormError({ name: 'J', email: 'nope', password: 'secret1' }, 'login')).toBe('Enter a valid email address.')
-    expect(authFormError({ name: 'J', email: 'a@b.co', password: '123' }, 'register')).toMatch(/at least 6/)
-    expect(authFormError({ name: '', email: 'a@b.co', password: '123' }, 'login')).toBe(null)
   })
 
   it("never says which part of a login was wrong", () => {
-    expect(authErrorMessage({ code: 'invalid_credentials' })).toBe('Wrong email or password.')
+    expect(authErrorMessage({ code: 'invalid_credentials' })).toBe('Wrong email or password. Check both and try again.')
+  })
+
+  it('sends server errors to the right place', () => {
+    expect(authErrorTarget({ code: 'email_address_invalid' })).toBe('email')
+    expect(authErrorTarget({ code: 'weak_password' })).toBe('password')
+    expect(authErrorTarget({ code: 'invalid_credentials' })).toBe('banner')
+    expect(authErrorAction({ code: 'user_already_exists' })).toBe('login')
+    expect(authErrorAction({ code: 'invalid_credentials' })).toBe(null)
   })
 
   it('keeps one offline copy per student', () => {

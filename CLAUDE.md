@@ -28,7 +28,7 @@ Project `eagle-learning-hub`, ref `fhlxeswlqzdhkvtcbjym` (dashboard: https://sup
 
 - **Schema changes:** add a file to `supabase/migrations/`, apply it with `npx supabase db query --project-ref fhlxeswlqzdhkvtcbjym --linked -f <file>`, and update `supabase/schema.sql` to match. Every table: RLS on, policies on `user_id = (select auth.uid())`, no access for `anon`.
 - **Keys:** only the publishable key, in `front-end/.env.local`. Never the secret/service_role key, never a key or password on a command line or in a file that's committed.
-- **Test accounts** from `qa/accounts.mjs` are `hubtest+…@example.com`; delete them afterwards: `npx supabase db query --project-ref fhlxeswlqzdhkvtcbjym --linked "delete from auth.users where email like 'hubtest+%@example.com'"` (their progress rows go with them).
+- **Test accounts** from `qa/accounts.mjs` are `hubtest+<stamp>-a/-b@example.com` (it prints them). Delete exactly those afterwards, never a pattern that could catch someone else's: `npx supabase db query --project-ref fhlxeswlqzdhkvtcbjym --linked "delete from auth.users where email in ('hubtest+<stamp>-a@example.com', 'hubtest+<stamp>-b@example.com')"` (their progress rows go with them). Real students' accounts are never touched.
 - `.mcp.json` points the Supabase MCP at this project; it connects when Claude Code is started in `learning-hub/`.
 
 ## Conventions
@@ -42,7 +42,11 @@ Project `eagle-learning-hub`, ref `fhlxeswlqzdhkvtcbjym` (dashboard: https://sup
 - **CSS gotcha:** put `-webkit-` properties *before* the standard one. The build's minifier keeps only the last of a pair, and Chrome ignores the `-webkit-` one.
 - **Guides:** follow `data/guides/README.md`. When helping with a lecture's homework, read its guide first.
 
-## Publishing (only once Jeffrey switches over to this folder)
+## Vercel (the public site)
+
+https://eagle-learning-hub.vercel.app: project `eagle-learning-hub`, team id `team_zOriGM37yMuwstdv08iXhUD9`, Root Directory `front-end`. Env vars `VITE_SUPABASE_URL` / `VITE_SUPABASE_ANON_KEY` (publishable key) on Production + Preview. The Vercel MCP can read but not create or change projects (403): use the Vercel CLI (`vercel …`, logged in as cruzjay188) or `vercel api`. After a deploy, run `qa/accounts.mjs` against it with `HUB_URL=…` and delete the test accounts.
+
+## Publishing to the claude.ai artifact (only once Jeffrey switches over to this folder)
 
 `npm run build`, then `python3 -I tools/build_artifact.py`, then publish `dist/index.html` to https://claude.ai/artifact/MtGWwvJQRsSXyC7YqFozf9 with `files: {"hub-data.json": "front-end/dist/hub-data.json"}`. Omit `capabilities` and `icon` so the stored ones carry over.
 
