@@ -1,0 +1,31 @@
+<!-- @dsCard group="Actions" height=150 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Button — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<div class="ds-stack">
+  <div class="ds-row">
+    <button type="button" class="btn btn--primary"><svg class="ico-check" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl"><span class="lbl__idle">Mark step done</span><span class="lbl__done" aria-hidden="true">Done</span></span></button>
+    <button type="button" class="btn">Catch up · 2 min</button>
+    <button type="button" class="btn btn--quiet">Open guide</button>
+    <button type="button" class="btn btn--sm">Review</button>
+    <button type="button" class="btn btn--primary btn--sm">Mark done and continue <kbd>X</kbd></button>
+  </div>
+  <div class="ds-row">
+    <button type="button" class="btn btn--primary is-done"><svg class="ico-check" width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span class="lbl"><span class="lbl__idle">Mark step done</span><span class="lbl__done">Done</span></span></button>
+    <button type="button" class="btn btn--primary" aria-busy="true"><span>Saving</span><svg class="spin" viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="none" stroke="currentColor" stroke-opacity=".25" stroke-width="2"/><path d="M8 2a6 6 0 0 1 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg></button>
+    <button type="button" class="btn" disabled>Rate after class</button>
+  </div>
+</div>
+<script>
+document.querySelector('.btn--primary').addEventListener('click', function (e) { var b = e.currentTarget; b.classList.add('is-done'); setTimeout(function () { b.classList.remove('is-done'); }, 1200); });
+</script>
+</body>
+</html>

@@ -1,0 +1,151 @@
+{
+  "id": "ai-10",
+  "code": "AI-10",
+  "title": "DevOps",
+  "status": "full",
+  "summary": "What DevOps is (version control, CI/CD, monitoring) and a safe main / dev / feature branch workflow, then you put your app live: React front end on Vercel, Edge Functions and secrets on Supabase, and the Stripe webhook pointed at the live function.",
+  "goal": "Deploy Myflix to a public Vercel URL that logs in, loads data and takes a test donation, and ship later changes through feature → dev → main.",
+  "required": [
+    "Part I: make sure your app(s) are ready for deployment and tied to Git or a cloud service: front end on GitHub, back end on Supabase",
+    "Part II: deploy your app(s), bring them live, and have something to demonstrate"
+  ],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Make a dev branch",
+      "detail": "The lesson's workflow: main is what's live, dev collects finished work, and feature/* branches hold one change each. Myflix only has main. The instructors' notes say to create dev at the start of this lesson. Run this in ~/Desktop/codeplatoon/assignments/week-02/netflix.",
+      "code": "git checkout main\ngit pull origin main\ngit checkout -b dev\ngit push -u origin dev",
+      "codeLabel": "Terminal",
+      "doneWhen": "github.com/cruzjay188/netflix shows both main and dev branches."
+    },
+    {
+      "id": "s2",
+      "title": "Check main builds cleanly",
+      "detail": "The lecture's pre-deploy checklist (word for word below) uses client/; for you it's front-end/. If it doesn't build on your laptop, it won't build on Vercel. Merge dev into main first if dev is ahead.",
+      "code": "# 1. Switch to main and pull the latest\ngit checkout main\ngit pull origin main\n\n# 2. Verify the app builds cleanly (no errors)\ncd client\nnpm run build\n\n# 3. If you have a dev branch that's ahead of main, merge it\ngit checkout main\ngit merge dev\ngit push origin main",
+      "codeLabel": "Terminal",
+      "doneWhen": "npm run build in front-end/ finishes with no errors and makes a dist/ folder."
+    },
+    {
+      "id": "s3",
+      "title": "Confirm no secrets are in Git",
+      "detail": "Part I: the front end lives on GitHub, the back end on Supabase, and keys live in neither repo. Only .env.example should match the search below. The lecture's rule: a VITE_ variable is bundled into the browser, so only public keys (Supabase publishable, Stripe pk_) go there.",
+      "code": "git ls-files | grep -i env\ngrep -rn \"sk_\" front-end/src || echo \"no secret keys\"",
+      "codeLabel": "Terminal",
+      "doneWhen": "The first command lists only .env.example, and the second prints \"no secret keys\"."
+    },
+    {
+      "id": "s4",
+      "title": "Deploy Edge Functions and secrets",
+      "detail": "Vercel only deploys the front end. Edge Functions are a separate, manual deploy. Deploy every function in supabase/functions/ (tmdb, hello-world, process-donation, …). stripe-webhook needs --no-verify-jwt (instructors' notes). Then check the secrets (TMDB_API_KEY, STRIPE_SECRET_KEY, STRIPE_WEBHOOK_SECRET) are set. SUPABASE_URL and the service-role key are injected for you.",
+      "code": "npx supabase functions deploy\nnpx supabase functions deploy stripe-webhook --no-verify-jwt\nnpx supabase secrets list",
+      "codeLabel": "Terminal",
+      "doneWhen": "Supabase → Edge Functions lists every function, and secrets list shows your keys (names only)."
+    },
+    {
+      "id": "s5",
+      "title": "Import the repo into Vercel",
+      "detail": "vercel.com → Sign Up → Continue with GitHub → Add New Project → import cruzjay188/netflix. Set Root Directory to front-end (the lecture says client/). Framework Vite, build npm run build, output dist. Add environment variables with your names: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY and VITE_STRIPE_PUBLIC_KEY. Then Deploy. If Myflix has URL routes by now, ask Claude for a front-end/vercel.json that rewrites every path to index.html (Ticked has one), so refreshing a deep link works.",
+      "codeLabel": "Browser",
+      "doneWhen": "Vercel shows a successful deployment and https://<your-app>.vercel.app opens Myflix."
+    },
+    {
+      "id": "s6",
+      "title": "Tell Supabase Auth your live URL",
+      "detail": "From the instructors' notes, after the first Vercel deploy: Supabase → Authentication → URL Configuration. Set the Site URL to your Vercel URL, and add it plus http://localhost:5173 to Redirect URLs. Otherwise auth links point at localhost.",
+      "codeLabel": "Browser",
+      "doneWhen": "URL Configuration shows the Vercel URL as Site URL, with both URLs in Redirect URLs."
+    },
+    {
+      "id": "s7",
+      "title": "Test the whole flow live",
+      "detail": "Lecture step 5: on the Vercel URL, sign up / log in, use the app, go to Donate, and pay with 4242 4242 4242 4242. The Stripe webhook already points at your Supabase function, which is the same URL in production. The lecture's slides switch to sk_live_/pk_live_ keys, but 4242 only works in test mode. Stay on test keys unless the instructors say otherwise (ask in #eagle_questions).",
+      "codeLabel": "Browser",
+      "doneWhen": "A new row appears in Table Editor → donations, and you have a live link to demo."
+    },
+    {
+      "id": "s8",
+      "title": "Know where to look when it breaks",
+      "detail": "After every deploy, check the lecture's three places: Vercel → Deployments (did the build pass?), Supabase → Edge Functions → Logs (errors?), Stripe → Developers → Webhooks (200 responses?). To roll back, use Vercel's Promote to Production on an older deployment.",
+      "codeLabel": "Browser",
+      "doneWhen": "You've opened all three dashboards and seen a green build, clean logs, and 200s."
+    },
+    {
+      "id": "s9",
+      "title": "Ship one change the safe way",
+      "detail": "The golden rule: never push straight to main. Make a small change on a feature branch, open a PR into dev (Vercel builds a preview URL for it), merge, then open a PR from dev to main to go live. Log the live URL in progress.md and in the Netflix project hub.",
+      "code": "git checkout dev\ngit checkout -b feature/small-change\n# make the change with Claude, then:\ngit add -A && git commit -m \"feat: small change\"\ngit push -u origin feature/small-change\n# on GitHub: PR feature/small-change → dev, then PR dev → main",
+      "codeLabel": "Terminal",
+      "doneWhen": "The PR shows a Vercel preview link, and after merging dev → main the live site shows the change."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "DevOps",
+      "meaning": "Building and running software as one team, with automation for testing, deploying and watching it."
+    },
+    {
+      "term": "CI (Continuous Integration)",
+      "meaning": "Every push is tested and built automatically, so broken code is caught early."
+    },
+    {
+      "term": "CD (Continuous Deployment)",
+      "meaning": "Code that passes is deployed automatically. Here, a push to main makes Vercel redeploy."
+    },
+    {
+      "term": "main / dev / feature branches",
+      "meaning": "main = live, dev = tested work waiting to ship, feature/* = one change in progress."
+    },
+    {
+      "term": "Vercel",
+      "meaning": "A host for front-end apps. It builds your React app from GitHub and serves it on HTTPS."
+    },
+    {
+      "term": "Preview deployment",
+      "meaning": "A temporary live URL Vercel makes for each pull request, so you can test before merging."
+    },
+    {
+      "term": "Environment variable",
+      "meaning": "A setting stored outside the code (Vercel dashboard, Supabase secrets) instead of committed to Git."
+    },
+    {
+      "term": "Rollback",
+      "meaning": "Putting an older working version back live (Vercel: Promote to Production)."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: DevOps",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/3-devops/1-understanding-devops/"
+    },
+    {
+      "label": "Curriculum: Deploying your Application",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/3-devops/2-deploying-your-app/"
+    },
+    {
+      "label": "Curriculum: DevOps assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/3-devops/assignments/"
+    },
+    {
+      "label": "Vercel",
+      "url": "https://vercel.com/"
+    },
+    {
+      "label": "Vercel docs: Vite",
+      "url": "https://vercel.com/docs/frameworks/frontend/vite"
+    },
+    {
+      "label": "Supabase docs: deploy Edge Functions",
+      "url": "https://supabase.com/docs/guides/functions/deploy"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 180,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/3-devops/assignments/ (Part I, Part II)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/3-devops/1-understanding-devops/ (main / dev / feature branches)",
+    "https://codeplatoon.github.io/se-curriculum/phase-III/10-Beyond-Building/3-devops/2-deploying-your-app/ (pre-deploy checklist quoted, Vercel setup, env vars, deploy steps, follow-on changes, monitoring)",
+    "github.com/kabeier/Claude-and-auth: demo-kit/backup-ticked-auth/README.md (\"What every student project should look like now\" + \"Ticked vs. what the Beyond Building lessons expect\") (Root Directory front-end, create dev at start of DevOps, --no-verify-jwt, vercel.json rewrite, Auth URL Configuration)",
+    "Local repo assignments/week-02/netflix: only main branch, no vercel.json, VITE_SUPABASE_ANON_KEY"
+  ]
+}

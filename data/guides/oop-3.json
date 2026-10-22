@@ -1,0 +1,83 @@
+{
+  "id": "oop-3",
+  "code": "OOP 3",
+  "title": "Inheritance & Polymorphism",
+  "status": "outline",
+  "summary": "Teaches inheritance (a child class reuses a parent's code and calls super().__init__), multiple inheritance and method resolution order, composition ('has-a') versus inheritance ('is-a'), and polymorphism: different classes answering the same method call in their own way, enforced with abstract base classes. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build a parent class with child classes that reuse its code through super(), and call the same method on different kinds of objects.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the two lecture pages",
+      "detail": "Read 'Inheritance' and 'Polymorphism' (which also covers composition) on the curriculum page.",
+      "doneWhen": "You can say why a Car 'has an' Engine but a Dog 'is an' Animal."
+    },
+    {
+      "id": "s2",
+      "title": "Run the Animal hierarchy",
+      "detail": "Save and run this curriculum example. super().__init__ runs the parent's setup so the child doesn't repeat it.",
+      "code": "class Animal:\n    def __init__(self, name, species):\n        self.name = name\n        self.species = species\n\nclass Dog(Animal):\n    def __init__(self, name, breed):\n        super().__init__(name, species=\"Dog\")\n        self.breed = breed\n\nrex = Dog(\"Rex\", \"Lab\")\nprint(rex.name, rex.species, rex.breed)",
+      "codeLabel": "File",
+      "doneWhen": "It prints Rex Dog Lab, showing the child got the parent's attributes."
+    },
+    {
+      "id": "s3",
+      "title": "See polymorphism with an abstract base class",
+      "detail": "Run the curriculum's Shape example, then loop over a list of shapes and call .area() on each. Finally try Shape() on its own to see why abstract classes can't be created directly.",
+      "code": "from abc import ABC, abstractmethod\n\nclass Shape(ABC):\n    @abstractmethod\n    def area(self):\n        pass\n\nclass Rectangle(Shape):\n    def __init__(self, w, h):\n        self.w, self.h = w, h\n    def area(self):\n        return self.w * self.h\n\nclass Circle(Shape):\n    def __init__(self, r):\n        self.r = r\n    def area(self):\n        return 3.14159 * self.r ** 2\n\nfor s in [Rectangle(2, 3), Circle(1)]:\n    print(s.area())\n\nShape()",
+      "codeLabel": "File",
+      "doneWhen": "The loop prints two areas, and Shape() raises a TypeError."
+    },
+    {
+      "id": "s4",
+      "title": "Preview the assignment list",
+      "detail": "The curriculum lists Zoo Manager (Part I), then Boggle I, App Users III, POODR pgs. 208–212 and School Interface III (Part II), with Bowling and Boggle II as stretch. Confirm in #eagle what Eagle Platoon assigns.",
+      "doneWhen": "You know which assignments to expect on Nov 3."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Inheritance",
+      "meaning": "A child class gets the attributes and methods of its parent class ('is-a')."
+    },
+    {
+      "term": "super()",
+      "meaning": "Calls the parent class's version of a method, most often __init__."
+    },
+    {
+      "term": "Method Resolution Order (MRO)",
+      "meaning": "The order Python searches parent classes when a class has more than one parent."
+    },
+    {
+      "term": "Composition",
+      "meaning": "Building an object out of other objects it holds ('has-a'), like a Car with an Engine."
+    },
+    {
+      "term": "Polymorphism",
+      "meaning": "Different classes share a method name, so one piece of code can call it on any of them."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Inheritance and Polymorphism",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/3-inheritance-polymorphism/"
+    },
+    {
+      "label": "Python tutorial: Inheritance",
+      "url": "https://docs.python.org/3/tutorial/classes.html#inheritance"
+    },
+    {
+      "label": "Python docs: abc module",
+      "url": "https://docs.python.org/3/library/abc.html"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/3-inheritance-polymorphism/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/3-inheritance-polymorphism/1-oop-inheritance/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/3-inheritance-polymorphism/2-oop-polymorphism/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/3-inheritance-polymorphism/assignments/"
+  ]
+}

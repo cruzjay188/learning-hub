@@ -1,0 +1,42 @@
+{
+  "v": 3,
+  "layout": "files",
+  "createdOnFiles": {
+    "v": 1,
+    "at": "2026-10-19T08:05:52Z"
+  },
+  "title": "Eagle Hub Design System",
+  "namespace": "EagleHub",
+  "libraries": [],
+  "sections": {},
+  "groups": [
+    "Logos"
+  ],
+  "assetGroups": {
+    "Logos": {
+      "name": "Logos",
+      "tile": "l",
+      "order": [
+        "eagle-mark.svg"
+      ],
+      "files": {
+        "eagle-mark.svg": {
+          "name": "eagle-mark.svg",
+          "blob": "b5bfdc9ca270b7c4691ef300997ebf1b",
+          "size": 307,
+          "type": "image/svg+xml"
+        }
+      }
+    }
+  },
+  "blobs": {},
+  "docs": {
+    "sections": []
+  },
+  "lastChange": {
+    "by": "Jeffrey",
+    "at": "2026-10-20T10:39:10Z",
+    "via": "Claude Code",
+    "note": "v3 premium: elevation, ring, track and radius tokens; button system; new Ring, Ticker, SegmentedControl, RecallDeck and FloatingBar; Chip and RecallCard replaced; motion v3 (from hub/index.html)"
+  }
+}

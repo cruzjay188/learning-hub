@@ -1,0 +1,98 @@
+{
+  "id": "git-github",
+  "code": "",
+  "title": "Git + GitHub",
+  "status": "outline",
+  "summary": "Version control from the ground up: status, staging, commits, branches, remotes, forks, and pushing and pulling with GitHub. You already use these through /save-project; this lecture explains what each command does. The step-by-step arrives when the lecture is published.",
+  "goal": "Explain and run the git workflow (status → add → commit → push/pull) and create, switch and merge branches without Claude's help.",
+  "required": [],
+  "steps": [
+    {
+      "title": "Read the two curriculum lessons",
+      "detail": "Skim Git Fundamentals and GitHub Fundamentals. Focus on staging vs committing, branches, and linking a local repo to a remote. This sets up the main / dev / feature branches from AI-10 DevOps.",
+      "doneWhen": "You can say in one sentence each what git add, git commit, git push and git pull do.",
+      "id": "s1"
+    },
+    {
+      "title": "Try Learn Git Branching 1–3",
+      "detail": "The curriculum lists Learn Git Branching, Introduction Sequence levels 1–3. It's a free browser game that draws your branches as you type.",
+      "code": "https://learngitbranching.js.org/",
+      "codeLabel": "Browser",
+      "doneWhen": "Introduction Sequence levels 1–3 show as solved.",
+      "id": "s2"
+    },
+    {
+      "title": "Look at your own repo's history",
+      "detail": "Run these in ~/Desktop/codeplatoon/assignments/week-02/netflix to see the commits and branches you already made, and which remote they push to.",
+      "code": "git log --oneline --graph --all | head -20\ngit branch -a\ngit remote -v",
+      "codeLabel": "Terminal",
+      "doneWhen": "You can point to your latest commit, your branches, and the origin URL.",
+      "id": "s3"
+    },
+    {
+      "title": "Note the listed assignments",
+      "detail": "The curriculum page lists: Git Practice, Learn Git Branching (Introduction 1–3), GitHub Practice, and a stretch Git Group Project. Wait for Slack to confirm which ones Eagle gets before forking.",
+      "doneWhen": "You know which repos to expect; start them with /start-assignment once they're posted.",
+      "id": "s4"
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Repository (repo)",
+      "meaning": "A folder whose history git tracks."
+    },
+    {
+      "term": "Staging area",
+      "meaning": "The list of changes you've picked (git add) for the next commit."
+    },
+    {
+      "term": "Commit",
+      "meaning": "A saved snapshot of the staged changes, with a message."
+    },
+    {
+      "term": "Branch",
+      "meaning": "A separate line of commits, so you can work without touching main."
+    },
+    {
+      "term": "Remote / origin",
+      "meaning": "The copy of the repo on GitHub; origin is its default name."
+    },
+    {
+      "term": "Fork",
+      "meaning": "Your own GitHub copy of someone else's repo (how you get assignments)."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Git and GitHub",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/2-git-and-github/"
+    },
+    {
+      "label": "Curriculum: Git Fundamentals",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/2-git-and-github/1-git-fundamentals/"
+    },
+    {
+      "label": "Curriculum: GitHub Fundamentals",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/2-git-and-github/2-github-fundamentals/"
+    },
+    {
+      "label": "Curriculum: Git assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/2-git-and-github/assignments/"
+    },
+    {
+      "label": "Learn Git Branching",
+      "url": "https://learngitbranching.js.org/"
+    }
+  ],
+  "assignments": [
+    "git-practice",
+    "github-practice",
+    "Git-Group-Project"
+  ],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/2-git-and-github/ (overview, TLOs/ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/2-git-and-github/assignments/ (listed assignments and links)",
+    "schedule/schedule.md: Fri Oct 23 Git + Github"
+  ]
+}

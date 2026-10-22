@@ -1,0 +1,81 @@
+{
+  "id": "fe-2",
+  "code": "FE 2",
+  "title": "fetch and ajax",
+  "status": "outline",
+  "summary": "How a front end gets data from a server: what an HTTP request is, why requests are asynchronous, how promises stand in for data that hasn't arrived yet, and handling results with .then().catch().finally() or async/await. The curriculum uses Axios (a request library) and the PokeAPI; the browser's built-in fetch does the same job. The lesson also sets up a React + Vite project (with Docker). Step-by-step guide arrives when the lecture is published.",
+  "goal": "Request data from a public API, show it, and handle errors using both .then() and async/await.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the Asynchronous Requests lesson",
+      "detail": "Read 'Asynchronous Requests' (and skim 'React and Vite', which covers the project setup). Focus on 'Breaking Down Promises' and 'Common Issues with Requests'.",
+      "doneWhen": "You can explain what a promise is in one sentence."
+    },
+    {
+      "id": "s2",
+      "title": "Call the PokeAPI with fetch in Node",
+      "detail": "Node 26 has fetch built in. Save as poke.mjs and run node poke.mjs. Then change pikachu to a fake name: fetch does not throw on a 404, so you have to check res.ok yourself (Axios throws for you).",
+      "code": "async function getPokemon(name) {\n  try {\n    const res = await fetch(`https://pokeapi.co/api/v2/pokemon/${name}`);\n    if (!res.ok) throw new Error(`Request failed: ${res.status}`);\n    const data = await res.json();\n    console.log(data.name, data.id);\n  } catch (err) {\n    console.error(err.message);\n  } finally {\n    console.log(\"done\");\n  }\n}\n\ngetPokemon(\"pikachu\");",
+      "codeLabel": "File",
+      "doneWhen": "It prints pikachu 25; the fake name prints the 404 error message."
+    },
+    {
+      "id": "s3",
+      "title": "Rewrite it with .then().catch().finally()",
+      "detail": "The lesson teaches both styles. Rewrite the same request as a .then() chain so you can read either style.",
+      "doneWhen": "Both versions print the same output."
+    },
+    {
+      "id": "s4",
+      "title": "Find the requests in Myflix",
+      "detail": "Myflix already talks to a server: supabase-js sends HTTP requests to Supabase for you. Open assignments/week-02/netflix/src/lib/librarySync.js and find the await calls, including the Promise.all that loads several tables at once.",
+      "doneWhen": "You can point to one await and say what data it is waiting for."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "HTTP request",
+      "meaning": "A message from the browser asking a server for data (GET) or sending it (POST)."
+    },
+    {
+      "term": "Asynchronous",
+      "meaning": "Code that starts a task and keeps going instead of freezing while it waits."
+    },
+    {
+      "term": "Promise",
+      "meaning": "A placeholder for a value that will arrive later, or an error if it fails."
+    },
+    {
+      "term": "async / await",
+      "meaning": "Syntax that lets you wait for a promise in code that reads top to bottom."
+    },
+    {
+      "term": "Axios",
+      "meaning": "A popular library for HTTP requests; it parses JSON and throws on error statuses for you."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: React.js and Requests",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/"
+    },
+    {
+      "label": "MDN: Using the Fetch API",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API/Using_Fetch"
+    },
+    {
+      "label": "MDN: How to use promises",
+      "url": "https://developer.mozilla.org/en-US/docs/Learn_web_development/Extensions/Async_JS/Promises"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/1-react-and-vite/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/2-async-requests/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/2-react-and-requests/assignments/"
+  ]
+}

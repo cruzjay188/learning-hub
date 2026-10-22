@@ -1,0 +1,82 @@
+{
+  "id": "github-actions",
+  "code": "",
+  "title": "Github Actions",
+  "status": "outline",
+  "summary": "GitHub Actions runs checks for you every time code changes: workflows written in YAML, triggered by events (push, pull request, manual), made of jobs and steps, with logs in the Actions tab. It's the CI part of DevOps. The step-by-step arrives when the lecture is published.",
+  "goal": "Write a GitHub Actions workflow that runs on push and runs a test suite, and debug it from the Actions tab.",
+  "required": [],
+  "steps": [
+    {
+      "title": "Read both lessons",
+      "detail": "Skim Intro to Workflows and Managing Workflows. Learn the four layers: event → workflow → job → step. Also learn runs-on: ubuntu-latest and workflow_dispatch (a manual run button).",
+      "doneWhen": "You can label each part of a small workflow YAML file.",
+      "id": "s1"
+    },
+    {
+      "title": "Read a workflow file",
+      "detail": "Workflows live in .github/workflows/*.yml. This minimal one matches the curriculum's Hello Workflows idea: run on every push to any branch, on Ubuntu, and echo a message. Don't commit it anywhere yet. Just read it and look up any line you don't know.",
+      "code": "name: Hello Workflows\non:\n  push:\n    branches: ['**']\njobs:\n  hello:\n    runs-on: ubuntu-latest\n    steps:\n      - run: echo \"Hello Workflows\"",
+      "codeLabel": "File",
+      "doneWhen": "You can say what triggers it, where it runs, and what it prints.",
+      "id": "s2"
+    },
+    {
+      "title": "Note the listed assignments",
+      "detail": "The curriculum lists Part I: Hello Workflows, a new repo whose workflow runs on every push to any branch, on Ubuntu, and echoes Hello Workflows. Part II: go back to earlier assignments with test suites and add workflows that run them. Myflix's npm test (Vitest) is a natural Part II candidate. Wait for Slack to confirm.",
+      "doneWhen": "You have a list of your repos that have test suites.",
+      "id": "s3"
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Workflow",
+      "meaning": "A YAML file in .github/workflows/ that says when to run what."
+    },
+    {
+      "term": "Event / trigger",
+      "meaning": "What starts a workflow: push, pull_request, schedule, or workflow_dispatch (manual)."
+    },
+    {
+      "term": "Job / step",
+      "meaning": "A job runs on one machine (runner); steps are its commands, in order."
+    },
+    {
+      "term": "Runner",
+      "meaning": "The fresh virtual machine GitHub gives a job, e.g. ubuntu-latest."
+    },
+    {
+      "term": "Actions tab",
+      "meaning": "Where each run's pass/fail and logs show up on GitHub."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: GitHub Actions",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/5-github-actions/"
+    },
+    {
+      "label": "Curriculum: Intro to Workflows",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/5-github-actions/1-intro-to-workflows/"
+    },
+    {
+      "label": "Curriculum: Managing Workflows",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/5-github-actions/2-managing-workflows/"
+    },
+    {
+      "label": "Curriculum: GitHub Actions assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/5-github-actions/assignments/"
+    },
+    {
+      "label": "GitHub docs: workflow syntax",
+      "url": "https://docs.github.com/en/actions/writing-workflows/workflow-syntax-for-github-actions"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/5-github-actions/ (overview, ELOs/TLOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/5-github-actions/assignments/ (Hello Workflows; Adding Workflows)",
+    "Step 2's YAML is an illustration written for this guide, not from the curriculum"
+  ]
+}

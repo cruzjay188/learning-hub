@@ -1,0 +1,81 @@
+{
+  "id": "fe-3",
+  "code": "FE 3",
+  "title": "React and React Hooks (useState & useEffect)",
+  "status": "outline",
+  "summary": "Moves from changing the DOM by hand to React's state-driven model. useState stores data that triggers a re-render when it changes (updated immutably with spread and filter); useEffect runs side effects like API requests, and its dependency array controls when it runs, with cleanup on unmount. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Manage component data with useState and run side effects with useEffect, choosing the right dependency array.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read both hook lessons",
+      "detail": "Read 'The useState Hook' and 'The useEffect Hook', especially 'Why the Dependency Array Matters' and the mounting / re-rendering / unmounting section.",
+      "doneWhen": "You can say what [], [someState] and no array each mean for an effect."
+    },
+    {
+      "id": "s2",
+      "title": "Read your own hooks in Myflix",
+      "detail": "You already use both hooks. Open assignments/week-02/netflix/src/hooks/useMyList.js: it uses useState for syncStatus and has three useEffect calls. For each effect, write down its dependencies and whether it returns a cleanup function.",
+      "doneWhen": "You have a short note explaining when each of the three effects runs."
+    },
+    {
+      "id": "s3",
+      "title": "Watch an effect run",
+      "detail": "Drop the lesson's first effect into any component in a scratch Vite app, then try it with [] and with no array. In development, React's StrictMode runs effects twice on mount on purpose, so you may see two logs.",
+      "code": "useEffect(() => {\n  console.log(\"Hello from useEffect\");\n}, []);",
+      "codeLabel": "File",
+      "doneWhen": "With [] it logs on load only; with no array it logs after every render."
+    },
+    {
+      "id": "s4",
+      "title": "Spot immutable updates",
+      "detail": "The lesson adds to state with spread ([...old, item]) and removes with filter. Search assignments/week-02/netflix/src for '...' and '.filter(' and find one place Myflix updates state this way.",
+      "doneWhen": "You found one spread or filter state update in Myflix."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "State",
+      "meaning": "Data a component remembers between renders; changing it re-renders the component."
+    },
+    {
+      "term": "Re-render",
+      "meaning": "React running your component again to update the screen."
+    },
+    {
+      "term": "useEffect",
+      "meaning": "A hook for side effects like fetching data, timers or subscriptions."
+    },
+    {
+      "term": "Dependency array",
+      "meaning": "The list after an effect that decides when it re-runs."
+    },
+    {
+      "term": "Immutable update",
+      "meaning": "Making a new array or object instead of changing the old one, so React notices."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: React Hooks",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-react-hooks/"
+    },
+    {
+      "label": "react.dev: useState",
+      "url": "https://react.dev/reference/react/useState"
+    },
+    {
+      "label": "react.dev: useEffect",
+      "url": "https://react.dev/reference/react/useEffect"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 40,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-react-hooks/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-react-hooks/1-useState-hook/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-react-hooks/2-useEffect-hook/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/3-react-hooks/assignments/"
+  ]
+}

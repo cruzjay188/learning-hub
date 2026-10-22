@@ -1,0 +1,71 @@
+{
+  "id": "deployment-2",
+  "code": "Deploy 2",
+  "title": "SSL & HTTPS",
+  "status": "outline",
+  "summary": "Fixing the browser's \"Not Secure\" warning: why plain HTTP is unsafe, how certificate authorities and the TLS handshake build trust, registering a domain and pointing DNS at your server, then adding HTTPS two ways: Certbot on the server, and AWS Certificate Manager with an Application Load Balancer. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Secure a deployed web app with HTTPS using a server-installed certificate and an AWS-managed one.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read how Let's Encrypt works",
+      "detail": "Certbot gets free certificates from Let's Encrypt. Its short explainer covers how a certificate authority checks that you control a domain.",
+      "doneWhen": "You can explain in one sentence what a certificate authority does."
+    },
+    {
+      "id": "s2",
+      "title": "Shortlist a domain name",
+      "detail": "The lesson registers a domain and points DNS A records at your server (it uses Route 53). Domains cost money, so confirm with the instructors which registrar to use before you buy anything.",
+      "doneWhen": "You have 2–3 available names written down with their yearly price."
+    },
+    {
+      "id": "s3",
+      "title": "Read MDN on TLS",
+      "detail": "TLS is the encryption behind HTTPS. Read MDN's overview of what it protects.",
+      "doneWhen": "You can explain what a man-in-the-middle could see on plain HTTP."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "HTTPS / TLS",
+      "meaning": "HTTP wrapped in encryption so nobody in between can read or change the traffic."
+    },
+    {
+      "term": "Certificate authority",
+      "meaning": "A trusted organization that vouches a certificate belongs to a domain."
+    },
+    {
+      "term": "Certbot",
+      "meaning": "A free tool that gets and renews Let's Encrypt certificates on your server."
+    },
+    {
+      "term": "A record",
+      "meaning": "A DNS entry that points a domain name at an IPv4 address."
+    },
+    {
+      "term": "Load balancer (ALB)",
+      "meaning": "An AWS service in front of your server that can handle HTTPS for it."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: SSL and HTTPS",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-IV/2-ssl-and-https/"
+    },
+    {
+      "label": "Let's Encrypt: How it works",
+      "url": "https://letsencrypt.org/how-it-works/"
+    },
+    {
+      "label": "MDN: Transport Layer Security",
+      "url": "https://developer.mozilla.org/en-US/docs/Web/Security/Transport_Layer_Security"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/2-ssl-and-https/",
+    "https://codeplatoon.github.io/se-curriculum/phase-IV/2-ssl-and-https/2-acquiring-ssl/"
+  ]
+}

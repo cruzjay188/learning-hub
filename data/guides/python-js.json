@@ -1,0 +1,79 @@
+{
+  "id": "python-js",
+  "code": "",
+  "title": "Python + JS",
+  "status": "outline",
+  "summary": "JavaScript and Python side by side: data types, conditionals, loops, functions, and functional patterns like map, filter and sort, with a focus on thinking like a programmer in either language. The step-by-step arrives when the lecture is published.",
+  "goal": "Write the same small program in both Python and JavaScript and explain where the two languages differ.",
+  "required": [],
+  "steps": [
+    {
+      "title": "Read the two lessons",
+      "detail": "Skim JavaScript and Python Fundamentals and Functional Programming. Make a two-column note (Python | JS) for lists/arrays, dicts/objects, loops, and functions. This feeds TDD (Wed) and OOP 1 (Fri).",
+      "doneWhen": "Your note has at least 6 matching Python/JS pairs.",
+      "id": "s1"
+    },
+    {
+      "title": "Warm up in both REPLs",
+      "detail": "Try the same idea in each: double every number and keep the even ones.",
+      "code": "python3 -c \"nums=[1,2,3,4]; print([n*2 for n in nums if n%2==0])\"\nnode -e \"const nums=[1,2,3,4]; console.log(nums.filter(n=>n%2===0).map(n=>n*2))\"",
+      "codeLabel": "Terminal",
+      "doneWhen": "Both print [4, 8].",
+      "id": "s2"
+    },
+    {
+      "title": "Note the listed assignments",
+      "detail": "The curriculum lists: Factorial, Roman Numerals, 99 Bottles, Factorial (Python) and Fibonacci (Python), all algo-* repos in Code-Platoon-Assignments. Keep up the FreeCodeCamp steps too. Wait for Slack to confirm which repos Eagle gets.",
+      "doneWhen": "You know which repos to expect; start them with /start-assignment once posted.",
+      "id": "s3"
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Primitive vs complex type",
+      "meaning": "Single values (numbers, strings, booleans) vs containers of values (lists/arrays, dicts/objects)."
+    },
+    {
+      "term": "Destructive vs constructive",
+      "meaning": "Changing the original data (sort in place) vs returning a new copy (sorted, map)."
+    },
+    {
+      "term": "map / filter",
+      "meaning": "Make a new list by transforming each item / by keeping only matching items."
+    },
+    {
+      "term": "Return value",
+      "meaning": "What a function hands back to its caller; printing is not returning."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: JavaScript and Python",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/3-js-python/"
+    },
+    {
+      "label": "Curriculum: JS and Python Fundamentals",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/3-js-python/1-js-python-fundamentals/"
+    },
+    {
+      "label": "Curriculum: Functional Programming",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/3-js-python/2-functional-programming/"
+    },
+    {
+      "label": "Curriculum: JS/Python assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/3-js-python/assignments/"
+    }
+  ],
+  "assignments": [
+    "algo-factorial",
+    "algo-roman-numerals",
+    "algo-99-bottles-py",
+    "algo-factorial-py",
+    "algo-fibonacci-py"
+  ],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/3-js-python/ (overview, ELOs/TLOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/01-Fundamentals/3-js-python/assignments/ (listed assignments and their repo links)"
+  ]
+}

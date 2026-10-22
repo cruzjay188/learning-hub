@@ -1,0 +1,71 @@
+{
+  "id": "fe-5",
+  "code": "FE 5",
+  "title": "Component vs Utility Libraries",
+  "status": "outline",
+  "summary": "Compares two ways to style React apps: utility libraries like Tailwind CSS (small classes you combine in your JSX, full design control) and component libraries like React Bootstrap (ready-made styled components, faster to build, less custom). The curriculum says using them is optional but valuable. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Add Tailwind or React Bootstrap to a Vite + React project and explain when you'd pick each.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read both lessons",
+      "detail": "Read 'Tailwind CSS' and 'React Bootstrap', especially the 'Component Libraries vs Utility Libraries' pros and cons.",
+      "doneWhen": "You can give one reason to pick Tailwind and one to pick Bootstrap."
+    },
+    {
+      "id": "s2",
+      "title": "Try React Bootstrap in a scratch app",
+      "detail": "Make a throwaway Vite app (not Myflix), install the libraries, import Bootstrap's CSS once at the top of src/main.jsx, then render a <Button> from react-bootstrap.",
+      "code": "npm create vite@latest lib-demo -- --template react\ncd lib-demo\nnpm install\nnpm install react-bootstrap bootstrap\n# then add to the top of src/main.jsx:\n# import \"bootstrap/dist/css/bootstrap.min.css\";",
+      "codeLabel": "Terminal",
+      "doneWhen": "A styled blue Bootstrap button shows up on the page."
+    },
+    {
+      "id": "s3",
+      "title": "Compare with Myflix's plain CSS",
+      "detail": "Myflix styles everything in assignments/week-02/netflix/src/styles/global.css. Pick one ShowCard style rule and write how you'd express it as Tailwind classes (for example rounded-lg shadow-md hover:scale-105). Don't change Myflix yet.",
+      "doneWhen": "You have a short before/after note for one style."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Utility library",
+      "meaning": "A set of tiny single-purpose classes you combine yourself, like Tailwind."
+    },
+    {
+      "term": "Component library",
+      "meaning": "Ready-made styled components you import, like React Bootstrap's Button or Card."
+    },
+    {
+      "term": "Utility class",
+      "meaning": "A class that does one thing, such as p-4 for padding."
+    },
+    {
+      "term": "Responsive prefix",
+      "meaning": "Tailwind's md: or lg: in front of a class to apply it only on bigger screens."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Utility vs Component Libraries",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-components-utilities/"
+    },
+    {
+      "label": "Tailwind CSS: Install with Vite",
+      "url": "https://tailwindcss.com/docs/installation/using-vite"
+    },
+    {
+      "label": "React Bootstrap: Getting started",
+      "url": "https://react-bootstrap.github.io/docs/getting-started/introduction"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 35,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-components-utilities/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-components-utilities/1-tailwind/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-components-utilities/2-bootstrap/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/5-components-utilities/assignments/"
+  ]
+}

@@ -1,0 +1,71 @@
+{
+  "id": "be-4",
+  "code": "BE 4",
+  "title": "Relationships",
+  "status": "outline",
+  "summary": "Model relationships (one-to-one, one-to-many with ForeignKey, many-to-many), splitting code into separate Django apps, how the Django server turns a request into a response, and passing parameters through URL patterns. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Connect Django models with relationships and route URLs with parameters to views that return responses.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Find the relationships in your Netflix schema",
+      "detail": "Your migrations already have all three kinds. One-to-one: `profiles.id references auth.users (id)`. One-to-many: `shows.genre_id references public.genres (id)` (one genre, many shows). Many-to-many: `list_items` joins `lists` and `shows`. Open assignments/week-02/netflix/supabase/migrations/ and find each one.",
+      "doneWhen": "You can name the table and column behind each of the three relationships."
+    },
+    {
+      "id": "s2",
+      "title": "Read Django's relationship fields",
+      "detail": "Read the Relationships section of the Models page: ForeignKey, ManyToManyField and OneToOneField, plus what `on_delete` means (it matches your `on delete cascade`).",
+      "doneWhen": "You can match each Netflix relationship to the Django field you'd use for it."
+    },
+    {
+      "id": "s3",
+      "title": "Read the URL dispatcher example",
+      "detail": "Read the Example and Path converters parts of Django's URL docs. This is how a URL like /students/5/ reaches a view with id=5.",
+      "doneWhen": "You can explain what `<int:id>` does in `path('students/<int:id>/', ...)`."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "ForeignKey",
+      "meaning": "A one-to-many link: many rows in one table point at one row in another."
+    },
+    {
+      "term": "ManyToManyField",
+      "meaning": "A link where each side can have many of the other, stored in a join table."
+    },
+    {
+      "term": "on_delete",
+      "meaning": "What happens to linked rows when the row they point at is deleted (e.g. CASCADE)."
+    },
+    {
+      "term": "URL pattern",
+      "meaning": "A rule in urls.py that maps a URL path to a view."
+    },
+    {
+      "term": "Request/response",
+      "meaning": "The browser sends a request; Django runs a view and sends back a response."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Associations and the Django Server",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/4-associations-and-django-server/"
+    },
+    {
+      "label": "Django docs: Models (Relationships)",
+      "url": "https://docs.djangoproject.com/en/stable/topics/db/models/"
+    },
+    {
+      "label": "Django docs: URL dispatcher",
+      "url": "https://docs.djangoproject.com/en/stable/topics/http/urls/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/4-associations-and-django-server/",
+    "assignments/week-02/netflix/supabase/migrations/"
+  ]
+}

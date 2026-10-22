@@ -1,0 +1,71 @@
+{
+  "id": "be-5",
+  "code": "BE 5",
+  "title": "API Views & Testing",
+  "status": "outline",
+  "summary": "DRF's APIView class-based views, which give each HTTP method its own handler, structured Response objects, RESTful URL patterns and custom URL converters, sending requests with Postman, and writing tests for API endpoints. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build DRF class-based API views with RESTful URLs and write tests that check each endpoint.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Reopen Postman with your Netflix collection",
+      "detail": "You've already sent requests to Supabase's REST API from assignments/week-02/netflix/postman/myflix.postman_collection.json. DRF views are the server side of requests like those: this time you write the code that answers them.",
+      "doneWhen": "Postman opens your Myflix collection and one GET request returns a 200."
+    },
+    {
+      "id": "s2",
+      "title": "Read DRF's class-based views",
+      "detail": "Read the Class-based Views section of the DRF views guide. Each HTTP method maps to a method on the class.",
+      "doneWhen": "You can say which method handles GET (`get(self, request)`) and which handles POST."
+    },
+    {
+      "id": "s3",
+      "title": "Read DRF's testing guide",
+      "detail": "Read the APIClient part. You'll connect it to the TDD and pytest work from Module 4: send a request in a test, then assert on the status code and the JSON.",
+      "doneWhen": "You can explain what `self.client.get(...)` gives back and one thing you'd assert about it."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "APIView",
+      "meaning": "A DRF class where methods like get() and post() handle each HTTP method."
+    },
+    {
+      "term": "Response",
+      "meaning": "DRF's object for sending data and a status code back to the client."
+    },
+    {
+      "term": "HTTP status code",
+      "meaning": "A number saying how a request went: 200 OK, 201 Created, 404 Not Found."
+    },
+    {
+      "term": "Postman",
+      "meaning": "An app for sending HTTP requests to an API by hand."
+    },
+    {
+      "term": "APIClient",
+      "meaning": "DRF's test helper that sends fake requests to your views."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: API Views and Testing",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/5-api-views-and-testing/"
+    },
+    {
+      "label": "DRF: Views",
+      "url": "https://www.django-rest-framework.org/api-guide/views/"
+    },
+    {
+      "label": "DRF: Testing",
+      "url": "https://www.django-rest-framework.org/api-guide/testing/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/5-api-views-and-testing/",
+    "assignments/week-02/netflix/postman/"
+  ]
+}

@@ -1,0 +1,74 @@
+{
+  "id": "be-2",
+  "code": "BE 2",
+  "title": "Django ORM",
+  "status": "outline",
+  "summary": "Your first look at Django: creating a project and an app, connecting them to PostgreSQL with psycopg, writing models that become tables through migrations, loading sample data with fixtures, and managing data in the Django admin site. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Create a Django project linked to PostgreSQL and define models that Django turns into database tables.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Make a Python virtual environment",
+      "detail": "A virtual environment (venv) keeps one project's Python packages separate from everything else. Make a practice folder outside `assignments/` so it never mixes with graded work. If pip fails on Python 3.14, ask in #eagle_questions which Python version the course uses.",
+      "code": "mkdir -p ~/Desktop/django-practice && cd ~/Desktop/django-practice\npython3 -m venv .venv\nsource .venv/bin/activate\npip install django \"psycopg[binary]\"\npython -m django --version",
+      "codeLabel": "Terminal",
+      "doneWhen": "The last command prints a Django version number."
+    },
+    {
+      "id": "s2",
+      "title": "Do Django tutorial part 1",
+      "detail": "The instructors' handoff says not to assume students have seen Django, so the lecture starts from zero; this is only a head start. Part 1 walks through `startproject`, `startapp`, `runserver` and your first URL.",
+      "doneWhen": "http://localhost:8000 shows Django's \"The install worked successfully!\" page."
+    },
+    {
+      "id": "s3",
+      "title": "Sketch a Netflix table as a Django model",
+      "detail": "Read the Models topic page, then sketch `shows` from assignments/week-02/netflix/supabase/migrations/20261016190000_profiles_catalog.sql as a Python class. Each column becomes a field: `text` becomes CharField or TextField, `smallint` becomes SmallIntegerField, `references public.genres (id)` becomes a ForeignKey. In Django you write the class and Django writes the SQL migration for you.",
+      "doneWhen": "Your notes (for example notes/topics/django-orm.md) have a rough `Show` model with at least 4 fields."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Project vs app",
+      "meaning": "A Django project is the whole site; an app is one feature folder inside it (a project holds many apps)."
+    },
+    {
+      "term": "Model",
+      "meaning": "A Python class that describes one database table; each attribute is a column."
+    },
+    {
+      "term": "Migration",
+      "meaning": "A generated file that tells the database how to change its tables to match your models."
+    },
+    {
+      "term": "ORM",
+      "meaning": "Object-Relational Mapper: lets you query the database with Python instead of writing SQL."
+    },
+    {
+      "term": "Fixture",
+      "meaning": "A JSON file of sample rows you can load into, or back up from, the database."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Intro to Django ORM",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/2-intro-to-django-orm/"
+    },
+    {
+      "label": "Django tutorial part 1",
+      "url": "https://docs.djangoproject.com/en/stable/intro/tutorial01/"
+    },
+    {
+      "label": "Django docs: Models",
+      "url": "https://docs.djangoproject.com/en/stable/topics/db/models/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 90,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/2-intro-to-django-orm/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/05-Back-End/2-intro-to-django-orm/1-intro-django-orm/",
+    "Instructors' handoff notes, github.com/kabeier/Claude-and-auth demo-kit/backup-ticked-auth/README.md: \"This cohort started in Phase III, so don't assume they've seen Django\""
+  ]
+}

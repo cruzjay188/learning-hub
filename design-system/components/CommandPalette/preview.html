@@ -1,0 +1,22 @@
+<!-- @dsCard group="Overlays" height=340 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>CommandPalette — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<dialog open class="palette" style="position:static;margin:0;width:100%;max-width:640px">
+  <div class="palette__input"><svg width="15" height="15" viewBox="0 0 16 16" aria-hidden="true"><circle cx="7" cy="7" r="4.8" fill="none" stroke="currentColor" stroke-width="1.6"/><path d="M10.6 10.6L14 14" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg><input type="text" value="rls" aria-label="Search"><span class="kbd">esc</span></div>
+  <div class="palette__list" role="listbox" style="height:150px"><p class="pal-group">Key terms</p>
+    <button type="button" class="pal-item" role="option" aria-selected="true"><span class="pal-item__tile">Aa</span><span class="pal-item__text"><span class="pal-item__title"><mark>RLS</mark> (Row Level Security)</span><span class="pal-item__sub">AI-6 · Database rules that decide which rows each request may read or change.</span></span><span class="kbd pal-item__go">↵</span></button>
+    <button type="button" class="pal-item" role="option" aria-selected="false"><span class="pal-item__tile">Aa</span><span class="pal-item__text"><span class="pal-item__title"><mark>RLS</mark> (Row Level Security)</span><span class="pal-item__sub">AI-8 · Database rules that filter every request by who is asking.</span></span><span class="kbd pal-item__go">↵</span></button>
+  </div>
+  <div class="palette__foot"><span><span class="kbd">↑</span><span class="kbd">↓</span>move</span><span><span class="kbd">↵</span>open</span><span><span class="kbd">esc</span>close</span><span style="margin-left:auto">2 results</span></div>
+</dialog>
+</body>
+</html>

@@ -1,0 +1,1 @@
+The Eagle Learning Hub mark: a teal (`teal`) rounded square with two orange (`now`) chevrons, 28×28. Use it at 24–32px in the top bar beside the name in `panel-title`. It's an image, so its colors are fixed to the light-theme values; on dark grounds it keeps the same teal square.

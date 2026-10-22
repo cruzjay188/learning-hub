@@ -1,0 +1,81 @@
+{
+  "id": "fe-7",
+  "code": "FE 7",
+  "title": "React Router DOM hooks",
+  "status": "outline",
+  "summary": "Three React Router hooks: useParams reads values from the URL (like the 25 in /pokemon/25), useNavigate changes pages from code (after a click or a form submit), and useOutletContext shares state from the layout to its pages so you avoid prop drilling and keep state when switching pages. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Build a details page from a URL parameter, navigate from code, and share layout state with useOutletContext.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read both lessons",
+      "detail": "Read 'useNavigate and useParams' and 'useOutletContext', especially 'What is Prop Drilling?' and 'The Problem: State Resets on Page Navigation'.",
+      "doneWhen": "You can explain prop drilling in one sentence."
+    },
+    {
+      "id": "s2",
+      "title": "Add a dynamic route",
+      "detail": "In your scratch router app from FE 6, add this child route and page from the lesson, then visit /pokemon/25.",
+      "code": "// router.jsx, inside children\n{ path: \"pokemon/:id\", element: <PokemonDetailsPage /> }\n\n// PokemonDetailsPage.jsx\nimport { useParams } from \"react-router-dom\";\n\nconst PokemonDetailsPage = () => {\n  const { id } = useParams();\n  return <h2>{id}</h2>;\n};\n\nexport default PokemonDetailsPage;",
+      "codeLabel": "File",
+      "doneWhen": "The page shows 25."
+    },
+    {
+      "id": "s3",
+      "title": "Share state through the Outlet",
+      "detail": "Move a piece of state into App.jsx, pass it with <Outlet context={{ favorites, setFavorites }} />, and read it in a page with useOutletContext(). Then switch pages and come back.",
+      "doneWhen": "The state survives switching between pages."
+    },
+    {
+      "id": "s4",
+      "title": "Map it onto Myflix",
+      "detail": "In Myflix, ShowModal opens a title using openId state. Write down how /title/:id with useParams and useNavigate could replace that, and which state (like My List) would go in Outlet context. Plan only; check what the Netflix clone assignment asks first.",
+      "doneWhen": "You have a short plan naming the route, the param, and the shared state."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "URL parameter",
+      "meaning": "A changing part of a path, like :id in /title/:id."
+    },
+    {
+      "term": "useParams",
+      "meaning": "Hook that returns the URL parameters for the current route."
+    },
+    {
+      "term": "useNavigate",
+      "meaning": "Hook that gives you a function to change pages from code."
+    },
+    {
+      "term": "Prop drilling",
+      "meaning": "Passing props through components that don't use them just to reach a deeper one."
+    },
+    {
+      "term": "useOutletContext",
+      "meaning": "Hook that reads the value a layout passed to <Outlet context={...} />."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: React Router Hooks",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-react-router-hooks/"
+    },
+    {
+      "label": "React Router: useParams",
+      "url": "https://reactrouter.com/api/hooks/useParams"
+    },
+    {
+      "label": "React Router: useOutletContext",
+      "url": "https://reactrouter.com/api/hooks/useOutletContext"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 40,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-react-router-hooks/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-react-router-hooks/1-useParams-useNav/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-react-router-hooks/2-useOutletContext/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/7-react-router-hooks/assignments/"
+  ]
+}

@@ -1,0 +1,80 @@
+{
+  "id": "ds-10",
+  "code": "DS 10",
+  "title": "BFS vs DFS",
+  "status": "outline",
+  "summary": "Covers the two main ways to walk a tree. Depth First Search (DFS) goes as deep as possible down one branch before backing up, and fits naturally with recursion. Breadth First Search (BFS) visits the tree level by level using a queue, and finds the shortest path in an unweighted tree. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Write DFS and BFS traversals for a binary tree and choose the right one for a problem.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read the lesson",
+      "detail": "Read the DFS & BFS page, including the comparison table. It pulls together stacks, queues, recursion and trees from earlier DS lectures.",
+      "doneWhen": "You can say which data structure each traversal uses."
+    },
+    {
+      "id": "s2",
+      "title": "Run both traversals",
+      "detail": "Reuse your BinarySearchTree from DS 9 (built with [8, 3, 10, 1, 6]) and add these. The lesson's BFS uses a Queue with popleft and append, which is exactly collections.deque.",
+      "code": "from collections import deque\n\ndef dfs_in_order(node):\n    if not node:\n        return\n    dfs_in_order(node.left)\n    print(node.value)\n    dfs_in_order(node.right)\n\ndef bfs(root):\n    if not root:\n        return\n    queue = deque([root])\n    while queue:\n        current = queue.popleft()\n        print(current.value)\n        if current.left:\n            queue.append(current.left)\n        if current.right:\n            queue.append(current.right)\n\ndfs_in_order(bst.root)\nprint(\"---\")\nbfs(bst.root)",
+      "codeLabel": "File",
+      "doneWhen": "DFS prints 1, 3, 6, 8, 10 (sorted). BFS prints 8, 3, 10, 1, 6 (level by level)."
+    },
+    {
+      "id": "s3",
+      "title": "Try pre-order and post-order",
+      "detail": "Move the print in dfs_in_order before the left call (pre-order), then after the right call (post-order), and compare the outputs.",
+      "doneWhen": "You can predict the order for each version before running it."
+    },
+    {
+      "id": "s4",
+      "title": "Talk through the two assignments",
+      "detail": "The assignments are Maximum Depth of a Binary Tree and Level Order Traversal. For each, say out loud which traversal you'd use and why, then its Big-O (both are O(n) time; DFS space is O(h), BFS space is O(w) for the widest level).",
+      "doneWhen": "You can explain your choice and the Big-O for both problems."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Traversal",
+      "meaning": "Visiting every node in a structure in a set order."
+    },
+    {
+      "term": "Depth First Search (DFS)",
+      "meaning": "Go deep down one branch before backing up; uses the call stack."
+    },
+    {
+      "term": "Breadth First Search (BFS)",
+      "meaning": "Visit all nodes on one level before the next; uses a queue."
+    },
+    {
+      "term": "In-order traversal",
+      "meaning": "Left, node, right; on a BST it gives values in sorted order."
+    },
+    {
+      "term": "Level order",
+      "meaning": "Another name for BFS on a tree: top level first, then the next."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: DFS & BFS",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/10-dfs-vs-bfs/"
+    },
+    {
+      "label": "Python docs: collections.deque",
+      "url": "https://docs.python.org/3/library/collections.html#collections.deque"
+    },
+    {
+      "label": "Curriculum: Technical Interviews (whiteboarding)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 50,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/10-dfs-vs-bfs/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/10-dfs-vs-bfs/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

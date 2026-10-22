@@ -1,0 +1,46 @@
+<!-- @dsCard group="Motion" height=330 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Motion — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+.toast { position: absolute; }</style>
+</head>
+<body>
+<div class="ds-stack" style="max-width:640px">
+  <div class="ds-row"><button type="button" class="btn btn--primary btn--sm" id="replay">Replay</button><span class="row__sub">tick → rail fill → Up next swap → progress → toast</span></div>
+  <ol class="steps" style="margin:0">
+    <li class="step" id="s1" data-done="false" data-current="true" data-open="false"><button type="button" class="marker" role="checkbox" aria-checked="false" aria-label="Step 1"><span class="n">1</span><span class="chk"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div><div class="step__head" style="padding-bottom:14px"><span class="step__title">Get a TMDB API key</span></div></div></li>
+    <li class="step" id="s2" data-done="false" data-current="false" data-open="false"><button type="button" class="marker" role="checkbox" aria-checked="false" aria-label="Step 2"><span class="n">2</span><span class="chk"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button><div><div class="step__head"><span class="step__title">Fetch trending shows</span></div></div></li>
+  </ol>
+  <section class="upnext" style="margin-top:0;padding:14px 18px 14px 22px"><div class="upnext__body" id="un"><p class="upnext__eyebrow">Up next · AI-9 · step 1 of 9</p><h2 class="upnext__title" style="font-size:19px;line-height:24px">Get a TMDB API key</h2></div></section>
+  <div class="course-bar" style="margin:0"><span id="bar" style="--w:10%"></span></div>
+</div>
+<div class="toast" id="toast" role="status"><span>Done: Get a TMDB API key</span><button type="button">Undo</button></div>
+<script>
+var s1 = document.getElementById('s1'), s2 = document.getElementById('s2'), un = document.getElementById('un'), bar = document.getElementById('bar'), t = document.getElementById('toast');
+var titles = ['Get a TMDB API key', 'Fetch trending shows'], timers = [];
+function reset() {
+  timers.forEach(clearTimeout); timers = [];
+  document.documentElement.classList.add('instant');
+  s1.dataset.done = 'false'; s1.dataset.current = 'true'; s1.classList.remove('is-new'); s2.dataset.current = 'false';
+  s1.querySelector('.marker').setAttribute('aria-checked', 'false');
+  un.querySelector('h2').textContent = titles[0]; un.querySelector('p').textContent = 'Up next · AI-9 · step 1 of 9';
+  bar.style.setProperty('--w', '10%'); t.dataset.show = 'false';
+  void document.body.offsetWidth; document.documentElement.classList.remove('instant');
+}
+function play() {
+  reset();
+  timers.push(setTimeout(function () { s1.classList.add('is-new'); s1.dataset.done = 'true'; s1.dataset.current = 'false'; s2.dataset.current = 'true'; s1.querySelector('.marker').setAttribute('aria-checked', 'true'); }, 250));
+  timers.push(setTimeout(function () { un.querySelector('h2').textContent = titles[1]; un.querySelector('p').textContent = 'Up next · AI-9 · step 2 of 9'; un.parentNode.classList.remove('is-swapping'); void un.offsetWidth; un.parentNode.classList.add('is-swapping'); bar.style.setProperty('--w', '22%'); }, 750));
+  timers.push(setTimeout(function () { t.classList.add('is-from'); void t.offsetWidth; t.classList.remove('is-from'); t.dataset.show = 'true'; }, 850));
+  timers.push(setTimeout(function () { t.dataset.show = 'false'; }, 3200));
+}
+document.getElementById('replay').addEventListener('click', play);
+setTimeout(play, 400);
+</script>
+</body>
+</html>

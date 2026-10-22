@@ -1,5 +1,28 @@
-# front end only: ignore everything except the site files
-*
-!.gitignore
-!index.html
-!hub-data.json
+# Dependencies and build output
+node_modules/
+dist/
+dist-qa/
+coverage/
+
+# Secrets: only .env.example (the template) is committed
+.env
+.env.*
+!.env.example
+!.env.qa
+.mcp.json
+
+# The plain-JS step before the React rebuild (kept locally, not part of the project)
+site/
+
+# Personal / machine-specific
+.DS_Store
+*.log
+.vscode/
+.idea/
+.claude/settings.local.json
+__pycache__/
+.playwright-mcp/
+design/screens/
+
+# Supabase CLI cache (version, last linked project)
+.temp/

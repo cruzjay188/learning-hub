@@ -1,0 +1,36 @@
+<!-- @dsCard group="Content" height=430 -->
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>StepList — preview</title>
+<style>
+  html, body { margin: 0; }
+  body { padding: 20px 24px; background: var(--bg); }
+</style>
+</head>
+<body>
+<ol class="steps" style="margin:0;max-width:660px">
+  <li class="step" data-done="true" data-current="false" data-open="false">
+    <button type="button" class="marker" role="checkbox" aria-checked="true" aria-label="Step 1: Do Part I"><span class="n">1</span><span class="chk"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <div><div class="step__head"><button type="button" class="step__toggle" aria-expanded="false"><span class="step__title">Do Part I: peer quiz, then FreeCodeCamp</span><span class="step__peek"></span></button><button type="button" class="step__undo"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M5 6.5H10a3 3 0 0 1 0 6H7" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><path d="M7 4L4.5 6.5 7 9" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg> Undo</button></div>
+    <div class="step__body"><div class="step__inner"><div class="step__pad"></div></div></div></div>
+  </li>
+  <li class="step" data-done="false" data-current="true" data-open="true">
+    <button type="button" class="marker" role="checkbox" aria-checked="false" aria-label="Step 2: Restructure Myflix"><span class="n">2</span><span class="chk"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <div><div class="step__head"><button type="button" class="step__toggle" aria-expanded="true"><span class="step__title">Restructure Myflix into front-end/ + supabase/</span><span class="step__peek"></span></button></div>
+    <div class="step__body"><div class="step__inner"><div class="step__pad">
+      <p class="step__detail">Commit first so you can roll back. Then run the restructure prompt from the Full-Stack lecture.</p>
+      <div class="code" data-wrap="false"><div class="code__bar"><span>Terminal</span><button type="button" class="copy-btn"><svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><rect x="5.5" y="5.5" width="8" height="8" rx="1.8" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M10.5 3.5v-.2A1.3 1.3 0 0 0 9.2 2H3.8A1.3 1.3 0 0 0 2.5 3.3v5.4A1.3 1.3 0 0 0 3.8 10h.2" fill="none" stroke="currentColor" stroke-width="1.5"/></svg><span>Copy</span></button></div><pre><code>git add -A &amp;&amp; git commit -m "Before full-stack"</code></pre></div>
+      <p class="done-when"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="6.3" fill="none" stroke="currentColor" stroke-width="1.5"/><path d="M5.3 8.2l1.9 1.9 3.6-4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Done when</b>The root has front-end/, supabase/, one .claude/ and .mcp.json.</span></p>
+      <div class="step__actions"><button type="button" class="btn btn--primary"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg> Mark done and continue</button><button type="button" class="btn btn--quiet">Skip for now</button></div>
+    </div></div></div></div>
+  </li>
+  <li class="step" data-done="false" data-current="false" data-open="false">
+    <button type="button" class="marker" role="checkbox" aria-checked="false" aria-label="Step 3: Paste the restructure prompt"><span class="n">3</span><span class="chk"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" pathLength="1" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg></span></button>
+    <div><div class="step__head"><button type="button" class="step__toggle" aria-expanded="false"><span class="step__title">Paste the restructure prompt</span><span class="step__peek">Instructor prompt from the Full-Stack lecture, word for word.</span></button></div>
+    <div class="step__body"><div class="step__inner"><div class="step__pad"></div></div></div></div>
+  </li>
+</ol>
+</body>
+</html>

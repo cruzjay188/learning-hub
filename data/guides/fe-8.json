@@ -1,0 +1,83 @@
+{
+  "id": "fe-8",
+  "code": "FE 8",
+  "title": "e2e Testing with Cypress",
+  "status": "outline",
+  "summary": "Why we test, the three kinds of tests (unit, integration, end-to-end), and how to set up Cypress in a Vite + React app: install it, point cypress.config.js at the dev server, write specs in cypress/e2e/, and run them in the Cypress window or headless. The second lesson writes assertions for each feature of the Pokémon app. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Install Cypress in a React app and write an end-to-end test that checks a page renders and a feature works.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read both lessons",
+      "detail": "Read 'Cypress and React' and 'Cypress Assertions', especially 'Unit vs Integration vs e2e'.",
+      "doneWhen": "You can give one example of each test type."
+    },
+    {
+      "id": "s2",
+      "title": "Sort your Myflix tests by type",
+      "detail": "Myflix already has Vitest + Testing Library tests in assignments/week-02/netflix/src/test. Run them and label each file unit or integration. Cypress adds the third kind: a real browser clicking through the app.",
+      "code": "cd ~/Desktop/codeplatoon/assignments/week-02/netflix\nnpm test",
+      "codeLabel": "Terminal",
+      "doneWhen": "All tests pass and you've labeled each test file."
+    },
+    {
+      "id": "s3",
+      "title": "Set up Cypress in a scratch app",
+      "detail": "In a throwaway Vite app: npm install cypress --save-dev, add a cypress.config.js with baseUrl http://localhost:5173/ (from the lesson), and create cypress/e2e/home.cy.js. Start npm run dev, then npx cypress open.",
+      "code": "describe(\"Home page\", () => {\n  it(\"loads\", () => {\n    cy.visit(\"/\");\n    cy.get(\"#root\").should(\"exist\");\n  });\n});",
+      "codeLabel": "File",
+      "doneWhen": "The Cypress window lists home.cy.js and the test turns green."
+    },
+    {
+      "id": "s4",
+      "title": "List Myflix e2e scenarios",
+      "detail": "Write three user journeys you'd test end to end in Myflix (for example: add a title to My List, rate it, reload and see it still there). Don't add Cypress to Myflix unless an assignment asks.",
+      "doneWhen": "You have three scenarios written as 'user does X, sees Y'."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Unit test",
+      "meaning": "Checks one small function or piece on its own."
+    },
+    {
+      "term": "Integration test",
+      "meaning": "Checks that a few pieces work together, like a component and its hook."
+    },
+    {
+      "term": "End-to-end (e2e) test",
+      "meaning": "Drives the real app in a browser the way a user would."
+    },
+    {
+      "term": "Assertion",
+      "meaning": "The check in a test, like .should(\"have.length\", 1)."
+    },
+    {
+      "term": "Headless",
+      "meaning": "Running tests without opening a visible browser window, as CI does."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Testing in React.js",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-e2e-testing/"
+    },
+    {
+      "label": "Cypress docs: Install Cypress",
+      "url": "https://docs.cypress.io/app/get-started/install-cypress"
+    },
+    {
+      "label": "Cypress docs: Assertions",
+      "url": "https://docs.cypress.io/app/references/assertions"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 45,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-e2e-testing/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-e2e-testing/1-cypress-react/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-e2e-testing/2-cypress-assertions/",
+    "https://codeplatoon.github.io/se-curriculum/phase-II/04-Front-End/8-e2e-testing/assignments/"
+  ]
+}

@@ -1,0 +1,83 @@
+{
+  "id": "ds-5",
+  "code": "DS 5",
+  "title": "Sorting Algorithms: Bubble, Insertion, Quick Sort",
+  "status": "outline",
+  "summary": "Analyzes Bubble Sort (and the 'swapped' flag that makes its best case O(n)) and Insertion Sort, which is fast on almost-sorted (k-sorted) lists. Both are O(n²) on average. The curriculum's sorting page covers Bubble and Insertion; Quick Sort's example and Big-O (O(n log n) average, O(n²) worst) are on the Big-O page. Step-by-step guide arrives when the lecture is published.",
+  "goal": "Explain how Bubble, Insertion and Quick Sort work and state each one's best, average and worst case.",
+  "required": [],
+  "steps": [
+    {
+      "id": "s1",
+      "title": "Read and run Bubble and Insertion Sort",
+      "detail": "Read the sorting page, then run the lesson's improved Bubble Sort and Insertion Sort on [4, 3, 2, 1] (worst case) and [1, 2, 3, 4] (best case). Add a print inside the outer loop to watch each pass.",
+      "doneWhen": "You can see the sorted list exit Bubble Sort after one pass."
+    },
+    {
+      "id": "s2",
+      "title": "Run the curriculum's Quick Sort",
+      "detail": "This version from the Big-O page picks a middle pivot and splits into smaller, equal and larger lists.",
+      "code": "def quicksort(arr):\n    if len(arr) <= 1:\n        return arr\n    pivot = arr[len(arr) // 2]\n    left = [x for x in arr if x < pivot]\n    middle = [x for x in arr if x == pivot]\n    right = [x for x in arr if x > pivot]\n    return quicksort(left) + middle + quicksort(right)\n\nprint(quicksort([3, 6, 8, 10, 1, 2, 1]))",
+      "codeLabel": "File",
+      "doneWhen": "It prints [1, 1, 2, 3, 6, 8, 10]."
+    },
+    {
+      "id": "s3",
+      "title": "Get pytest ready",
+      "detail": "The listed assignment (Selection Sort) asks for pytest tests, including empty lists, one item, zero and negatives. Check pytest works before class.",
+      "code": "python3 -m pytest --version",
+      "codeLabel": "Terminal",
+      "doneWhen": "The command prints a pytest version."
+    },
+    {
+      "id": "s4",
+      "title": "Compare all three out loud",
+      "detail": "Interview practice: for each sort, say how it works in one sentence and its best/average/worst Big-O before writing any code. Add the space cost: Bubble and Insertion sort in place (O(1)); this Quick Sort builds new lists (O(n)).",
+      "doneWhen": "You can fill a 3×3 best/average/worst table from memory."
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Bubble Sort",
+      "meaning": "Swap neighbors that are out of order, pass after pass, until nothing swaps."
+    },
+    {
+      "term": "Insertion Sort",
+      "meaning": "Take each item and slide it left until it's in the right spot."
+    },
+    {
+      "term": "Quick Sort",
+      "meaning": "Pick a pivot, split items into smaller and larger, then sort each side."
+    },
+    {
+      "term": "Best / average / worst case",
+      "meaning": "How fast the algorithm is on the easiest, typical and hardest inputs."
+    },
+    {
+      "term": "k-sorted array",
+      "meaning": "A list where every item is at most k places from where it belongs."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Bubble Sort and Insertion Sort",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/05-sorting-algos/"
+    },
+    {
+      "label": "Curriculum: Big-O (Quick Sort example)",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/02-big-o/"
+    },
+    {
+      "label": "Python docs: Sorting Techniques",
+      "url": "https://docs.python.org/3/howto/sorting.html"
+    }
+  ],
+  "assignments": [],
+  "estMinutes": 50,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/05-sorting-algos/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/05-sorting-algos/assignments/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/02-big-o/",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/03-DS-Algorithms/11-technical-interview/"
+  ]
+}

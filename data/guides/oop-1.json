@@ -1,0 +1,86 @@
+{
+  "id": "oop-1",
+  "code": "OOP 1",
+  "title": "Intro to OOP",
+  "status": "outline",
+  "summary": "Object-Oriented Programming in Python: classes and instances, __init__, attributes and methods, dunder methods like __str__, and getters/setters (encapsulation), plus DRY. The step-by-step arrives when the lecture is published.",
+  "goal": "Write a Python class with an initializer, methods, a __str__ and a property getter/setter, and create several instances of it.",
+  "required": [],
+  "steps": [
+    {
+      "title": "Read the two lectures",
+      "detail": "Skim Intro to Python OOP and Getters & Setters. Python Crash Course ch. 9 (pp. 167–173) is the listed reading.",
+      "doneWhen": "You can explain class vs instance and what self means.",
+      "id": "s1"
+    },
+    {
+      "title": "Write a tiny class",
+      "detail": "Practice in a scratch file (not an assignment). Make a Show class with title and rating, a __str__, and a rating setter that rejects values outside 1–5. Run it with python3.",
+      "code": "class Show:\n    def __init__(self, title, rating=3):\n        self.title = title\n        self.rating = rating\n\n    @property\n    def rating(self):\n        return self._rating\n\n    @rating.setter\n    def rating(self, value):\n        if not 1 <= value <= 5:\n            raise ValueError(\"rating must be 1-5\")\n        self._rating = value\n\n    def __str__(self):\n        return f\"{self.title} ({self.rating}/5)\"\n\nprint(Show(\"Dark\", 5))",
+      "codeLabel": "File",
+      "doneWhen": "It prints \"Dark (5/5)\", and Show(\"x\", 9) raises a ValueError.",
+      "id": "s2"
+    },
+    {
+      "title": "Note the listed assignments",
+      "detail": "The curriculum lists Part I: Guessing Game and App Users I. Part II: the Ninja Coders demo, Student Registry, and the Crash Course reading. Stretch: OOP Budget, CSV Reader, School Interface I. Wait for Slack to confirm.",
+      "doneWhen": "You know which repos to expect.",
+      "id": "s3"
+    }
+  ],
+  "concepts": [
+    {
+      "term": "Class / instance",
+      "meaning": "A class is the blueprint; an instance is one object built from it."
+    },
+    {
+      "term": "self",
+      "meaning": "The instance a method is working on."
+    },
+    {
+      "term": "__init__",
+      "meaning": "The initializer that sets up a new instance's attributes."
+    },
+    {
+      "term": "Dunder method",
+      "meaning": "A double-underscore method Python calls for you, like __str__ when printing."
+    },
+    {
+      "term": "Encapsulation",
+      "meaning": "Keeping data behind methods (getters/setters) so it can't be set to bad values."
+    },
+    {
+      "term": "DRY",
+      "meaning": "Don't Repeat Yourself: put shared logic in one place."
+    }
+  ],
+  "resources": [
+    {
+      "label": "Curriculum: Intro to OOP",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/1-oop-intro/"
+    },
+    {
+      "label": "Curriculum: Intro to Python OOP",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/1-oop-intro/1-intro-python-oop/"
+    },
+    {
+      "label": "Curriculum: Getters & Setters",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/1-oop-intro/2-encapsulation-get-set/"
+    },
+    {
+      "label": "Curriculum: OOP 1 assignments",
+      "url": "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/1-oop-intro/assignments/"
+    }
+  ],
+  "assignments": [
+    "oop-guessing-game",
+    "oop-app-users-i",
+    "oop-student-registry"
+  ],
+  "estMinutes": 60,
+  "sources": [
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/1-oop-intro/ (overview, TLOs/ELOs)",
+    "https://codeplatoon.github.io/se-curriculum/phase-I/02-OOP/1-oop-intro/assignments/ (Part I, Part II, Stretch and their repo links)",
+    "Step 2's class is a practice example written for this guide, not from the curriculum"
+  ]
+}
