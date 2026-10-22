@@ -22,6 +22,17 @@ From `learning-hub/`: `python3 -I data/build_hub.py` (rebuild course data) · `p
 
 **Before calling a change done:** `npm test` and `npm run build` pass, and `node qa/motion.mjs` (with `python3 -I qa/serve.py front-end/dist &` running) passes 20/20. For UI changes, screenshot the views you touched with `qa/shoot.mjs` (desktop 1360 light, phone 390 dark) and look at them.
 
+## Git workflow (the instructors' main / dev / feature branches)
+
+Repo: https://github.com/cruzjay188/learning-hub. `main` = what's live, `dev` = finished work waiting to ship, `feature/<name>` = one change.
+
+1. Start from dev: `git switch dev && git pull`, then `git switch -c feature/<short-name>`.
+2. Commit there; before pushing, check `git status` for secrets (`.env.local`, keys) and that `npm test` and `npm run build` pass.
+3. `git push -u origin feature/<short-name>`, open a PR into **dev**, merge it.
+4. To ship: open a PR from **dev** into **main**. Never commit or push straight to main.
+
+`../hub/` is an older clone of the same GitHub repo: don't push from it.
+
 ## Supabase (student accounts)
 
 Project `eagle-learning-hub`, ref `fhlxeswlqzdhkvtcbjym` (dashboard: https://supabase.com/dashboard/project/fhlxeswlqzdhkvtcbjym). Code: `lib/supabase.js` (client), `lib/auth.js` + `hooks/useAuth.js` (accounts), `lib/supabaseSync.js` (progress ⇄ rows), `views/AuthPage.jsx`.
