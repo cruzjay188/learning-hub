@@ -263,16 +263,26 @@ What's already right:
 - Logout clears local data, even offline.
 - React rendering, with no raw-HTML sinks.
 
-To fix (not done yet: each needs its own feature branch and migration):
+Status as of 2026-10-24, `feature/security-fixes`: findings 1–7 fixed (✅). The migration for 3–5 is `supabase/migrations/20261024120000_security_hardening.sql`.
 
 | # | Severity | Finding | Where | Fix |
 |---|---|---|---|---|
-| 1 | Medium | `hub-data.json` is public on Vercel and contains Jeffrey's assignment notes, commit messages and work-log titles. Every student who signs up sees them. | `data/build_hub.py` → `front-end/public/hub-data.json` | Split shared course content from personal data; move per-student data into Supabase (§7.2) |
-| 2 | Medium | No security headers (CSP, nosniff, frame-ancestors) on the Vercel site. | missing `front-end/vercel.json` | Add headers (§10) |
-| 3 | Low | The client sends `user_id` on every write, and `user_id` has no `default auth.uid()`. RLS refuses forged values, so it isn't exploitable, but it breaks rule 2.1.2 and the instructors' convention. | `lib/supabaseSync.js`, the migration | `alter … set default auth.uid()`, then stop sending `user_id` |
-| 4 | Low | `jsonb` columns (`steps`, `recall`) have no size limit, so a student could store very large values (storage abuse). | `lecture_progress` | Add `check (pg_column_size(steps) <= 16384)` and the same for `recall` (§5.1) |
-| 5 | Low | `profiles` grants `update` on all columns; only `display_name` should change. | `supabase/schema.sql` | `revoke update on profiles from authenticated; grant update (display_name) …` |
-| 6 | Low | A PostgREST filter is built from a string: `.not('day', 'in', `(${days.join(',')})`)`. The values come from the student's own (tamperable) local copy. RLS limits the damage to their own rows, but it breaks §4.1. | `lib/supabaseSync.js` | Validate each day with `/^\d{4}-\d{2}-\d{2}$/` before building the filter |
-| 7 | Low | URLs from `hub-data.json` go straight into `href` and `window.open` without a scheme check. The data is built from the repo (trusted today), but guides are edited by hand. | `views/*.jsx`, `lib/actions.js` | Add `safeUrl()` (§5.2) and use it everywhere a URL comes from data |
+| 1 ✅ | Medium | `hub-data.json` is public on Vercel and contains Jeffrey's assignment notes, commit messages and work-log titles. Every student who signs up sees them. | `data/build_hub.py` → `front-end/public/hub-data.json` | Split shared course content from personal data; move per-student data into Supabase (§7.2) |
+| 2 ✅ | Medium | No security headers (CSP, nosniff, frame-ancestors) on the Vercel site. | missing `front-end/vercel.json` | Add headers (§10) |
+| 3 ✅ | Low | The client sends `user_id` on every write, and `user_id` has no `default auth.uid()`. RLS refuses forged values, so it isn't exploitable, but it breaks rule 2.1.2 and the instructors' convention. | `lib/supabaseSync.js`, the migration | `alter … set default auth.uid()`, then stop sending `user_id` |
+| 4 ✅ | Low | `jsonb` columns (`steps`, `recall`) have no size limit, so a student could store very large values (storage abuse). | `lecture_progress` | Add `check (pg_column_size(steps) <= 16384)` and the same for `recall` (§5.1) |
+| 5 ✅ | Low | `profiles` grants `update` on all columns; only `display_name` should change. | `supabase/schema.sql` | `revoke update on profiles from authenticated; grant update (display_name) …` |
+| 6 ✅ | Low | A PostgREST filter is built from a string: `.not('day', 'in', `(${days.join(',')})`)`. The values come from the student's own (tamperable) local copy. RLS limits the damage to their own rows, but it breaks §4.1. | `lib/supabaseSync.js` | Validate each day with `/^\d{4}-\d{2}-\d{2}$/` before building the filter |
+| 7 ✅ | Low | URLs from `hub-data.json` go straight into `href` and `window.open` without a scheme check. The data is built from the repo (trusted today), but guides are edited by hand. | `views/*.jsx`, `lib/actions.js` | Add `safeUrl()` (§5.2) and use it everywhere a URL comes from data |
 | 8 | Info | Email confirmation is off and the password minimum is 6. | Supabase Auth | Fine for class; never trust email (§8). Consider 8+ and leaked-password protection |
 | 9 | Info | The live database wasn't checked against `schema.sql` in this review (the CLI's login had expired). | — | Run §11 step 3 after `npx supabase login` |
+| 10 | Low | The guides' text is still written for Jeffrey: about 80 mentions of "Myflix", `~/Desktop/codeplatoon/…` paths and `cruzjay188/…` repos are in the public `hub-data.json`. Nothing secret, but it isn't neutral course content. | `data/guides/*.json` | Rewrite the guides for any student (a content task) |
+
+How 1–7 were fixed:
+1. `data/build_hub.py` now writes two files: the public `front-end/public/hub-data.json` (course content only: assignments without links, paths, notes or statuses; no `sources`, commits, work logs or repos) and the private, git-ignored `data/hub-data.personal.json` for Jeffrey's claude.ai copy.
+2. `front-end/vercel.json`: a strict CSP, `nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy`, `Permissions-Policy` and HSTS. Tested locally with the same headers: 20/20 motion checks, no blocked requests.
+3. `user_id` defaults to `auth.uid()`; `lib/supabaseSync.js` no longer sends it (a test checks).
+4. `steps` and `recall` are limited to 16 KB each.
+5. `profiles`: `update (display_name)` only.
+6. `studyDays()` lets only real dates into the filter (a test sends filter syntax and gets nothing through).
+7. `utils/safeUrl.js` on every link from data, plus `rel="noopener noreferrer"` (tests cover `javascript:`, `data:` and `file:`).

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { lectureRow, rowsToState } from '../lib/supabaseSync.js'
+import { lectureRow, rowsToState, studyDays } from '../lib/supabaseSync.js'
 import { authErrorAction, authErrorMessage, authErrorTarget, authFieldErrors, authFormError, userStorageKey } from '../utils/authUtils.js'
 
 describe('Supabase rows ⇄ the progress store', () => {
@@ -21,11 +21,20 @@ describe('Supabase rows ⇄ the progress store', () => {
     expect(rowsToState({})).toEqual({ lectures: {}, assignments: {}, activity: { days: {} }, goal: { weeklyTarget: 4 }, onboarded: null })
   })
 
-  it('turns a saved lecture back into a row for this student', () => {
-    expect(lectureRow('u1', 'ai-8', { steps: { s2: true }, confidence: 2, ratedAt: 'r' })).toEqual({
-      user_id: 'u1', lecture_id: 'ai-8', steps: { s2: true }, notes: '', confidence: 2,
+  it('turns a saved lecture back into a row, without saying whose it is (the database fills that in)', () => {
+    const row = lectureRow('ai-8', { steps: { s2: true }, confidence: 2, ratedAt: 'r' })
+    expect(row).toEqual({
+      lecture_id: 'ai-8', steps: { s2: true }, notes: '', confidence: 2,
       rated_at: 'r', reviewed_at: null, touched_at: null, recall: { missed: [], got: [] },
     })
+    expect(row).not.toHaveProperty('user_id')
+  })
+
+  it('only lets real dates into the study-days filter', () => {
+    expect(studyDays({ days: { '2026-10-19': true, '2026-10-20': true } })).toEqual(['2026-10-19', '2026-10-20'])
+    // a tampered browser copy can't inject filter syntax
+    expect(studyDays({ days: { '2026-10-19),user_id.neq.(x': true, '2026-13-45': true, nope: true, '2026-10-21': false } })).toEqual([])
+    expect(studyDays(null)).toEqual([])
   })
 })
 

@@ -1,4 +1,5 @@
 import { useHub } from '../hooks/useHub.js'
+import { NEW_TAB, safeUrl } from '../utils/safeUrl.js'
 import { dayDiff, etDateOf, etNow, fLong, fMD, fShort } from '../utils/dates.js'
 import { A_LABEL, A_MARK, CONF, noEmoji, pct, plural } from '../utils/format.js'
 import { StrengthMeter } from '../components/Bits.jsx'
@@ -144,7 +145,7 @@ function OpenAssignments() {
             <li key={a.id} className="row">
               <span className="st" title={A_LABEL[s]}><Mark /></span>
               <div className="row__main">
-                <p className="row__title">{a.repo ? <a href={a.repo} target="_blank" rel="noopener">{m.aTitle(a)} <I.ext /></a> : m.aTitle(a)}</p>
+                <p className="row__title">{safeUrl(a.repo) ? <a href={safeUrl(a.repo)} {...NEW_TAB}>{m.aTitle(a)} <I.ext /></a> : m.aTitle(a)}</p>
                 <p className="row__sub">{A_LABEL[s]}{a.notes ? ` · ${noEmoji(a.notes)}` : ''}</p>
               </div>
               <div className="row__end">{lec ? <a className="code-tag" href={`#lecture-${lec.id}`}>{m.codeOf(lec) || lec.title}</a> : null}</div>

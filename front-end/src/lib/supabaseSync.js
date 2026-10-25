@@ -19,12 +19,20 @@ export function rowsToState({ lectures = [], assignments = [], days = [], settin
 }
 
 // ---------- store document → row (pure) ----------
-export function lectureRow(userId, lectureId, d) {
+// No user_id: the database fills it in from the login (default auth.uid()), and RLS refuses any other
+// owner. The front end never says whose row it is (docs/security-rules.md §2.1).
+export function lectureRow(lectureId, d) {
   return {
-    user_id: userId, lecture_id: lectureId, steps: d.steps || {}, notes: d.notes || '', confidence: d.confidence || 0,
+    lecture_id: lectureId, steps: d.steps || {}, notes: d.notes || '', confidence: d.confidence || 0,
     rated_at: d.ratedAt || null, reviewed_at: d.reviewedAt || null, touched_at: d.touchedAt || null,
     recall: d.recall || { missed: [], got: [] },
   }
+}
+
+// The study days in a meta/activity document, keeping only real YYYY-MM-DD dates.
+export function studyDays(body) {
+  const days = body && body.days ? body.days : {}
+  return Object.keys(days).filter((d) => days[d] === true && /^\d{4}-\d{2}-\d{2}$/.test(d) && !Number.isNaN(Date.parse(d)))
 }
 
 // Wraps a Supabase error so the progress store can tell "offline" from "refused".
@@ -37,17 +45,18 @@ function makeDb(client, userId) {
   const upsert = (table, row, onConflict) => client.from(table).upsert(row, { onConflict }).then(check)
   async function set(path, body) {
     const [kind, id] = path.split('/')
-    if (kind === 'lectures') return upsert('lecture_progress', lectureRow(userId, id, body), 'user_id,lecture_id')
-    if (kind === 'assignments') return upsert('assignment_status', { user_id: userId, assignment_id: id, status: body.status }, 'user_id,assignment_id')
-    if (path === 'meta/goal') return upsert('student_settings', { user_id: userId, weekly_target: body.weeklyTarget }, 'user_id')
-    if (path === 'meta/onboarded') return upsert('student_settings', { user_id: userId, onboarded_at: body ? body.at : null, onboarding_skipped: !!(body && body.skipped) }, 'user_id')
+    if (kind === 'lectures') return upsert('lecture_progress', lectureRow(id, body), 'user_id,lecture_id')
+    if (kind === 'assignments') return upsert('assignment_status', { assignment_id: id, status: body.status }, 'user_id,assignment_id')
+    if (path === 'meta/goal') return upsert('student_settings', { weekly_target: body.weeklyTarget }, 'user_id')
+    if (path === 'meta/onboarded') return upsert('student_settings', { onboarded_at: body ? body.at : null, onboarding_skipped: !!(body && body.skipped) }, 'user_id')
     if (path === 'meta/activity') {
-      // the set of study days: add the new ones, remove any that were taken away
-      const days = Object.keys(body.days || {}).filter((d) => body.days[d])
-      let del = client.from('study_days').delete().eq('user_id', userId)
+      // the set of study days: add the new ones, remove any that were taken away.
+      // The days come from this browser's (editable) copy, so only real dates go into the filter (§4.1).
+      const days = studyDays(body)
+      let del = client.from('study_days').delete().eq('user_id', userId) // RLS limits it to you anyway
       if (days.length) del = del.not('day', 'in', `(${days.join(',')})`)
       check(await del)
-      if (days.length) check(await client.from('study_days').upsert(days.map((day) => ({ user_id: userId, day })), { onConflict: 'user_id,day', ignoreDuplicates: true }))
+      if (days.length) check(await client.from('study_days').upsert(days.map((day) => ({ day })), { onConflict: 'user_id,day', ignoreDuplicates: true }))
       return
     }
     throw new Error(`unknown path ${path}`)
