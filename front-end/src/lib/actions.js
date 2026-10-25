@@ -4,6 +4,7 @@
 // Pattern: change the stores inside commit(), so React redraws the page immediately; then do
 // the follow-up that needs the new page (move focus, scroll, replay an animation).
 import { createModel } from '../utils/model.js'
+import { safeUrl } from '../utils/safeUrl.js'
 import { etNow, fShort } from '../utils/dates.js'
 import { A_LABEL, CONF } from '../utils/format.js'
 import { buildIndex } from '../utils/search.js'
@@ -506,7 +507,7 @@ export function createHub({ data, progress, ui }) {
     closePalette()
     if (x.copy) { copy(x.copy, 'next command'); return }
     if (x.theme) { toggleTheme(); return }
-    if (x.ext) { window.open(x.go, '_blank', 'noopener'); return }
+    if (x.ext) { const url = safeUrl(x.go); if (url) window.open(url, '_blank', 'noopener,noreferrer'); return }
     if (x.step) setOpen(x.go.slice(9), x.step, true)
     navigate(x.go, { instant: true })
     if (x.step) setTimeout(() => scrollToStep(x.step), 60)

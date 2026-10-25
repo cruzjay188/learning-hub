@@ -5,7 +5,8 @@ The artifact host serves a single HTML page and adds its own <html>/<head>/<body
 script puts the JS and CSS inside the page and keeps only what goes in the body and head.
 
 Usage (from learning-hub/):  python3 -I tools/build_artifact.py
-Writes dist/index.html. Publish that file, with files: {"hub-data.json": "front-end/dist/hub-data.json"}.
+Writes dist/index.html. Publish that file (private to Jeffrey), with files: {"hub-data.json": "data/hub-data.personal.json"},
+the private copy with his notes and commits. The public front-end/dist/hub-data.json has neither.
 """
 import os, re
 

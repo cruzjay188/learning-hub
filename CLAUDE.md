@@ -65,7 +65,7 @@ https://eagle-learning-hub.vercel.app: project `eagle-learning-hub`, team id `te
 
 ## Publishing to the claude.ai artifact (only once Jeffrey switches over to this folder)
 
-`npm run build`, then `python3 -I tools/build_artifact.py`, then publish `dist/index.html` to https://claude.ai/artifact/MtGWwvJQRsSXyC7YqFozf9 with `files: {"hub-data.json": "front-end/dist/hub-data.json"}`. Omit `capabilities` and `icon` so the stored ones carry over.
+`npm run build`, then `python3 -I tools/build_artifact.py`, then publish `dist/index.html` to https://claude.ai/artifact/MtGWwvJQRsSXyC7YqFozf9 with `files: {"hub-data.json": "data/hub-data.personal.json"}` (the private copy; the public one has no personal data). Omit `capabilities` and `icon` so the stored ones carry over.
 
 ## Known issues
 

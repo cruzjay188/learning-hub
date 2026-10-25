@@ -217,6 +217,25 @@ def load_commits():
     return sorted(commits, key=lambda c: c["when"], reverse=True)
 
 
+def public_view(data):
+    """The course as every student should see it: no one person's notes, paths, statuses, commits or work logs."""
+    def public_assignment(a):
+        return {"id": a["id"], "title": a["title"], "week": a["week"], "lectures": a.get("lectures", []),
+                # quizzes stay quizzes; everything else starts at To do (each student's own status lives in Supabase)
+                "status": "quiz" if a["status"] == "quiz" else "todo", "repo": None, "repoLabel": None, "local": None, "notes": ""}
+    def public_lecture(l):
+        if not l.get("guide"):
+            return l
+        guide = {k: v for k, v in l["guide"].items() if k != "sources"}  # sources hold local paths and personal notes
+        return {**l, "guide": guide}
+    return {**data,
+            # course assignments are the ones linked to a lecture; personal practice repos aren't
+            "assignments": [public_assignment(a) for a in data["assignments"] if a.get("lectures")],
+            "assessments": [{**x, "status": "todo"} for x in data["assessments"]],
+            "lectures": [public_lecture(l) for l in data["lectures"]],
+            "workLogs": [], "commits": [], "repos": []}
+
+
 def main():
     guides = load_guides()
     events = load_calendar()
@@ -298,11 +317,17 @@ def main():
         "commits": load_commits()[:40],
         "repos": repos,
     }
-    # front-end/public/ for the React app (npm run build copies it into dist/); site/ for the plain-JS copy while it exists
-    outs = [os.path.join(HUB, "front-end/public/hub-data.json")] + ([os.path.join(HUB, "site/hub-data.json")] if os.path.isdir(os.path.join(HUB, "site")) else [])
-    for out in outs:
-        with open(out, "w") as f:
-            json.dump(data, f, ensure_ascii=False, separators=(",", ":"))
+    # Two copies (docs/security-rules.md §7.2):
+    #   front-end/public/hub-data.json  PUBLIC: shared course content only, served to every student by Vercel
+    #   data/hub-data.personal.json     PRIVATE (git-ignored): everything, incl. Jeffrey's notes, commits and work logs,
+    #                                   for his own claude.ai artifact copy (and site/ while it exists)
+    outs = {os.path.join(HUB, "front-end/public/hub-data.json"): public_view(data),
+            os.path.join(HUB, "data/hub-data.personal.json"): data}
+    if os.path.isdir(os.path.join(HUB, "site")):
+        outs[os.path.join(HUB, "site/hub-data.json")] = data
+    for path, content in outs.items():
+        with open(path, "w") as f:
+            json.dump(content, f, ensure_ascii=False, separators=(",", ":"))
     out = " and ".join(os.path.relpath(o, HUB) for o in outs)
     full = sum(1 for l in lecture_list if l["guide"] and l["guide"].get("status") == "full")
     print(f"wrote {out}: {len(lecture_list)} lectures ({full} full guides, "

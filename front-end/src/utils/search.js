@@ -1,5 +1,6 @@
 // The search palette (⌘K): what can be found, and how results are ranked.
 import { fShort } from './dates.js'
+import { safeUrl } from './safeUrl.js'
 import { A_LABEL } from './format.js'
 
 // Everything searchable, grouped: Actions, Lectures, Key terms, Assignments.
@@ -14,7 +15,7 @@ export function buildIndex(m, today, minutes) {
   items.push({ g: 'Actions', t: 'Toggle light / dark', s: 'Theme', theme: true })
   m.L.forEach((l) => items.push({ g: 'Lectures', t: m.lecLabel(l), s: `Week ${l.week} · ${fShort(l.date)}${l.guide && l.guide.status === 'outline' ? ' · prep outline' : ''}`, go: `#lecture-${l.id}`, key: `${m.codeOf(l)} ${l.title}`.toLowerCase() }))
   m.L.forEach((l) => ((l.guide && l.guide.concepts) || []).forEach((c) => items.push({ g: 'Key terms', t: c.term, s: `${m.codeOf(l) || l.title} · ${c.meaning}`, go: `#lecture-${l.id}`, key: c.term.toLowerCase() })))
-  m.data.assignments.forEach((a) => items.push({ g: 'Assignments', t: m.aTitle(a), s: A_LABEL[m.assignStatus(a)], go: a.repo || '#work', ext: !!a.repo, key: a.title.toLowerCase() }))
+  m.data.assignments.forEach((a) => items.push({ g: 'Assignments', t: m.aTitle(a), s: A_LABEL[m.assignStatus(a)], go: safeUrl(a.repo) || '#work', ext: !!safeUrl(a.repo), key: a.title.toLowerCase() }))
   return items
 }
 

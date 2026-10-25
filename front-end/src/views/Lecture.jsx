@@ -1,4 +1,5 @@
 import { useRef } from 'react'
+import { NEW_TAB, safeUrl } from '../utils/safeUrl.js'
 import { useHub } from '../hooks/useHub.js'
 import { etNow, fDur, fShort, fTime } from '../utils/dates.js'
 import { A_LABEL, CONF, pct } from '../utils/format.js'
@@ -80,11 +81,11 @@ export default function Lecture({ id }) {
               <h2 className="section__title" id="lk-h">Links</h2>
               <div className="links lec-links">
                 {linked.map((a) => (
-                  <a key={a.id} href={a.repo || '#work'} {...(a.repo ? { target: '_blank', rel: 'noopener' } : {})}>
-                    {m.aTitle(a)} {a.repo ? <I.ext /> : ''}<span className="lk-st">{A_LABEL[m.assignStatus(a)]}</span>
+                  <a key={a.id} href={safeUrl(a.repo) || '#work'} {...(safeUrl(a.repo) ? NEW_TAB : {})}>
+                    {m.aTitle(a)} {safeUrl(a.repo) ? <I.ext /> : ''}<span className="lk-st">{A_LABEL[m.assignStatus(a)]}</span>
                   </a>
                 ))}
-                {(g.resources || []).map((r) => <a key={r.url + r.label} href={r.url} target="_blank" rel="noopener">{r.label} <I.ext /></a>)}
+                {(g.resources || []).filter((r) => safeUrl(r.url)).map((r) => <a key={r.url + r.label} href={safeUrl(r.url)} {...NEW_TAB}>{r.label} <I.ext /></a>)}
               </div>
             </section>
           ) : null}

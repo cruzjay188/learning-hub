@@ -1,4 +1,5 @@
 import { useHub } from '../hooks/useHub.js'
+import { NEW_TAB, safeUrl } from '../utils/safeUrl.js'
 import { addDays, etNow, fMD, fShort, weekStart } from '../utils/dates.js'
 import { A_LABEL, A_MARK, noEmoji, plural } from '../utils/format.js'
 import CopyButton from '../components/CopyButton.jsx'
@@ -71,7 +72,7 @@ function AssignmentRow({ a, k, i }) {
         ? <span className="st" style={{ width: '28px' }} title="Team quiz"><ST.quiz /></span>
         : <button type="button" className="st-btn" data-status-menu={a.id} aria-haspopup="menu" aria-label={`Status: ${A_LABEL[k]}. Change status for ${m.aTitle(a)}`} onClick={(e) => hub.openMenu(e.currentTarget, a.id)}><Mark /></button>}
       <div className="row__main">
-        <p className="row__title">{a.repo ? <a href={a.repo} target="_blank" rel="noopener">{m.aTitle(a)} <I.ext /></a> : m.aTitle(a)}</p>
+        <p className="row__title">{safeUrl(a.repo) ? <a href={safeUrl(a.repo)} {...NEW_TAB}>{m.aTitle(a)} <I.ext /></a> : m.aTitle(a)}</p>
         {a.notes || a.local ? <p className="row__sub">{noEmoji(a.notes || '')}{a.local ? <>{a.notes ? ' · ' : ''}<span className="mono" style={{ fontSize: '12px' }}>{a.local}</span></> : null}</p> : null}
       </div>
       <div className="row__end">
@@ -137,12 +138,12 @@ function Activity({ today }) {
           <h2 className="section__title" id="cm-h">Recent commits</h2>
           <div style={{ marginTop: '8px', borderTop: '1px solid var(--line)' }}>
             {commits.length ? commits.map((c) => (
-              <div key={c.sha || c.when} className="commit"><time dateTime={c.date}>{fMD(c.date)}</time><div><span className="code-tag">{c.repo}</span> {c.url ? <a href={c.url} target="_blank" rel="noopener">{c.message}</a> : c.message}</div></div>
+              <div key={c.sha || c.when} className="commit"><time dateTime={c.date}>{fMD(c.date)}</time><div><span className="code-tag">{c.repo}</span> {safeUrl(c.url) ? <a href={safeUrl(c.url)} {...NEW_TAB}>{c.message}</a> : c.message}</div></div>
             )) : <p className="empty">No commits yet.</p>}
           </div>
           <details className="repos" style={{ marginTop: '16px' }}>
             <summary>Repos ({m.data.repos.length})</summary>
-            <div className="links">{m.data.repos.map((r) => <a key={r.url} href={r.url} target="_blank" rel="noopener">{r.name} <I.ext /><span className="lk-st">{r.pushedAt ? fMD(r.pushedAt.slice(0, 10)) : ''}</span></a>)}</div>
+            <div className="links">{m.data.repos.filter((r) => safeUrl(r.url)).map((r) => <a key={r.url} href={safeUrl(r.url)} {...NEW_TAB}>{r.name} <I.ext /><span className="lk-st">{r.pushedAt ? fMD(r.pushedAt.slice(0, 10)) : ''}</span></a>)}</div>
           </details>
         </section>
       </div>

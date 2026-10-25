@@ -29,3 +29,6 @@ design/screens/
 
 # Vercel CLI link (project and team ids for this computer)
 .vercel/
+
+# Jeffrey's private copy of the course data (notes, commits, work logs): never committed or deployed
+data/hub-data.personal.json
