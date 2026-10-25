@@ -1,0 +1,15 @@
+# What `vercel deploy` from this computer must not upload. (Deploys from GitHub only ever see
+# committed files; this protects uploads from your laptop.) Vercel builds front-end/ itself.
+.env
+.env.*
+!.env.example
+!.env.qa
+.vercel
+.mcp.json
+node_modules
+dist
+dist-qa
+site
+design/screens
+.temp
+.DS_Store

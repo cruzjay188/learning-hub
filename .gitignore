@@ -26,3 +26,6 @@ design/screens/
 
 # Supabase CLI cache (version, last linked project)
 .temp/
+
+# Vercel CLI link (project and team ids for this computer)
+.vercel/
