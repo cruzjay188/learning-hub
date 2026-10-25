@@ -4,6 +4,12 @@ The Eagle Learning Hub is Jeffrey's study app for the Code Platoon bootcamp. `RE
 
 > **Status:** this folder is a reorganized **test copy** of `../hub/`. Until Jeffrey says to switch over, the live artifact, `/sync` and the shared agents all still use `../hub/`. Don't publish from here without asking.
 
+## Security rules (read before writing or changing anything)
+
+@docs/security-rules.md
+
+These are mandatory for every change: owner-scoped RLS on every table (the front end never sends `user_id`), authorization only on the server, no SQL or PostgREST filters built from input, no secrets in code or on the command line, and exports of your own data only. Run its §1 checklist before coding, put the answers in the PR under **Security**, and run §11 before calling a change done. If a request would break a rule, stop and ask.
+
 ## Stack
 
 React 19 · Vite 8 · Vitest 5 + React Testing Library (jsdom) · plain CSS · no router (the URL hash picks the page) · Supabase (`@supabase/supabase-js` 2.117.0, pinned) for student accounts and progress, with `localStorage` as the offline copy (and the artifact's database when there are no accounts).
